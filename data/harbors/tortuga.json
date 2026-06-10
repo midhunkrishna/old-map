@@ -1,0 +1,753 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "id": "tortuga",
+  "title": "Plan de la Basse-Terre et de la Rade de la Tortue",
+  "survey_basis": "No reliable town survey exists; composed from Exquemelin's description, du Casse-era French colonial memoirs, and the engraved plans of Fort de Rocher (1640s). By 1730 the place is a backwater of turtlers and small planters \u2014 the government long since removed to Saint-Domingue. Coastline placed against the real south shore of \u00cele de la Tortue; town layout is plausible infill.",
+  "center": [
+   -72.788,
+   20.05
+  ],
+  "suggested_zoom": 14
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "\u00cele de la Tortue (south shore)",
+    "note": "The careened-turtle island: an iron-bound north coast, landings only on this channel side"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -72.84,
+       20.042
+      ],
+      [
+       -72.828,
+       20.0435
+      ],
+      [
+       -72.816,
+       20.045
+      ],
+      [
+       -72.808,
+       20.047
+      ],
+      [
+       -72.802,
+       20.049
+      ],
+      [
+       -72.796,
+       20.051
+      ],
+      [
+       -72.792,
+       20.0523
+      ],
+      [
+       -72.788,
+       20.0515
+      ],
+      [
+       -72.7855,
+       20.0495
+      ],
+      [
+       -72.784,
+       20.047
+      ],
+      [
+       -72.7825,
+       20.0445
+      ],
+      [
+       -72.781,
+       20.0428
+      ],
+      [
+       -72.777,
+       20.0435
+      ],
+      [
+       -72.772,
+       20.0445
+      ],
+      [
+       -72.766,
+       20.046
+      ],
+      [
+       -72.76,
+       20.048
+      ],
+      [
+       -72.752,
+       20.0505
+      ],
+      [
+       -72.744,
+       20.0535
+      ],
+      [
+       -72.736,
+       20.057
+      ],
+      [
+       -72.73,
+       20.06
+      ],
+      [
+       -72.73,
+       20.075
+      ],
+      [
+       -72.76,
+       20.075
+      ],
+      [
+       -72.8,
+       20.072
+      ],
+      [
+       -72.84,
+       20.065
+      ],
+      [
+       -72.84,
+       20.042
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "Basse-Terre reef",
+    "note": "The half-moon of rocks that shelters the road; boats pass at two places only"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -72.798,
+       20.045
+      ],
+      [
+       -72.794,
+       20.047
+      ],
+      [
+       -72.79,
+       20.0475
+      ],
+      [
+       -72.788,
+       20.0455
+      ],
+      [
+       -72.792,
+       20.0435
+      ],
+      [
+       -72.796,
+       20.0435
+      ],
+      [
+       -72.798,
+       20.045
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Fort de Rocher",
+    "year_built": 1640,
+    "note": "Le Vasseur's rock fortress with its 'dovecote' keep, reached by an iron ladder drawn up at need; it beat off a Spanish fleet in 1643. By 1730 ruinous \u2014 goats graze the platform"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -72.7928,
+       20.0574
+      ],
+      [
+       -72.7918,
+       20.0579
+      ],
+      [
+       -72.7909,
+       20.0575
+      ],
+      [
+       -72.7908,
+       20.0565
+      ],
+      [
+       -72.7918,
+       20.056
+      ],
+      [
+       -72.7928,
+       20.0565
+      ],
+      [
+       -72.7928,
+       20.0574
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Batterie de la Rade",
+    "guns": 4,
+    "note": "A few old iron guns by the landing, more rust than menace (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.791,
+     20.0528
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Rue de la Basse-Terre",
+    "note": "The shore lane: boucans, taverns and net-racks"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -72.794,
+      20.052
+     ],
+     [
+      -72.791,
+      20.0526
+     ],
+     [
+      -72.788,
+      20.0518
+     ],
+     [
+      -72.7855,
+      20.05
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Sentier du Fort",
+    "note": "The climb to Le Vasseur's rock"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -72.7915,
+      20.0525
+     ],
+     [
+      -72.7918,
+      20.0545
+     ],
+     [
+      -72.7918,
+      20.056
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Chemin de Cayonne",
+    "note": "Shore path between the two settlements"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -72.7855,
+      20.05
+     ],
+     [
+      -72.784,
+      20.048
+     ],
+     [
+      -72.7825,
+      20.0455
+     ],
+     [
+      -72.7815,
+      20.0435
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Rue de Cayonne",
+    "note": "The old buccaneer town's single street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -72.7825,
+      20.0455
+     ],
+     [
+      -72.779,
+      20.045
+     ],
+     [
+      -72.776,
+      20.0445
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Chemin des Habitations",
+    "note": "Up to the tobacco and provision grounds on the mountain shelf"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -72.79,
+      20.0522
+     ],
+     [
+      -72.7895,
+      20.055
+     ],
+     [
+      -72.7885,
+      20.059
+     ],
+     [
+      -72.787,
+      20.064
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "Basse-Terre houses"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -72.7935,
+       20.0523
+      ],
+      [
+       -72.792,
+       20.0523
+      ],
+      [
+       -72.792,
+       20.0533
+      ],
+      [
+       -72.7935,
+       20.0533
+      ],
+      [
+       -72.7935,
+       20.0523
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -72.7915,
+       20.0528
+      ],
+      [
+       -72.79,
+       20.0528
+      ],
+      [
+       -72.79,
+       20.0537
+      ],
+      [
+       -72.7915,
+       20.0537
+      ],
+      [
+       -72.7915,
+       20.0528
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -72.789,
+       20.052
+      ],
+      [
+       -72.7875,
+       20.052
+      ],
+      [
+       -72.7875,
+       20.0529
+      ],
+      [
+       -72.789,
+       20.0529
+      ],
+      [
+       -72.789,
+       20.052
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "Cayonne houses"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -72.783,
+       20.0445
+      ],
+      [
+       -72.7815,
+       20.0445
+      ],
+      [
+       -72.7815,
+       20.0456
+      ],
+      [
+       -72.783,
+       20.0456
+      ],
+      [
+       -72.783,
+       20.0445
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -72.781,
+       20.0442
+      ],
+      [
+       -72.779,
+       20.0442
+      ],
+      [
+       -72.779,
+       20.0452
+      ],
+      [
+       -72.781,
+       20.0452
+      ],
+      [
+       -72.781,
+       20.0442
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Chapelle de la Basse-Terre",
+    "year_built": 1670,
+    "note": "The parish kept (irregularly) since d'Ogeron's time; a priest comes from Port-de-Paix"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.7895,
+     20.053
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Maison du Gouvernement (old)",
+    "note": "D'Ogeron's and de Cussy's old seat; the governor of the coast now sits at Port-de-Paix across the channel"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.7925,
+     20.0528
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Tavern of the Boucaniers",
+    "note": "Cayonne's last punch-house (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.782,
+     20.045
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "The Landing",
+    "note": "Stone steps and a wooden stage; all else is beach work"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -72.7915,
+      20.0523
+     ],
+     [
+      -72.791,
+      20.0515
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 140,
+    "note": "French coaster from Port-de-Paix for hides and tobacco"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.791,
+     20.0485
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 130,
+    "note": "Turtling sloop of the old breed"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.788,
+     20.0475
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 150
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.794,
+     20.048
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "brigantine",
+    "heading": 120,
+    "note": "Standing through the channel for Cap Fran\u00e7ois"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.784,
+     20.0415
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "canoe",
+    "heading": 100,
+    "note": "Fishing canoe inside the reef"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.7895,
+     20.0505
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Rade de la Basse-Terre"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.792,
+     20.049
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Cayonne"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.779,
+     20.043
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "La Montagne"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.77,
+     20.065
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Canal de la Tortue"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.788,
+     20.035
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Les Habitations"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.75,
+     20.062
+    ]
+   }
+  }
+ ]
+}

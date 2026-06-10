@@ -1,0 +1,1773 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "id": "port-royal",
+  "title": "Plan of the Remains of the Town and Harbour of Port Royal, Jamaica",
+  "survey_basis": "Based on the post-earthquake surveys (the town as rebuilt after 1692 and re-burned 1703), Charles Bochart & Humphrey Knollis's 1680s plat of the old city for street names, and period Admiralty plans of the careening place at Chocolata Hole. Two-thirds of the 1692 city lies drowned northeast of the surviving point.",
+  "center": [
+   -76.842,
+   17.94
+  ],
+  "suggested_zoom": 14
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "The Point, Port Royal",
+    "note": "The surviving quarter of the old city on the tip of the Palisadoes; sand, lime-houses and the navy yard"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8462,
+       17.9348
+      ],
+      [
+       -76.8468,
+       17.936
+      ],
+      [
+       -76.8472,
+       17.9375
+      ],
+      [
+       -76.8476,
+       17.939
+      ],
+      [
+       -76.8474,
+       17.9404
+      ],
+      [
+       -76.8466,
+       17.9413
+      ],
+      [
+       -76.8456,
+       17.9418
+      ],
+      [
+       -76.8454,
+       17.941
+      ],
+      [
+       -76.8458,
+       17.94
+      ],
+      [
+       -76.8456,
+       17.9392
+      ],
+      [
+       -76.8448,
+       17.9388
+      ],
+      [
+       -76.844,
+       17.9392
+      ],
+      [
+       -76.8438,
+       17.9402
+      ],
+      [
+       -76.844,
+       17.9411
+      ],
+      [
+       -76.8433,
+       17.9419
+      ],
+      [
+       -76.8423,
+       17.9423
+      ],
+      [
+       -76.8412,
+       17.9422
+      ],
+      [
+       -76.84,
+       17.9416
+      ],
+      [
+       -76.839,
+       17.9408
+      ],
+      [
+       -76.8382,
+       17.9399
+      ],
+      [
+       -76.837,
+       17.9393
+      ],
+      [
+       -76.8355,
+       17.9389
+      ],
+      [
+       -76.834,
+       17.9387
+      ],
+      [
+       -76.832,
+       17.9386
+      ],
+      [
+       -76.83,
+       17.9385
+      ],
+      [
+       -76.828,
+       17.9384
+      ],
+      [
+       -76.826,
+       17.9383
+      ],
+      [
+       -76.824,
+       17.9383
+      ],
+      [
+       -76.822,
+       17.9383
+      ],
+      [
+       -76.82,
+       17.9384
+      ],
+      [
+       -76.818,
+       17.9385
+      ],
+      [
+       -76.815,
+       17.9386
+      ],
+      [
+       -76.812,
+       17.9388
+      ],
+      [
+       -76.809,
+       17.9389
+      ],
+      [
+       -76.806,
+       17.939
+      ],
+      [
+       -76.803,
+       17.9391
+      ],
+      [
+       -76.8,
+       17.9392
+      ],
+      [
+       -76.8,
+       17.9379
+      ],
+      [
+       -76.804,
+       17.9377
+      ],
+      [
+       -76.809,
+       17.9375
+      ],
+      [
+       -76.814,
+       17.9373
+      ],
+      [
+       -76.819,
+       17.9371
+      ],
+      [
+       -76.824,
+       17.9369
+      ],
+      [
+       -76.829,
+       17.9366
+      ],
+      [
+       -76.834,
+       17.9363
+      ],
+      [
+       -76.839,
+       17.9358
+      ],
+      [
+       -76.843,
+       17.9353
+      ],
+      [
+       -76.845,
+       17.9348
+      ],
+      [
+       -76.8462,
+       17.9348
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Gallows Point",
+    "note": "Low mangrove point across the careening water from the town"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8548,
+       17.9474
+      ],
+      [
+       -76.8536,
+       17.9483
+      ],
+      [
+       -76.8528,
+       17.948
+      ],
+      [
+       -76.853,
+       17.9472
+      ],
+      [
+       -76.8542,
+       17.9469
+      ],
+      [
+       -76.8548,
+       17.9474
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Rackham's Cay",
+    "note": "Where Calico Jack's tarred body hung in irons after November 1720"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8335,
+       17.9335
+      ],
+      [
+       -76.8325,
+       17.9339
+      ],
+      [
+       -76.8317,
+       17.9335
+      ],
+      [
+       -76.8325,
+       17.933
+      ],
+      [
+       -76.8335,
+       17.9335
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "The Sunken City",
+    "note": "Streets, brick walls and chimney-stacks of the 1692 city in 3 to 8 fathoms; for years after the quake the house-tops and the church tower could be seen beneath the water, and divers still bring up pewter and coin",
+    "year_built": 1692
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8412,
+       17.9422
+      ],
+      [
+       -76.84,
+       17.9432
+      ],
+      [
+       -76.8385,
+       17.9438
+      ],
+      [
+       -76.8365,
+       17.9438
+      ],
+      [
+       -76.8348,
+       17.943
+      ],
+      [
+       -76.8338,
+       17.9418
+      ],
+      [
+       -76.8338,
+       17.9405
+      ],
+      [
+       -76.8348,
+       17.9395
+      ],
+      [
+       -76.8362,
+       17.9391
+      ],
+      [
+       -76.8382,
+       17.9399
+      ],
+      [
+       -76.8396,
+       17.9411
+      ],
+      [
+       -76.8412,
+       17.9422
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "South Channel knolls",
+    "note": "Coral heads off the fort; ships keep the church-and-fort mark to clear them"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.849,
+       17.9325
+      ],
+      [
+       -76.847,
+       17.9338
+      ],
+      [
+       -76.8462,
+       17.933
+      ],
+      [
+       -76.8475,
+       17.9315
+      ],
+      [
+       -76.849,
+       17.9312
+      ],
+      [
+       -76.849,
+       17.9325
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Fort Charles",
+    "year_built": 1660,
+    "note": "Begun as Fort Cromwell about 1656, renamed at the Restoration; the one survivor of the old city's five forts, ~100 guns mounted; headquarters of the Jamaica squadron"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8454,
+       17.9356
+      ],
+      [
+       -76.8446,
+       17.9361
+      ],
+      [
+       -76.8438,
+       17.9359
+      ],
+      [
+       -76.8433,
+       17.9354
+      ],
+      [
+       -76.8436,
+       17.9348
+      ],
+      [
+       -76.8445,
+       17.9345
+      ],
+      [
+       -76.8454,
+       17.9347
+      ],
+      [
+       -76.8458,
+       17.9352
+      ],
+      [
+       -76.8454,
+       17.9356
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Hanover Line",
+    "guns": 12,
+    "note": "Breastwork of guns east of Fort Charles covering the south channel (rebuilt after 1722 hurricane)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.842,
+     17.9355
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Mosquito Point battery",
+    "guns": 8,
+    "note": "Crossfire over the harbour channel with Fort Charles"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.827,
+     17.953
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Mosquito Point",
+    "note": "Mangrove point on the inner harbour"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.828,
+       17.9536
+      ],
+      [
+       -76.8265,
+       17.954
+      ],
+      [
+       -76.8255,
+       17.9533
+      ],
+      [
+       -76.8265,
+       17.9524
+      ],
+      [
+       -76.828,
+       17.9526
+      ],
+      [
+       -76.828,
+       17.9536
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Thames Street",
+    "note": "The old harbour-front street; half its former length, the rest under water"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8448,
+      17.9388
+     ],
+     [
+      -76.8438,
+      17.9394
+     ],
+     [
+      -76.8428,
+      17.94
+     ],
+     [
+      -76.8418,
+      17.9406
+     ],
+     [
+      -76.8408,
+      17.941
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Queen Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8452,
+      17.938
+     ],
+     [
+      -76.8438,
+      17.9386
+     ],
+     [
+      -76.8423,
+      17.9392
+     ],
+     [
+      -76.8406,
+      17.9399
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "High Street",
+    "note": "The old chief street of the buccaneer city"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8454,
+      17.9372
+     ],
+     [
+      -76.8438,
+      17.9378
+     ],
+     [
+      -76.842,
+      17.9384
+     ],
+     [
+      -76.8402,
+      17.939
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Tower Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8456,
+      17.9364
+     ],
+     [
+      -76.844,
+      17.937
+     ],
+     [
+      -76.8422,
+      17.9376
+     ],
+     [
+      -76.8406,
+      17.9381
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Cannon Street",
+    "note": "From the fort gate up through the town"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8445,
+      17.9345
+     ],
+     [
+      -76.8448,
+      17.9357
+     ],
+     [
+      -76.845,
+      17.937
+     ],
+     [
+      -76.8452,
+      17.938
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Lime Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8438,
+      17.9359
+     ],
+     [
+      -76.8435,
+      17.937
+     ],
+     [
+      -76.8432,
+      17.9381
+     ],
+     [
+      -76.843,
+      17.939
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "York Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8422,
+      17.9365
+     ],
+     [
+      -76.842,
+      17.9376
+     ],
+     [
+      -76.8418,
+      17.9387
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "New Street",
+    "note": "Laid out in the rebuilding after 1692",
+    "year_built": 1693
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8408,
+      17.937
+     ],
+     [
+      -76.8406,
+      17.9381
+     ],
+     [
+      -76.8404,
+      17.9392
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Fisher's Row",
+    "note": "Boats drawn up along Chocolata Hole"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8456,
+      17.9392
+     ],
+     [
+      -76.8462,
+      17.94
+     ],
+     [
+      -76.846,
+      17.9409
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8447,
+       17.9364
+      ],
+      [
+       -76.8438,
+       17.9364
+      ],
+      [
+       -76.8438,
+       17.9371
+      ],
+      [
+       -76.8447,
+       17.9371
+      ],
+      [
+       -76.8447,
+       17.9364
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8447,
+       17.9373
+      ],
+      [
+       -76.8437,
+       17.9373
+      ],
+      [
+       -76.8437,
+       17.9379
+      ],
+      [
+       -76.8447,
+       17.9379
+      ],
+      [
+       -76.8447,
+       17.9373
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8435,
+       17.9366
+      ],
+      [
+       -76.8424,
+       17.9366
+      ],
+      [
+       -76.8424,
+       17.9374
+      ],
+      [
+       -76.8435,
+       17.9374
+      ],
+      [
+       -76.8435,
+       17.9366
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8434,
+       17.9379
+      ],
+      [
+       -76.8423,
+       17.9379
+      ],
+      [
+       -76.8423,
+       17.9385
+      ],
+      [
+       -76.8434,
+       17.9385
+      ],
+      [
+       -76.8434,
+       17.9379
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.842,
+       17.9369
+      ],
+      [
+       -76.841,
+       17.9369
+      ],
+      [
+       -76.841,
+       17.9376
+      ],
+      [
+       -76.842,
+       17.9376
+      ],
+      [
+       -76.842,
+       17.9369
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8418,
+       17.938
+      ],
+      [
+       -76.8407,
+       17.938
+      ],
+      [
+       -76.8407,
+       17.9386
+      ],
+      [
+       -76.8418,
+       17.9386
+      ],
+      [
+       -76.8418,
+       17.938
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "King's House lot",
+    "note": "The governor's town lodging, seldom used since the quake"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.843,
+       17.9387
+      ],
+      [
+       -76.8418,
+       17.9387
+      ],
+      [
+       -76.8418,
+       17.9394
+      ],
+      [
+       -76.843,
+       17.9394
+      ],
+      [
+       -76.843,
+       17.9387
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8445,
+       17.9389
+      ],
+      [
+       -76.8434,
+       17.9389
+      ],
+      [
+       -76.8434,
+       17.9396
+      ],
+      [
+       -76.8445,
+       17.9396
+      ],
+      [
+       -76.8445,
+       17.9389
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "St Peter's Church",
+    "year_built": 1726,
+    "note": "Brick church of 1725-26 replacing the drowned St Paul's; its communion plate is said to be Henry Morgan's gift"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.8429,
+     17.9377
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "The Navy Office",
+    "note": "Victualling and ordnance stores for the Jamaica station"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.8442,
+     17.9353
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "The Jamaica Coffee House",
+    "note": "Tavern by the wherry stairs (plausible; the point kept a dozen licensed houses even after 1722)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.8413,
+     17.9403
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "King's Wharf",
+    "note": "Deep water close-to: ships lie almost against the houses"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8423,
+      17.9404
+     ],
+     [
+      -76.8419,
+      17.941
+     ],
+     [
+      -76.8412,
+      17.9413
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Careening wharf, Chocolata Hole",
+    "note": "The navy's only careening place east of Antigua"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8448,
+      17.9396
+     ],
+     [
+      -76.8444,
+      17.9401
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "gallows",
+    "name": "Gallows Point",
+    "note": "Calico Jack Rackham hanged here Nov 1720; Charles Vane in 1721"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.854,
+     17.948
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "The Parade",
+    "note": "Muster ground between fort and town"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8456,
+       17.9354
+      ],
+      [
+       -76.8447,
+       17.9354
+      ],
+      [
+       -76.8447,
+       17.9362
+      ],
+      [
+       -76.8456,
+       17.9362
+      ],
+      [
+       -76.8456,
+       17.9354
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 250,
+    "name": "HMS Jamaica station flagship",
+    "note": "Fourth-rate moored in the Wherry anchorage"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.834,
+     17.9428
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 245,
+    "note": "Sixth-rate of the squadron"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.831,
+     17.9435
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 230,
+    "note": "Sugar ship waiting convoy"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.837,
+     17.9445
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 220
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.84,
+     17.9435
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 180,
+    "note": "Hove down in Chocolata Hole"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.8445,
+     17.9405
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 240,
+    "note": "Standing up the channel for Kingston, where the trade has gone"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.825,
+     17.946
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "canoe",
+    "heading": 90,
+    "note": "Wherry plying to Kingston"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.839,
+     17.9418
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "The Palisadoes"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.815,
+     17.938
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "The Sunken City",
+    "year_built": 1692
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.837,
+     17.9415
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Chocolata Hole"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.8448,
+     17.9401
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "The Harbour"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.832,
+     17.946
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "South Channel"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.8485,
+     17.931
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Thames Street",
+    "note": "The drowned reach of the waterfront street; before 7 June 1692 it ran the whole length of the harbour front on made ground",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8408,
+      17.941
+     ],
+     [
+      -76.8396,
+      17.9417
+     ],
+     [
+      -76.838,
+      17.9424
+     ],
+     [
+      -76.8364,
+      17.9429
+     ],
+     [
+      -76.835,
+      17.9429
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Queen Street",
+    "note": "Drowned eastern reach of Queen Street, from the Bochart & Knollis plat",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8406,
+      17.9399
+     ],
+     [
+      -76.839,
+      17.9406
+     ],
+     [
+      -76.8374,
+      17.9412
+     ],
+     [
+      -76.8358,
+      17.9417
+     ],
+     [
+      -76.8344,
+      17.9421
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "High Street",
+    "note": "Drowned eastern reach of the chief street of the buccaneer city",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8402,
+      17.939
+     ],
+     [
+      -76.8386,
+      17.9396
+     ],
+     [
+      -76.837,
+      17.9402
+     ],
+     [
+      -76.8354,
+      17.9407
+     ],
+     [
+      -76.8342,
+      17.941
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Broad Street",
+    "note": "Cross street of the drowned quarter, from the Bochart & Knollis plat",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8386,
+      17.9396
+     ],
+     [
+      -76.8382,
+      17.9407
+     ],
+     [
+      -76.8378,
+      17.9421
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Lime Street",
+    "note": "The drowned lower Lime Street; the rebuilt town kept the name for a lane on the surviving ground",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8362,
+      17.9404
+     ],
+     [
+      -76.8358,
+      17.9415
+     ],
+     [
+      -76.8354,
+      17.9426
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "The merchants' quarter",
+    "note": "Brick houses of three and four storeys on made ground between Queen and Thames Streets; the whole quarter went down in minutes on 7 June 1692",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8398,
+       17.9405
+      ],
+      [
+       -76.8388,
+       17.9409
+      ],
+      [
+       -76.8388,
+       17.9419
+      ],
+      [
+       -76.8398,
+       17.9414
+      ],
+      [
+       -76.8398,
+       17.9405
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8376,
+       17.9413
+      ],
+      [
+       -76.8364,
+       17.9417
+      ],
+      [
+       -76.8364,
+       17.9427
+      ],
+      [
+       -76.8376,
+       17.9424
+      ],
+      [
+       -76.8376,
+       17.9413
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8352,
+       17.9419
+      ],
+      [
+       -76.8344,
+       17.9421
+      ],
+      [
+       -76.8344,
+       17.9424
+      ],
+      [
+       -76.8352,
+       17.9426
+      ],
+      [
+       -76.8352,
+       17.9419
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8378,
+       17.9401
+      ],
+      [
+       -76.8368,
+       17.9405
+      ],
+      [
+       -76.8368,
+       17.9412
+      ],
+      [
+       -76.8378,
+       17.9408
+      ],
+      [
+       -76.8378,
+       17.9401
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -76.8356,
+       17.9409
+      ],
+      [
+       -76.8346,
+       17.9412
+      ],
+      [
+       -76.8346,
+       17.9418
+      ],
+      [
+       -76.8356,
+       17.9416
+      ],
+      [
+       -76.8356,
+       17.9409
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "The King's House wharf",
+    "note": "Great wharf of the old waterfront by the King's House; deep water close-to let ships lie against the houses",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8394,
+      17.9421
+     ],
+     [
+      -76.8386,
+      17.9426
+     ],
+     [
+      -76.8378,
+      17.9428
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Littleton's wharf",
+    "note": "One of the great merchant wharves of the drowned waterfront (the name is conjectural; the wharves are attested, their owners uncertain)",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -76.8366,
+      17.943
+     ],
+     [
+      -76.8356,
+      17.9431
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "The King's House",
+    "note": "The governor's lodging of the old city, by Thames Street; it went down bodily with the waterfront on 7 June 1692 (site approximate)",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.839,
+     17.9415
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "St Paul's Church",
+    "note": "The parish church of the pre-quake city; its tower could be seen beneath the water for years afterward",
+    "year_destroyed": 1692
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.8356,
+     17.9412
+    ]
+   }
+  }
+ ]
+}

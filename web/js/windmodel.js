@@ -210,7 +210,7 @@
   // ready resolves true when the field is built from the real mask, false
   // when the mask fetch failed (all-water fallback field; static arrows
   // then keep the server data).
-  const ready = fetch('/api/flowmask')
+  const ready = fetch('/flowmask.json')
     .then((r) => { if (!r.ok) throw new Error('flowmask ' + r.status); return r.json(); })
     .then((d) => {
       if (d.w !== GW || d.h !== GH || d.lat0 !== GLAT0 || d.lon0 !== GLON0) {

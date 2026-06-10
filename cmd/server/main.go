@@ -20,7 +20,7 @@ import (
 	"oldmap/internal/engine"
 )
 
-var thresholds = []float64{7, 14, 21, 30, 45, 60, 90, 120, 150, 180}
+var thresholds = engine.DefaultThresholds
 
 type Port struct {
 	ID         string   `json:"id"`
@@ -68,6 +68,7 @@ type server struct {
 func main() {
 	addr := flag.String("addr", "127.0.0.1:8047", "listen address")
 	calibrate := flag.Bool("calibrate", false, "print model-vs-history calibration table and exit")
+	export := flag.String("export", "", "write static client artifacts (grid.bin + *.json) to dir and exit")
 	res := flag.Float64("res", 0.15, "ocean grid resolution in degrees")
 	flag.Parse()
 
@@ -112,6 +113,13 @@ func main() {
 
 	if *calibrate {
 		s.runCalibration(os.Stdout)
+		return
+	}
+
+	if *export != "" {
+		if err := s.exportStatic(*export); err != nil {
+			log.Fatal(err)
+		}
 		return
 	}
 
@@ -319,7 +327,7 @@ func (s *server) buildIsochrone(port Port) []byte {
 	if ci < 0 {
 		return []byte(`{"type":"FeatureCollection","features":[]}`)
 	}
-	return s.isochroneJSON(ci, cj, port.Lon, port.ID)
+	return s.grid.IsochroneJSON(ci, cj, port.Lon, port.ID, thresholds)
 }
 
 // buildIsochroneAt builds the isochrone FeatureCollection for an arbitrary
@@ -330,56 +338,7 @@ func (s *server) buildIsochroneAt(lon, lat float64) []byte {
 		return []byte(`{"type":"FeatureCollection","features":[]}`)
 	}
 	originLon, _ := s.grid.LonLat(ci, cj)
-	return s.isochroneJSON(ci, cj, originLon, fmt.Sprintf("pt_%d_%d", ci, cj))
-}
-
-func (s *server) isochroneJSON(ci, cj int, originLon float64, id string) []byte {
-	hours := s.grid.SailTimes(ci, cj)
-	sets := s.grid.BuildContours(hours, originLon, thresholds)
-
-	// Outermost band first so the client can stack opaque fills.
-	sort.Slice(sets, func(a, b int) bool { return sets[a].ThresholdDays > sets[b].ThresholdDays })
-
-	var features []map[string]any
-	for _, cs := range sets {
-		if len(cs.Polygons) == 0 {
-			continue
-		}
-		coords := make([][][][2]float64, 0, len(cs.Polygons))
-		for _, poly := range cs.Polygons {
-			p := make([][][2]float64, 0, len(poly))
-			for _, ring := range poly {
-				p = append(p, dedup(ring))
-			}
-			coords = append(coords, p)
-		}
-		features = append(features, map[string]any{
-			"type":       "Feature",
-			"properties": map[string]any{"kind": "band", "days": cs.ThresholdDays},
-			"geometry":   map[string]any{"type": "MultiPolygon", "coordinates": coords},
-		})
-		for _, poly := range cs.Polygons {
-			features = append(features, map[string]any{
-				"type":       "Feature",
-				"properties": map[string]any{"kind": "line", "days": cs.ThresholdDays},
-				"geometry":   map[string]any{"type": "LineString", "coordinates": dedup(poly[0])},
-			})
-		}
-		for _, lp := range cs.LabelPoints {
-			features = append(features, map[string]any{
-				"type":       "Feature",
-				"properties": map[string]any{"kind": "label", "days": cs.ThresholdDays},
-				"geometry":   map[string]any{"type": "Point", "coordinates": lp},
-			})
-		}
-	}
-	out := map[string]any{
-		"type":     "FeatureCollection",
-		"port":     id,
-		"features": features,
-	}
-	b, _ := json.Marshal(out)
-	return b
+	return s.grid.IsochroneJSON(ci, cj, originLon, fmt.Sprintf("pt_%d_%d", ci, cj), thresholds)
 }
 
 // handleRoute returns the time-optimal sailing track between two sea points
@@ -404,7 +363,7 @@ func (s *server) handleRoute(w http.ResponseWriter, r *http.Request) {
 	}
 	if i1 == i2 && j1 == j2 {
 		lon, lat := s.grid.LonLat(i1, j1)
-		writeJSONBytes(w, s.routeJSON(
+		writeJSONBytes(w, s.grid.RouteJSON(
 			[][2]float64{{lon, lat}, {lon, lat}}, []float32{0, 0}, i1, j1, i2, j2))
 		return
 	}
@@ -427,38 +386,9 @@ func (s *server) buildRoute(i1, j1, i2, j2 int) []byte {
 	if !ok {
 		return nil
 	}
-	b := s.routeJSON(coords, hours, i1, j1, i2, j2)
+	b := s.grid.RouteJSON(coords, hours, i1, j1, i2, j2)
 	log.Printf("route %d,%d -> %d,%d computed in %s (%d vertices)",
 		i1, j1, i2, j2, time.Since(t0).Round(time.Millisecond), len(coords))
-	return b
-}
-
-func (s *server) routeJSON(coords [][2]float64, hours []float32, i1, j1, i2, j2 int) []byte {
-	nm := engine.TrackLengthNM(coords)
-	for k := range coords {
-		coords[k][0] = math.Round(coords[k][0]*1e4) / 1e4
-		coords[k][1] = math.Round(coords[k][1]*1e4) / 1e4
-	}
-	fromLon, fromLat := s.grid.LonLat(i1, j1)
-	toLon, toLat := s.grid.LonLat(i2, j2)
-	fromLon, fromLat = math.Round(fromLon*1e4)/1e4, math.Round(fromLat*1e4)/1e4
-	toLon, toLat = math.Round(toLon*1e4)/1e4, math.Round(toLat*1e4)/1e4
-	days := math.Round(float64(hours[len(hours)-1])/24*10) / 10
-	out := map[string]any{
-		"type": "Feature",
-		"geometry": map[string]any{
-			"type":        "LineString",
-			"coordinates": coords,
-		},
-		"properties": map[string]any{
-			"hours": hours,
-			"days":  days,
-			"nm":    math.Round(nm),
-			"from":  [2]float64{fromLon, fromLat},
-			"to":    [2]float64{toLon, toLat},
-		},
-	}
-	b, _ := json.Marshal(out)
 	return b
 }
 
@@ -477,23 +407,6 @@ func parseLonLat(s string) (float64, float64, error) {
 		return 0, 0, fmt.Errorf("bad lat")
 	}
 	return lon, lat, nil
-}
-
-// dedup rounds coordinates and removes consecutive duplicates to shrink
-// payloads.
-func dedup(r engine.Ring) [][2]float64 {
-	out := make([][2]float64, 0, len(r))
-	var last [2]float64
-	for k, pt := range r {
-		pt[0] = math.Round(pt[0]*1e4) / 1e4
-		pt[1] = math.Round(pt[1]*1e4) / 1e4
-		if k > 0 && pt == last {
-			continue
-		}
-		out = append(out, pt)
-		last = pt
-	}
-	return out
 }
 
 type calRow struct {
@@ -639,24 +552,88 @@ var (
 )
 
 func (s *server) handleFlowMask(w http.ResponseWriter, r *http.Request) {
-	maskOnce.Do(func() {
-		const W, H = 360, 161
-		raw := make([]byte, W*H)
-		for row := 0; row < H; row++ {
-			lat := -80.0 + float64(row)
-			for col := 0; col < W; col++ {
-				lon := -180.0 + float64(col)
-				if s.grid.NavigableAt(lon+0.01, lat+0.01) {
-					raw[row*W+col] = 1
-				}
+	maskOnce.Do(func() { maskBytes = s.buildFlowMask() })
+	writeJSONBytes(w, maskBytes)
+}
+
+func (s *server) buildFlowMask() []byte {
+	const W, H = 360, 161
+	raw := make([]byte, W*H)
+	for row := 0; row < H; row++ {
+		lat := -80.0 + float64(row)
+		for col := 0; col < W; col++ {
+			lon := -180.0 + float64(col)
+			if s.grid.NavigableAt(lon+0.01, lat+0.01) {
+				raw[row*W+col] = 1
 			}
 		}
-		maskBytes, _ = json.Marshal(map[string]any{
-			"w": W, "h": H, "lat0": -80, "lon0": -180, "step": 1,
-			"mask": base64.StdEncoding.EncodeToString(raw),
-		})
+	}
+	b, _ := json.Marshal(map[string]any{
+		"w": W, "h": H, "lat0": -80, "lon0": -180, "step": 1,
+		"mask": base64.StdEncoding.EncodeToString(raw),
 	})
-	writeJSONBytes(w, maskBytes)
+	return b
+}
+
+// exportStatic writes the precomputed client artifacts: the packed navigable
+// grid plus the JSON for every endpoint that is a pure function of the model
+// (meta, wind, currents, flowmask, calibration). The WASM client computes
+// isochrones and routes on demand from grid.bin; these files cover the rest.
+func (s *server) exportStatic(dir string) error {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return err
+	}
+	write := func(name string, b []byte) error {
+		path := filepath.Join(dir, name)
+		if err := os.WriteFile(path, b, 0o644); err != nil {
+			return err
+		}
+		log.Printf("wrote %s (%d bytes)", path, len(b))
+		return nil
+	}
+
+	if err := write("grid.bin", s.grid.MarshalBinary()); err != nil {
+		return err
+	}
+	meta, _ := json.Marshal(map[string]any{"thresholds": thresholds, "ports": s.ports})
+	if err := write("meta.json", meta); err != nil {
+		return err
+	}
+	wind, _ := json.Marshal(map[string]any{"type": "FeatureCollection", "features": s.grid.WindFeatures(5)})
+	if err := write("wind.json", wind); err != nil {
+		return err
+	}
+	cur, _ := json.Marshal(map[string]any{"type": "FeatureCollection", "features": s.grid.CurrentFeatures()})
+	if err := write("currents.json", cur); err != nil {
+		return err
+	}
+	if err := write("flowmask.json", s.buildFlowMask()); err != nil {
+		return err
+	}
+	rows, err := s.calibration()
+	if err != nil {
+		return err
+	}
+	cal, _ := json.Marshal(rows)
+	if err := write("calibration.json", cal); err != nil {
+		return err
+	}
+
+	// Precompute every named-port isochrone as a static file so port picks
+	// are instant on the client (the WASM engine only handles arbitrary sea
+	// points and routes). Reuses the on-disk cache when present.
+	isoDir := filepath.Join(dir, "iso")
+	if err := os.MkdirAll(isoDir, 0o755); err != nil {
+		return err
+	}
+	for _, p := range s.ports {
+		b := s.isochrone(p.ID)
+		if err := os.WriteFile(filepath.Join(isoDir, p.ID+".json"), b, 0o644); err != nil {
+			return err
+		}
+	}
+	log.Printf("wrote %d port isochrones to %s", len(s.ports), isoDir)
+	return nil
 }
 
 func writeJSON(w http.ResponseWriter, v any) {

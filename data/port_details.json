@@ -1,0 +1,649 @@
+{
+ "nassau": [
+  {
+   "type": "fort",
+   "name": "Fort Nassau",
+   "lat": 25.0795,
+   "lon": -77.3475,
+   "note": "Burned by Franco-Spanish raiders in 1703; the pirates never repaired it. Woodes Rogers remounted its 28 guns in 1718 with pardoned pirate labour."
+  },
+  {
+   "type": "careen",
+   "name": "The Careening Beach, Hog Island",
+   "lat": 25.0845,
+   "lon": -77.329,
+   "note": "Where sloops were hove down for cleaning — a pirate ship's life depended on a clean bottom, and Nassau's beach was always busy."
+  },
+  {
+   "type": "anchorage",
+   "name": "Eastern Anchorage",
+   "lat": 25.0805,
+   "lon": -77.306,
+   "note": "Too shallow for men-of-war: the harbour's whole strategic value. Vane fled past Rogers here behind a fireship, July 1718."
+  },
+  {
+   "type": "anchorage",
+   "name": "The Western Bar",
+   "lat": 25.083,
+   "lon": -77.356,
+   "note": "The deep-draught entrance, commanded by the fort — when the fort had powder."
+  },
+  {
+   "type": "town",
+   "name": "The Tent Camps",
+   "lat": 25.076,
+   "lon": -77.338,
+   "note": "Most of the thousand-odd pirates lived ashore under sailcloth and palmetto, drinking the proceeds. Rum, when plentiful, sold cheaper than water."
+  },
+  {
+   "type": "market",
+   "name": "Vendue House quay",
+   "lat": 25.0778,
+   "lon": -77.3425,
+   "note": "Where 'wrack' goods and pirate plunder alike were auctioned — questions discouraged."
+  },
+  {
+   "type": "gallows",
+   "name": "The Gallows",
+   "lat": 25.078,
+   "lon": -77.344,
+   "note": "Eight of Vane's diehards hanged here in December 1718 while the crowd watched in silence — the end of the Republic of Pirates."
+  }
+ ],
+ "port-royal": [
+  {
+   "type": "wreck",
+   "name": "The Sunken City",
+   "lat": 17.9375,
+   "lon": -76.8385,
+   "note": "Two-thirds of buccaneer Port Royal slid into the harbour in the earthquake of 7 June 1692; pipes, pewter and whole streets still lie in 10 m of water.",
+   "year": 1692
+  },
+  {
+   "type": "fort",
+   "name": "Fort Charles",
+   "lat": 17.9355,
+   "lon": -76.8445,
+   "note": "The surviving fort of the old five; headquarters of the Royal Navy's Jamaica station in 1730. A young Nelson will pace its ramparts in '79."
+  },
+  {
+   "type": "gallows",
+   "name": "Gallows Point",
+   "lat": 17.948,
+   "lon": -76.854,
+   "note": "Calico Jack Rackham hanged here Nov 1720; Charles Vane in 1721. Rackham's tarred body was gibbeted on the cay now called Rackham's Cay."
+  },
+  {
+   "type": "careen",
+   "name": "Chocolata Hole",
+   "lat": 17.94,
+   "lon": -76.847,
+   "note": "The careening cove for navy ships and merchantmen — the navy's only careening place east of Antigua."
+  },
+  {
+   "type": "anchorage",
+   "name": "The Wherry anchorage",
+   "lat": 17.943,
+   "lon": -76.833,
+   "note": "Deep water right against the town: ships once tied to the houses. Half of it is now over the drowned streets."
+  },
+  {
+   "type": "town",
+   "name": "Kingston (new town)",
+   "lat": 17.9685,
+   "lon": -76.793,
+   "note": "Founded for the earthquake refugees of 1692 on a healthy plain; by 1730 it has taken Port Royal's trade, if not its navy.",
+   "year": 1693
+  },
+  {
+   "type": "battery",
+   "name": "Mosquito Point battery",
+   "lat": 17.953,
+   "lon": -76.827,
+   "note": "Crossfire over the harbour channel with Fort Charles."
+  }
+ ],
+ "tortuga": [
+  {
+   "type": "anchorage",
+   "name": "Basse-Terre roadstead",
+   "lat": 20.048,
+   "lon": -72.79,
+   "note": "The buccaneers' anchorage of the 1640s–80s, facing the Hispaniola hunting grounds across the channel."
+  },
+  {
+   "type": "fort",
+   "name": "Fort de Rocher",
+   "lat": 20.057,
+   "lon": -72.792,
+   "note": "Le Vasseur's rock fortress (1640s) with its 'dovecote' keep, reached by an iron ladder drawn up at need — it beat off a Spanish fleet in 1643."
+  },
+  {
+   "type": "landmark",
+   "name": "La Montagne lookouts",
+   "lat": 20.065,
+   "lon": -72.77,
+   "note": "From the 460 m ridge, lookouts could mark sails a day before they reached the channel."
+  },
+  {
+   "type": "town",
+   "name": "Cayonne",
+   "lat": 20.045,
+   "lon": -72.782,
+   "note": "The old buccaneer town: taverns, boucans and the French governor's pretensions."
+  }
+ ],
+ "ile-sainte-marie": [
+  {
+   "type": "anchorage",
+   "name": "Baie des Forbans (Pirates' Bay)",
+   "lat": -17.008,
+   "lon": 49.856,
+   "note": "The hidden anchorage: reef outside, friendly Betsimisaraka ashore, and the Mocha route to windward. Twenty ships have lain here at once."
+  },
+  {
+   "type": "market",
+   "name": "Îlot Madame",
+   "lat": -17.004,
+   "lon": 49.85,
+   "note": "Adam Baldridge's fortified trading post (1691–97) fenced pirate plunder to New York merchants — rum and powder in, eight-reales and silks out."
+  },
+  {
+   "type": "landmark",
+   "name": "The Pirate Cemetery",
+   "lat": -16.998,
+   "lon": 49.853,
+   "note": "Skull-carved headstones above the bay; legend (wrongly) puts Kidd here. Real graves of the Round's dead from fever, drink and each other."
+  },
+  {
+   "type": "wreck",
+   "name": "Wreck of the Adventure Galley",
+   "lat": -17.006,
+   "lon": 49.8545,
+   "note": "Kidd scuttled his rotten galley here in 1698; her ballast lies under the harbour mud."
+  },
+  {
+   "type": "wreck",
+   "name": "Wreck of the Fiery Dragon",
+   "lat": -17.002,
+   "lon": 49.859,
+   "note": "Burned 1721 with porcelain and gold dust aboard — excavated three centuries later."
+  },
+  {
+   "type": "careen",
+   "name": "Careening cove",
+   "lat": -17.012,
+   "lon": 49.853,
+   "note": "Hulls grew foul fast in tropical water; the Round's ships hove down here between cruises."
+  },
+  {
+   "type": "town",
+   "name": "Ratsimilaho's landing",
+   "lat": -16.989,
+   "lon": 49.858,
+   "note": "The half-English son of pirate Tom White united the coast as king of the Betsimisaraka — pirate blood turned royalty."
+  }
+ ],
+ "bath-ocracoke": [
+  {
+   "type": "anchorage",
+   "name": "Teach's Hole",
+   "lat": 35.108,
+   "lon": -75.995,
+   "note": "Blackbeard's anchorage inside Ocracoke Inlet — and the spot where Maynard's sloops found him at dawn, 22 Nov 1718."
+  },
+  {
+   "type": "landmark",
+   "name": "Springer's Point",
+   "lat": 35.1075,
+   "lon": -75.989,
+   "note": "The pirates' watering place under the live oaks; site of the great pirate banyan of October 1718 with Vane and Rackham."
+  },
+  {
+   "type": "town",
+   "name": "Bath Town",
+   "lat": 35.473,
+   "lon": -76.813,
+   "note": "North Carolina's tiny capital, where Teach took the King's pardon from Gov. Eden in June 1718 and married his fourteenth wife."
+  },
+  {
+   "type": "landmark",
+   "name": "Plum Point (Teach's house)",
+   "lat": 35.469,
+   "lon": -76.805,
+   "note": "The point opposite Bath where Blackbeard kept a house — convenient for watching who came up the creek, and for Governor Eden's back door, gossips said."
+  }
+ ],
+ "havana": [
+  {
+   "type": "fort",
+   "name": "El Morro",
+   "lat": 23.151,
+   "lon": -82.356,
+   "note": "The castle on the harbour throat; its chain boom closed the port each night. The light burned for the plate fleets."
+  },
+  {
+   "type": "fort",
+   "name": "La Punta",
+   "lat": 23.145,
+   "lon": -82.359,
+   "note": "El Morro's partner across the channel — the boom ran between them."
+  },
+  {
+   "type": "fort",
+   "name": "Castillo de la Real Fuerza",
+   "lat": 23.141,
+   "lon": -82.35,
+   "note": "The old fort within the town, treasury of fleets in transit; the Giraldilla weathervane above it is Havana's emblem."
+  },
+  {
+   "type": "yard",
+   "name": "Royal Shipyard (Arsenal)",
+   "lat": 23.129,
+   "lon": -82.342,
+   "note": "Building the biggest warships in the Americas from Cuban cedar and mahogany — cheaper and longer-lived than Spanish oak."
+  },
+  {
+   "type": "anchorage",
+   "name": "Plate Fleet anchorage",
+   "lat": 23.142,
+   "lon": -82.349,
+   "note": "Where the combined flotas assembled for the run home through the Florida Strait, deep enough for a hundred sail."
+  },
+  {
+   "type": "market",
+   "name": "The Contaduría quay",
+   "lat": 23.138,
+   "lon": -82.347,
+   "note": "Silver weighed, registered and (some of it) taxed before lading; the difference between manifest and hold was Havana's open secret."
+  }
+ ],
+ "cartagena": [
+  {
+   "type": "fort",
+   "name": "Boca Chica forts",
+   "lat": 10.318,
+   "lon": -75.586,
+   "note": "The only deep entrance to the bay, gated by San Luis and its batteries — Pointis forced it in 1697; Vernon will in 1741, briefly."
+  },
+  {
+   "type": "fort",
+   "name": "Castillo San Felipe de Barajas",
+   "lat": 10.4225,
+   "lon": -75.539,
+   "note": "The hill-castle commanding the land approach; the strongest single work in the Americas."
+  },
+  {
+   "type": "landmark",
+   "name": "The Walls & Las Bóvedas",
+   "lat": 10.427,
+   "lon": -75.548,
+   "note": "Full circuit of ramparts rebuilt after the 1697 sack; the vaults beneath serve as magazines."
+  },
+  {
+   "type": "anchorage",
+   "name": "Galeones anchorage",
+   "lat": 10.405,
+   "lon": -75.535,
+   "note": "The treasure fleet lay here for months while the Portobelo fair turned Peru's silver into Europe's goods."
+  },
+  {
+   "type": "market",
+   "name": "Slave landing (Casa de la Aduana)",
+   "lat": 10.423,
+   "lon": -75.55,
+   "note": "The English asiento's factors land their human cargo here under the customs house arches."
+  },
+  {
+   "type": "wreck",
+   "name": "Wager's Action, 1708",
+   "lat": 10.24,
+   "lon": -75.68,
+   "note": "Seaward of Barú, Commodore Wager met the galeones at dusk; the San José exploded with the fair's silver and ~600 men."
+  }
+ ],
+ "portobelo": [
+  {
+   "type": "fort",
+   "name": "The Iron Castle (San Felipe)",
+   "lat": 9.556,
+   "lon": -79.677,
+   "note": "Guarding the bay mouth; Morgan stormed it in 1668 using captured monks as a human shield, the story goes."
+  },
+  {
+   "type": "fort",
+   "name": "Santiago & San Jerónimo",
+   "lat": 9.5545,
+   "lon": -79.66,
+   "note": "The inner forts ringing the anchorage — rebuilt after every sack, stormed anyway."
+  },
+  {
+   "type": "market",
+   "name": "The Customs House (Aduana)",
+   "lat": 9.553,
+   "lon": -79.656,
+   "note": "During the fair, silver bars were stacked in the plaza like firewood for want of room — eyewitnesses swore to it."
+  },
+  {
+   "type": "landmark",
+   "name": "Mule road to Panamá",
+   "lat": 9.544,
+   "lon": -79.65,
+   "note": "The Camino Real: Peru's silver crossed the isthmus on mule trains — the prize Drake and Morgan came for."
+  },
+  {
+   "type": "anchorage",
+   "name": "The fever roads",
+   "lat": 9.56,
+   "lon": -79.665,
+   "note": "Hosier's blockade squadron anchored here in 1726 and buried 4,000 men without a battle — 'Hosier's Ghost' became a ballad of complaint."
+  }
+ ],
+ "london": [
+  {
+   "type": "gallows",
+   "name": "Execution Dock, Wapping",
+   "lat": 51.5045,
+   "lon": -0.056,
+   "note": "Pirates hanged at the low-tide mark with a shortened drop, then chained until three tides washed over them. Kidd's rope broke in 1701; they hanged him again."
+  },
+  {
+   "type": "anchorage",
+   "name": "The Pool of London",
+   "lat": 51.507,
+   "lon": -0.07,
+   "note": "A forest of masts from the Bridge to Wapping; the richest mile of water in the world."
+  },
+  {
+   "type": "yard",
+   "name": "Deptford Royal Dockyard",
+   "lat": 51.483,
+   "lon": -0.026,
+   "note": "The navy's building yard since Henry VIII; East Indiamen fit out at Blackwall across the river."
+  },
+  {
+   "type": "market",
+   "name": "Lloyd's Coffee House",
+   "lat": 51.513,
+   "lon": -0.085,
+   "note": "Where ships, cargoes and the lives of sailors are insured — and where pirate news arrives first, priced into the premiums."
+  },
+  {
+   "type": "landmark",
+   "name": "The Tower & Trinity House",
+   "lat": 51.508,
+   "lon": -0.076,
+   "note": "Ordnance for the fleets; pilots and lights for the Thames."
+  }
+ ],
+ "boston": [
+  {
+   "type": "anchorage",
+   "name": "Long Wharf",
+   "lat": 42.359,
+   "lon": -71.05,
+   "note": "Half a mile into the harbour (1711), the largest wharf in the English world — ships unload straight into King Street warehouses."
+  },
+  {
+   "type": "fort",
+   "name": "Castle William",
+   "lat": 42.328,
+   "lon": -70.997,
+   "note": "The harbour fort on Castle Island, rebuilt in stone after 1701."
+  },
+  {
+   "type": "gallows",
+   "name": "Nix's Mate",
+   "lat": 42.329,
+   "lon": -70.952,
+   "note": "The gibbet islet: pirate William Fly's bones hung here in chains from 1726 as the harbour's welcome sign. The sea is eating the island — sailors call it judgement."
+  },
+  {
+   "type": "yard",
+   "name": "North End shipyards",
+   "lat": 42.367,
+   "lon": -71.053,
+   "note": "Launching more tonnage than all other American ports together; a ship a fortnight in good years."
+  },
+  {
+   "type": "landmark",
+   "name": "The Great Brewhouse & ropewalks",
+   "lat": 42.362,
+   "lon": -71.058,
+   "note": "Rope, beer and Bibles — Boston's idea of ship's stores."
+  }
+ ],
+ "charleston": [
+  {
+   "type": "gallows",
+   "name": "White Point",
+   "lat": 32.77,
+   "lon": -79.93,
+   "note": "Stede Bonnet and 29 of his men hanged here below the high-water mark in Nov–Dec 1718, then buried in the marsh."
+  },
+  {
+   "type": "battery",
+   "name": "Granville Bastion",
+   "lat": 32.776,
+   "lon": -79.927,
+   "note": "Southeast corner of the walled town, guns over the Cooper River."
+  },
+  {
+   "type": "anchorage",
+   "name": "Rebellion Road & the Bar",
+   "lat": 32.745,
+   "lon": -79.87,
+   "note": "Ships cross the bar with the tide and a pilot — here Blackbeard's squadron lay in May 1718, taking every ship that tried."
+  },
+  {
+   "type": "landmark",
+   "name": "Sullivan's Island lookout",
+   "lat": 32.763,
+   "lon": -79.84,
+   "note": "The pest-house and lookout island; signal fires warn the town of sails — or pirates."
+  }
+ ],
+ "cadiz": [
+  {
+   "type": "fort",
+   "name": "San Sebastián castle",
+   "lat": 36.529,
+   "lon": -6.321,
+   "note": "On its islet at the city's seaward horn; with Santa Catalina it crosses fire over the approaches."
+  },
+  {
+   "type": "anchorage",
+   "name": "Puntales narrows",
+   "lat": 36.517,
+   "lon": -6.254,
+   "note": "The inner bay's bottleneck where the flotas lie; Essex burned a fleet here in 1596 — never forgotten, never repeated."
+  },
+  {
+   "type": "market",
+   "name": "Casa de Contratación",
+   "lat": 36.529,
+   "lon": -6.294,
+   "note": "Since 1717 the House of Trade rules here: registries, licences, pilots' charts and the silver ledgers of the Indies."
+  },
+  {
+   "type": "yard",
+   "name": "La Carraca arsenal",
+   "lat": 36.498,
+   "lon": -6.188,
+   "note": "The new naval arsenal rising in the marshes — Spain rebuilding her sea power under Patiño."
+  }
+ ],
+ "veracruz": [
+  {
+   "type": "fort",
+   "name": "San Juan de Ulúa",
+   "lat": 19.209,
+   "lon": -96.131,
+   "note": "The island fortress: ships moor to bronze rings set in its walls, safe from northers and pirates alike."
+  },
+  {
+   "type": "anchorage",
+   "name": "The mole anchorage",
+   "lat": 19.203,
+   "lon": -96.133,
+   "note": "Between fort and town; the flota discharges into lighters here for the Mexico City road."
+  },
+  {
+   "type": "landmark",
+   "name": "Gates to the Camino Real",
+   "lat": 19.199,
+   "lon": -96.144,
+   "note": "The silver road inland: mule trains to Jalapa, Puebla and the mint of Mexico."
+  }
+ ],
+ "bridgetown": [
+  {
+   "type": "anchorage",
+   "name": "Carlisle Bay",
+   "lat": 13.083,
+   "lon": -59.613,
+   "note": "The open roadstead where the sugar fleets load; hurricanes have twice piled it with wrecks."
+  },
+  {
+   "type": "battery",
+   "name": "Needham's Point fort",
+   "lat": 13.077,
+   "lon": -59.609,
+   "note": "James Fort's guns cover the bay's southern horn."
+  },
+  {
+   "type": "careen",
+   "name": "The Careenage",
+   "lat": 13.097,
+   "lon": -59.617,
+   "note": "The inner creek where island sloops heave down between voyages."
+  },
+  {
+   "type": "market",
+   "name": "The Cage & wharves",
+   "lat": 13.098,
+   "lon": -59.614,
+   "note": "Sugar out, everything in — including, in season, the slave sales that feed the whole machine."
+  }
+ ],
+ "cape-town": [
+  {
+   "type": "fort",
+   "name": "Castle of Good Hope",
+   "lat": -33.926,
+   "lon": 18.427,
+   "note": "The VOC's five-bastioned castle (1679), seat of the Governor and the Council of Policy."
+  },
+  {
+   "type": "anchorage",
+   "name": "Table Bay roadstead",
+   "lat": -33.905,
+   "lon": 18.43,
+   "note": "Holding ground is poor and the northwest gales of winter deadly — whole fleets have gone ashore. The Company forbids winter calls after 1722, then relents."
+  },
+  {
+   "type": "landmark",
+   "name": "Company's Garden",
+   "lat": -33.927,
+   "lon": 18.415,
+   "note": "The vegetable garden that founded a colony: greens and water for scurvy-ridden fleets."
+  },
+  {
+   "type": "landmark",
+   "name": "Robben Island",
+   "lat": -33.806,
+   "lon": 18.366,
+   "note": "Sheep, lime-burning and exiles — the Company's prison island already."
+  },
+  {
+   "type": "anchorage",
+   "name": "False Bay (Simon's Bay)",
+   "lat": -34.19,
+   "lon": 18.432,
+   "note": "The winter anchorage; pirates on the Round watered here too, flying false colours."
+  }
+ ],
+ "batavia": [
+  {
+   "type": "fort",
+   "name": "The Kasteel",
+   "lat": -6.127,
+   "lon": 106.812,
+   "note": "The VOC's four-bastion castle at the river mouth: the Governor-General, the spice warehouses, and the gallows yard."
+  },
+  {
+   "type": "anchorage",
+   "name": "Batavia roads",
+   "lat": -6.09,
+   "lon": 106.82,
+   "note": "Ships anchor among the islands offshore and lighter their cargo up the canal; the roads hold sixty Indiamen in season."
+  },
+  {
+   "type": "yard",
+   "name": "Onrust Island yard",
+   "lat": -6.033,
+   "lon": 106.732,
+   "note": "The careening and repair island — 'Unrest' by name, working day and night when the return fleet fits out."
+  },
+  {
+   "type": "town",
+   "name": "The walled city & canals",
+   "lat": -6.132,
+   "lon": 106.813,
+   "note": "Amsterdam in the tropics: gabled houses, fetid canals, and fevers that earn it the name 'graveyard of Europeans'."
+  }
+ ],
+ "manila": [
+  {
+   "type": "fort",
+   "name": "Fort Santiago & Intramuros",
+   "lat": 14.594,
+   "lon": 120.969,
+   "note": "The walled Spanish city at the Pasig mouth; the galleon's silver registers pass through these gates."
+  },
+  {
+   "type": "yard",
+   "name": "Cavite arsenal",
+   "lat": 14.479,
+   "lon": 120.898,
+   "note": "Across the bay: the galleons — the largest ships in the world — are built and refitted here of Philippine teak and lanang."
+  },
+  {
+   "type": "anchorage",
+   "name": "Manila Bay anchorage",
+   "lat": 14.57,
+   "lon": 120.94,
+   "note": "The Acapulco galleon and the Amoy junks share the roadstead each season; everything China sells, for everything Mexico mints."
+  },
+  {
+   "type": "landmark",
+   "name": "Corregidor watch",
+   "lat": 14.386,
+   "lon": 120.574,
+   "note": "The island at the bay mouth where lookouts first cry the galleon's return — or an enemy's sail."
+  }
+ ],
+ "acapulco": [
+  {
+   "type": "fort",
+   "name": "Fort San Diego",
+   "lat": 16.853,
+   "lon": -99.902,
+   "note": "Star-shaped walls over the anchorage, rebuilt after the 1715 earthquake; the galleon's silver sleeps here before the fair."
+  },
+  {
+   "type": "anchorage",
+   "name": "Galleon anchorage",
+   "lat": 16.847,
+   "lon": -99.905,
+   "note": "Deep, landlocked, hurricane-safe — the finest natural harbour on the coast, empty ten months a year."
+  },
+  {
+   "type": "market",
+   "name": "The Fair grounds",
+   "lat": 16.85,
+   "lon": -99.908,
+   "note": "When the galleon arrives (December–January), merchants from Mexico City triple the town: Chinese silks against Potosí silver, then silence again."
+  }
+ ]
+}

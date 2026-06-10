@@ -1,0 +1,217 @@
+{
+  "tours": [
+    {
+      "id": "morgan-panama",
+      "title": "Morgan & the Sack of Panama",
+      "blurb": "From the taverns of Port Royal to the ashes of the richest city in the Spanish Indies — and a knighthood at the end of it. Follow Henry Morgan's great raids of 1668–1671.",
+      "steps": [
+        {
+          "year": 1668,
+          "center": [-76.84, 17.94],
+          "zoom": 7,
+          "caption": "Port Royal, the buccaneers' capital. Under commissions from Governor Modyford, Henry Morgan musters crews from the taverns and careening beaches of Jamaica — Englishmen, Frenchmen and renegades of every flag, paid in nothing but the promise of Spanish plunder.",
+          "fly_ms": 2500,
+          "hold_ms": 6000
+        },
+        {
+          "year": 1668,
+          "center": [-79.65, 9.55],
+          "zoom": 7,
+          "caption": "July 1668: Portobelo, the treasure port of the Isthmus. Morgan lands his men from canoes by night and storms the castles at dawn, taking a town thought impregnable. The President of Panama pays a hundred thousand pesos to ransom what is left of it.",
+          "fly_ms": 3000,
+          "hold_ms": 5500
+        },
+        {
+          "year": 1669,
+          "center": [-71.6, 10.9],
+          "zoom": 6.5,
+          "caption": "Spring 1669: trapped inside the Lake of Maracaibo by the Armada de Barlovento, Morgan sends a fireship dressed with log-wood 'crewmen' into the Spanish flagship and burns her at anchor. A feigned landing tricks the fort into shifting its guns landward, and the fleet slips the bar by night.",
+          "fly_ms": 3500,
+          "hold_ms": 6500
+        },
+        {
+          "year": 1670,
+          "center": [-73.66, 18.07],
+          "zoom": 7,
+          "caption": "December 1670: Île à Vache, off Hispaniola's southern cape. The greatest buccaneer fleet ever assembled gathers here — some thirty-six sail and near two thousand men — while in Europe a peace with Spain is already signed, its news still weeks at sea.",
+          "fly_ms": 3000,
+          "hold_ms": 5000
+        },
+        {
+          "year": 1671,
+          "center": [-80.02, 9.32],
+          "zoom": 7.5,
+          "caption": "January 1671: the castle of San Lorenzo, guarding the mouth of the Chagres, falls to Morgan's vanguard after savage fighting — a fire-arrow in a powder-thatched roof deciding the day. The river road to Panama lies open.",
+          "fly_ms": 3000,
+          "hold_ms": 5000
+        },
+        {
+          "year": 1671,
+          "center": [-79.75, 9.2],
+          "zoom": 8,
+          "caption": "Nine days up the Chagres and over the cordillera: the Spaniards strip the country before them, and Morgan's men march starving, chewing boiled leather satchels. From the last height they sight at once the South Sea and the towers of Panama, and the army shouts for joy.",
+          "fly_ms": 2500,
+          "hold_ms": 5500
+        },
+        {
+          "year": 1671,
+          "center": [-79.48, 9.0],
+          "zoom": 7,
+          "caption": "28 January 1671: on the savanna before the city the Spanish militia breaks against the buccaneers' musketry, a stampede of driven cattle failing to save them. Panama burns to its stones — fired, Spain insisted, by its own garrison — and the old city is never rebuilt on that ground.",
+          "fly_ms": 3000,
+          "hold_ms": 7000
+        },
+        {
+          "year": 1674,
+          "center": [-0.07, 51.5],
+          "zoom": 5,
+          "caption": "The twist: arrested for breaking a peace he could not have known of, Morgan is shipped to London — and feted there. In 1674 the King knights him and sends him back as Lieutenant-Governor of Jamaica, where the old admiral of the buccaneers ends his days hanging the trade that made him.",
+          "fly_ms": 4000,
+          "hold_ms": 7000
+        }
+      ]
+    },
+    {
+      "id": "pirate-round",
+      "title": "The Pirate Round",
+      "blurb": "Newport money, Madagascar bases, and the pilgrim fleets of the Great Mughal. The long eastward road of Tew, Every and Kidd, 1693–1701 — and where it ended.",
+      "steps": [
+        {
+          "year": 1693,
+          "center": [-72.5, 41.0],
+          "zoom": 6,
+          "caption": "Newport and New York, where the Round begins. Thomas Tew's Amity sails with respectable backers and returns stuffed with Red Sea gold, and Governor Fletcher of New York dines the pirates openly. Merchants whisper that one share in an eastward venture pays better than ten honest voyages.",
+          "fly_ms": 2500,
+          "hold_ms": 6000
+        },
+        {
+          "year": 1694,
+          "center": [-16.91, 32.64],
+          "zoom": 5.5,
+          "caption": "The Madeira run: down the Atlantic with the trade winds, watering at Funchal or the Cape Verdes like any honest Guineaman. Outward bound, a Red Sea man looks no different from a slaver or an India trader — and many of her crew have been both.",
+          "fly_ms": 3500,
+          "hold_ms": 4500
+        },
+        {
+          "year": 1694,
+          "center": [19.0, -35.0],
+          "zoom": 4.5,
+          "caption": "Doubling the Cape of Good Hope, the rovers pass out of the Atlantic world and beyond the easy reach of any navy. In these years not a single English man-of-war is stationed east of the Cape; the Indian Ocean belongs to the East India Companies, the Mughal fleets — and now the pirates.",
+          "fly_ms": 4000,
+          "hold_ms": 5000
+        },
+        {
+          "year": 1695,
+          "center": [49.85, -17.0],
+          "zoom": 6.5,
+          "caption": "Île Sainte-Marie, off Madagascar: Adam Baldridge's fortified trading post sells the rovers powder, rum and news, and ships their plunder home to New York in merchant bottoms. Part market, part kingdom, it is the nearest thing the Round has to a home port.",
+          "fly_ms": 3500,
+          "hold_ms": 6000
+        },
+        {
+          "year": 1695,
+          "center": [43.3, 12.7],
+          "zoom": 6,
+          "caption": "The Bab-el-Mandeb — the Gate of Tears — where the pilgrim and treasure fleets of Mocha and Jeddah must pass to reach India. In the summer of 1695 six pirate ships under Henry Every lie in wait here. Thomas Tew, attacking the Fateh Muhammed, is killed by a cannon shot; the fleet slips past in the night.",
+          "fly_ms": 3000,
+          "hold_ms": 6500
+        },
+        {
+          "year": 1695,
+          "center": [70.0, 20.6],
+          "zoom": 5.5,
+          "caption": "September 1695: Every's Fancy runs down the great Ganj-i-Sawai short of Surat. A lucky shot fells her mainmast, her own gun bursts, and after a bloody fight the Mughal ship yields a plunder reckoned in the hundreds of thousands of pounds. Aurangzeb's fury falls on the East India Company, and Every vanishes with the first world-wide manhunt at his heels.",
+          "fly_ms": 3500,
+          "hold_ms": 7000
+        },
+        {
+          "year": 1698,
+          "center": [75.8, 9.9],
+          "zoom": 6,
+          "caption": "January 1698, off the Malabar coast: William Kidd — sent out by Whig lords to hunt the very pirates of the Round — takes the Quedagh Merchant under colour of her French passes. The prize makes his fortune and damns him; word of it reaches London long before he does.",
+          "fly_ms": 3500,
+          "hold_ms": 6000
+        },
+        {
+          "year": 1699,
+          "center": [-68.99, 18.34],
+          "zoom": 6.5,
+          "caption": "Homeward and hunted, Kidd leaves the Quedagh Merchant hidden in the Higüey river country of Hispaniola — where she is looted and burnt — and sails for Boston in a sloop, trusting his patrons and a buried cache on Gardiners Island to buy his pardon. He is arrested at Lord Bellomont's own table.",
+          "fly_ms": 4000,
+          "hold_ms": 5500
+        },
+        {
+          "year": 1701,
+          "center": [-0.06, 51.5],
+          "zoom": 7,
+          "caption": "23 May 1701: Execution Dock, Wapping, within the flood mark of the Thames. The first rope breaks; the second does not. Kidd's tarred body swings in chains at Tilbury Point for years, and with him the age of the gentleman-backed Pirate Round goes to the gibbet.",
+          "fly_ms": 4000,
+          "hold_ms": 7000
+        }
+      ]
+    },
+    {
+      "id": "wrecks-of-1715",
+      "title": "The Wrecks of 1715",
+      "blurb": "A hurricane, eleven treasure ships on a lee shore, and the silver rush that built the pirate republic of Nassau. The storm that began the golden age, 1715–1718.",
+      "steps": [
+        {
+          "year": 1715,
+          "center": [-82.35, 23.14],
+          "zoom": 6.5,
+          "caption": "Havana, July 1715. After years of war-starved delay, the treasure fleets of New Spain and Tierra Firme join under Ubilla and Echeverz — a dozen sail deep-laden with the backlogged silver of two viceroyalties. They weigh on 24 July, late in the season, with the hurricane months already upon them.",
+          "fly_ms": 2500,
+          "hold_ms": 6000
+        },
+        {
+          "year": 1715,
+          "center": [-80.0, 25.5],
+          "zoom": 6,
+          "caption": "The Florida Strait: the only road home. The galleons work north with the Gulf Stream, the low Florida shore close under their lee — the route every plate fleet has sailed for a hundred and fifty years, and the most dangerous water in the Spanish empire when the wind comes east.",
+          "fly_ms": 3000,
+          "hold_ms": 5000
+        },
+        {
+          "year": 1715,
+          "center": [-80.3, 27.7],
+          "zoom": 6.5,
+          "caption": "Before dawn on 31 July a hurricane bursts out of the east and drives eleven ships onto the bars between the Sebastian and St Lucie inlets. Perhaps a thousand men drown among the breakers and broken silver; only the French Grifón, standing further offshore, escapes.",
+          "fly_ms": 3000,
+          "hold_ms": 6500
+        },
+        {
+          "year": 1715,
+          "center": [-80.42, 27.83],
+          "zoom": 7.5,
+          "caption": "The survivors raise a camp at Palmar de Ays and word goes to Havana and St Augustine. Through the autumn Spanish divers — many of them enslaved pearl fishers — fish chest after chest of coin from the shallows, piling salvaged treasure behind a slight stockade on an open beach.",
+          "fly_ms": 3000,
+          "hold_ms": 5500
+        },
+        {
+          "year": 1716,
+          "center": [-80.45, 27.86],
+          "zoom": 7,
+          "caption": "January 1716: Henry Jennings of Jamaica lands three hundred men, drives off the guard without a battle, and carries away some eighty-seven thousand pieces of eight of salvaged silver. Jamaica disowns the raid as plain piracy — so Jennings and his consorts steer instead for an empty English island called New Providence.",
+          "fly_ms": 2500,
+          "hold_ms": 6500
+        },
+        {
+          "year": 1717,
+          "center": [-77.34, 25.08],
+          "zoom": 7,
+          "caption": "Nassau, 1716–1717: the wreck-money men, the logwood cutters and the war's unemployed privateers make the ruined town their commonwealth. Hornigold, Jennings, Bellamy, Thatch and Vane careen in its harbour — too shallow for a man-of-war — and by 1717 perhaps a thousand pirates sail under what they please to call the flag of King Death.",
+          "fly_ms": 3500,
+          "hold_ms": 7000
+        },
+        {
+          "year": 1718,
+          "center": [-77.34, 25.08],
+          "zoom": 7.5,
+          "caption": "26–27 July 1718: Woodes Rogers stands in with the King's pardon and a governor's commission. Vane fires a prize as a fireship at the squadron and runs out the eastern channel under black colours; Hornigold and hundreds more take the Act of Grace ashore. Born of the 1715 wrecks, the pirate republic ends where it began — in sight of the sea that made it.",
+          "fly_ms": 3500,
+          "hold_ms": 7000
+        }
+      ]
+    }
+  ]
+}

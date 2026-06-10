@@ -1,0 +1,872 @@
+{
+  "pirates": [
+    {
+      "id": "christopher-myngs",
+      "name": "Christopher Myngs",
+      "era": "buccaneer",
+      "active_from": 1655,
+      "active_to": 1663,
+      "ship": "HMS Centurion",
+      "ship_type": "46-gun fourth-rate frigate (earlier the Marston Moor)",
+      "flag": { "description": "English naval colours; a King's officer leading buccaneer auxiliaries under commission — no pirate flag", "motif": "other", "confidence": "documented" },
+      "crew_size": 1400,
+      "notable_crew": [
+        { "name": "Sir Thomas Whetstone", "role": "buccaneer captain under Myngs, 1662" },
+        { "name": "Edward Mansfield", "role": "buccaneer commander in the Campeche raid, 1663" }
+      ],
+      "lading": [
+        "22 chests of royal silver and plunder worth ~1.5 million pesos from the Cumana-Puerto Cabello-Coro raid, 1659",
+        "church bells, guns and ransom goods from the sack of Santiago de Cuba, 1662"
+      ],
+      "fate": "Returned to England 1663; died a vice-admiral of wounds taken in the Four Days' Battle, 1666",
+      "track": [
+        { "year": 1656, "season": "summer", "lat": 17.80, "lon": -76.90, "note": "arrives on the Jamaica station with the Marston Moor; Port Royal becomes his base" },
+        { "year": 1659, "season": "spring", "lat": 10.55, "lon": -64.30, "note": "raids Cumana, Puerto Cabello and Coro; takes 22 chests of royal silver, then is sent home accused of embezzling it" },
+        { "year": 1662, "season": "autumn", "lat": 19.90, "lon": -75.85, "note": "storms Santiago de Cuba with a buccaneer fleet, October 1662" },
+        { "year": 1663, "season": "winter", "lat": 19.90, "lon": -90.70, "note": "sacks San Francisco de Campeche with ~1,400 men, February 1663; badly wounded" },
+        { "year": 1663, "season": "summer", "lat": 17.80, "lon": -76.90, "note": "back at Port Royal; recalled to England" }
+      ],
+      "sources": ["Earle, The Pirate Wars", "Cordingly 1995", "Rogozinski 1995"]
+    },
+    {
+      "id": "francois-lolonnais",
+      "name": "François l'Olonnais (Jean-David Nau)",
+      "era": "buccaneer",
+      "active_from": 1662,
+      "active_to": 1669,
+      "ship": "fleet flagship (name unrecorded)",
+      "ship_type": "8-ship buccaneer flotilla, 1666; flagship of ~10 guns",
+      "flag": { "description": "no flag recorded; sailed with French commissions from Tortuga — possibly the red banner of no quarter", "motif": "red-plain", "confidence": "unknown" },
+      "crew_size": 660,
+      "notable_crew": [
+        { "name": "Moses van Vin", "role": "second in command (per Exquemelin)" },
+        { "name": "Pierre le Picard", "role": "captain under l'Olonnais on the Honduras cruise" }
+      ],
+      "lading": [
+        "~260,000 pieces of eight, plate, jewels and gems from Maracaibo and Gibraltar, 1666 (Exquemelin)",
+        "cacao, indigo and ship's stores from Honduras prizes, 1667-68"
+      ],
+      "fate": "Wrecked near the Darién coast; killed and reportedly eaten by Kuna people, c.1669 (Exquemelin)",
+      "track": [
+        { "year": 1666, "season": "spring", "lat": 20.02, "lon": -72.80, "note": "musters 8 ships and ~660 men in the Tortuga roadstead" },
+        { "year": 1666, "season": "summer", "lat": 10.98, "lon": -71.58, "note": "forces the bar of the Lake and sacks Maracaibo" },
+        { "year": 1666, "season": "autumn", "lat": 11.50, "lon": -71.30, "note": "stands out of the Gulf of Venezuela with ~260,000 pesos after torturing Gibraltar for ransom" },
+        { "year": 1667, "season": "spring", "lat": 20.02, "lon": -72.80, "note": "the plunder squandered at Tortuga and Port Royal; a new cruise planned" },
+        { "year": 1667, "season": "autumn", "lat": 15.95, "lon": -87.95, "note": "lurks off Puerto Caballos; takes a Spanish ship and sacks the shore" },
+        { "year": 1668, "season": "spring", "lat": 16.00, "lon": -87.50, "note": "marches inland to San Pedro and is mauled; the cruise sours" },
+        { "year": 1668, "season": "autumn", "lat": 14.50, "lon": -82.50, "note": "grounds his ship on cays off the Mosquito Coast; the company breaks up" },
+        { "year": 1669, "season": "spring", "lat": 8.90, "lon": -77.35, "note": "killed by the Kuna in the Gulf of Darién — 'torn to pieces alive' (Exquemelin)" }
+      ],
+      "sources": ["Exquemelin 1678", "Cordingly 1995", "Rogozinski 1995"]
+    },
+    {
+      "id": "henry-morgan",
+      "name": "Henry Morgan",
+      "era": "buccaneer",
+      "active_from": 1663,
+      "active_to": 1671,
+      "ship": "Satisfaction",
+      "ship_type": "22-gun frigate (ex-French Cour Volant); admiral of up to 36 buccaneer vessels",
+      "flag": { "description": "English colours under Jamaica privateering commissions from Governor Modyford — a privateer-buccaneer, never under a black flag", "motif": "other", "confidence": "documented" },
+      "crew_size": 1800,
+      "notable_crew": [
+        { "name": "Edward Collier", "role": "vice-admiral of the 1670-71 fleet" },
+        { "name": "Joseph Bradley", "role": "captain; took Chagres castle, mortally wounded, 1671" },
+        { "name": "John Morris", "role": "captain and longtime consort" }
+      ],
+      "lading": [
+        "Portobelo ransom and plunder, ~250,000 pesos, 1668",
+        "~125,000 pesos and the Magdalena's salvage from Maracaibo, 1669",
+        "Panama sack: ~400,000 pesos in plate, coin and slaves, 1671 — and bitter, thin shares"
+      ],
+      "fate": "Arrested for Panama as a treaty embarrassment, knighted instead (1674); died Lieutenant-Governor of Jamaica, 1688",
+      "track": [
+        { "year": 1668, "season": "spring", "lat": 20.70, "lon": -78.60, "note": "lands 500 men on the south Cuban coast for the Puerto Príncipe raid, March 1668" },
+        { "year": 1668, "season": "summer", "lat": 9.62, "lon": -79.68, "note": "storms Portobelo's Iron Castle, July 1668; the town ransomed for 100,000 pesos" },
+        { "year": 1668, "season": "autumn", "lat": 18.03, "lon": -73.64, "note": "fleet rendezvous at Île à Vache, the buccaneers' mustering ground" },
+        { "year": 1669, "season": "winter", "lat": 18.03, "lon": -73.64, "note": "HMS Oxford explodes under him at the Île à Vache council of war, January 1669; Morgan survives" },
+        { "year": 1669, "season": "spring", "lat": 10.98, "lon": -71.58, "note": "sacks Maracaibo and Gibraltar; destroys the Armada de Barlovento at the bar with a fireship, April 1669" },
+        { "year": 1670, "season": "autumn", "lat": 18.03, "lon": -73.64, "note": "musters 36 ships and ~1,800 men at Île à Vache under Modyford's commission" },
+        { "year": 1670, "season": "winter", "lat": 9.37, "lon": -80.00, "note": "Bradley takes San Lorenzo de Chagres; Satisfaction wrecks on Lajas Reef at the river mouth, December 1670" },
+        { "year": 1671, "season": "winter", "lat": 9.37, "lon": -80.00, "note": "marches up the Chagres and across the isthmus; Panama taken and burned, 28 January 1671" },
+        { "year": 1671, "season": "spring", "lat": 17.80, "lon": -76.90, "note": "returns to Port Royal; the peace with Spain makes his triumph a scandal" }
+      ],
+      "sources": ["Exquemelin 1678", "Earle, The Pirate Wars", "Cordingly 1995"]
+    },
+    {
+      "id": "michel-de-grammont",
+      "name": "Michel de Grammont ('le Chevalier')",
+      "era": "buccaneer",
+      "active_from": 1678,
+      "active_to": 1686,
+      "ship": "Hardi",
+      "ship_type": "50-gun ship Le Hardi",
+      "flag": { "description": "French filibuster under Petit-Goâve commissions; ensign unrecorded", "motif": "other", "confidence": "unknown" },
+      "crew_size": 1300,
+      "notable_crew": [],
+      "lading": [
+        "plunder and prisoner ransoms from the sack of Veracruz, 1683 (co-commanded with de Graaf and Van Hoorn)",
+        "salvaged stores and guns from d'Estrées' fleet wrecked at Las Aves, 1678",
+        "plunder of Campeche and its hinterland, 1685 — so thin he burned the town in spite"
+      ],
+      "fate": "Named lieutenant du roi of Saint-Domingue 1686; lost at sea with all hands that autumn",
+      "track": [
+        { "year": 1678, "season": "spring", "lat": 11.95, "lon": -67.40, "note": "d'Estrées' fleet wrecks on Las Aves; Grammont's filibusters salvage the wrecks and carry on alone" },
+        { "year": 1678, "season": "summer", "lat": 10.98, "lon": -71.58, "note": "leads ~700 men into the Lake of Maracaibo, holding the region six months" },
+        { "year": 1680, "season": "summer", "lat": 10.65, "lon": -66.93, "note": "storms La Guaira, the port of Caracas, with a handful of men; badly wounded in the retreat" },
+        { "year": 1683, "season": "spring", "lat": 19.18, "lon": -95.90, "note": "with de Graaf and Van Hoorn surprises Veracruz, May 1683 — the city held hostage for ransom" },
+        { "year": 1685, "season": "summer", "lat": 19.90, "lon": -90.70, "note": "sacks Campeche with de Graaf, July-August 1685; burns it when ransom is refused" },
+        { "year": 1686, "season": "autumn", "lat": 29.50, "lon": -79.50, "note": "vanishes with all hands in a storm north of the Bahama Channel, bound to raid the Florida coast (position conjectural)" }
+      ],
+      "sources": ["Exquemelin 1678 (later editions)", "Rogozinski 1995", "Cordingly 1995"]
+    },
+    {
+      "id": "laurens-de-graaf",
+      "name": "Laurens de Graaf",
+      "era": "buccaneer",
+      "active_from": 1679,
+      "active_to": 1695,
+      "ship": "Neptune",
+      "ship_type": "ship of ~50 guns (prize); earlier the 26-gun Tigre and the captured payroll frigate Princesa",
+      "flag": { "description": "Dutch-born filibuster under French commission; ensign unrecorded", "motif": "other", "confidence": "unknown" },
+      "crew_size": 200,
+      "notable_crew": [
+        { "name": "Michiel Andrieszoon", "role": "lieutenant and consort captain" },
+        { "name": "Nicolaas van Hoorn", "role": "co-commander at Veracruz; died of a wound from his duel with de Graaf, 1683" }
+      ],
+      "lading": [
+        "the Santo Domingo garrison payroll, ~120,000 pesos in silver, taken with the Princesa, 1682",
+        "Veracruz ransom plunder, 1683",
+        "cacao and coin from prizes off Cartagena, Christmas 1683"
+      ],
+      "fate": "Pardoned and commissioned by France; defended Saint-Domingue 1691-95; later aided Iberville's Louisiana voyage; died 1704",
+      "track": [
+        { "year": 1682, "season": "summer", "lat": 18.60, "lon": -66.50, "note": "takes the Princesa off Puerto Rico with the Santo Domingo payroll aboard — ~120,000 pesos" },
+        { "year": 1683, "season": "spring", "lat": 19.18, "lon": -95.90, "note": "leads the surprise of Veracruz with Grammont and Van Hoorn, May 1683" },
+        { "year": 1683, "season": "winter", "lat": 10.20, "lon": -75.70, "note": "with Andrieszoon and Yankey defeats the squadron sent out from Cartagena, Christmas 1683" },
+        { "year": 1684, "season": "summer", "lat": 18.47, "lon": -72.85, "note": "fits out at Petit-Goâve under French protection" },
+        { "year": 1685, "season": "summer", "lat": 19.90, "lon": -90.70, "note": "sacks Campeche with Grammont, July 1685" },
+        { "year": 1685, "season": "autumn", "lat": 21.80, "lon": -86.50, "note": "outfights the Armada de Barlovento's Regla and Concepción in the Yucatán Channel and escapes, September 1685" },
+        { "year": 1695, "season": "spring", "lat": 19.82, "lon": -72.20, "note": "now a French officer, fights in the defence of Cap-Français against the Anglo-Spanish invasion" }
+      ],
+      "sources": ["Rogozinski 1995", "Cordingly 1995", "Exquemelin 1678 (later editions)"]
+    },
+    {
+      "id": "bartholomew-sharp",
+      "name": "Bartholomew Sharp",
+      "era": "buccaneer",
+      "active_from": 1679,
+      "active_to": 1682,
+      "ship": "Trinity",
+      "ship_type": "captured Spanish armada ship Santísima Trinidad, ~400 tons",
+      "flag": { "description": "company colours on the 1680 Darién expedition: a red flag with white and green ribbons (Ringrose's journal)", "motif": "red-plain", "confidence": "documented" },
+      "crew_size": 140,
+      "notable_crew": [
+        { "name": "Basil Ringrose", "role": "navigator and journal-keeper" },
+        { "name": "William Dampier", "role": "crewman (quit the cruise April 1681)" },
+        { "name": "Lionel Wafer", "role": "surgeon (left with Dampier across the isthmus)" }
+      ],
+      "lading": [
+        "plate and coin from El Santo Rosario, July 1681 — plus 700 pigs of silver mistaken for tin and left aboard (Ringrose)",
+        "the Rosario's derrotero — the Spanish South Sea atlas whose surrender bought Sharp's acquittal",
+        "wine, coin and church plate from La Serena and coastal prizes"
+      ],
+      "fate": "Tried for piracy in London 1682 and acquitted — the captured derrotero bought royal favour; died in debt on St Thomas, c.1702",
+      "track": [
+        { "year": 1680, "season": "spring", "lat": 8.72, "lon": -77.60, "note": "the buccaneers land at Golden Island and cross the Darién on foot, April 1680" },
+        { "year": 1680, "season": "spring", "lat": 8.80, "lon": -79.45, "note": "battle of Perico in Panama Bay; the Trinity taken and made flagship, May 1680" },
+        { "year": 1680, "season": "winter", "lat": -29.90, "lon": -71.40, "note": "sacks La Serena, Chile, December 1680; Sharp commands after Sawkins' death" },
+        { "year": 1681, "season": "winter", "lat": -33.62, "lon": -78.83, "note": "winters at Juan Fernández; the Miskito man William left behind in the scramble to sea, January 1681" },
+        { "year": 1681, "season": "winter", "lat": -18.45, "lon": -70.40, "note": "bloodily repulsed at Arica, 30 January 1681; Watling killed, Sharp re-elected" },
+        { "year": 1681, "season": "summer", "lat": -0.40, "lon": -80.70, "note": "takes El Santo Rosario off Cabo Pasado, 29 July 1681 — silver, and the priceless derrotero" },
+        { "year": 1681, "season": "autumn", "lat": -57.50, "lon": -65.50, "note": "runs south past Cape Horn in November storms — the first English crew to round it west-to-east" },
+        { "year": 1682, "season": "winter", "lat": 13.00, "lon": -59.40, "note": "landfall off Barbados, January 1682, after 7 months without touching land; the company disperses at Antigua" }
+      ],
+      "sources": ["Ringrose 1685", "Dampier 1697", "Cordingly 1995", "E.T. Fox"]
+    },
+    {
+      "id": "edward-davis",
+      "name": "Edward Davis",
+      "era": "buccaneer",
+      "active_from": 1683,
+      "active_to": 1688,
+      "ship": "Batchelor's Delight",
+      "ship_type": "36-gun ship (Danish prize taken off Sierra Leone, 1683)",
+      "flag": { "description": "no flag recorded", "motif": "other", "confidence": "unknown" },
+      "crew_size": 100,
+      "notable_crew": [
+        { "name": "John Cooke", "role": "original captain; died off Costa Rica, 1684" },
+        { "name": "Lionel Wafer", "role": "surgeon" },
+        { "name": "William Dampier", "role": "crewman (left with Swan's Cygnet, 1686)" }
+      ],
+      "lading": [
+        "shares of the Guayaquil raid's ransom, 1687",
+        "Pacific coastal plunder — by 1688 reportedly ~5,000 pesos a man (Wafer)"
+      ],
+      "fate": "Came in under James II's pardon; arrested with Wafer in Virginia 1688, released with most of his loot 1692; thereafter unrecorded",
+      "track": [
+        { "year": 1683, "season": "autumn", "lat": 8.30, "lon": -13.60, "note": "Cooke's company takes a Danish 36-gun ship off Sierra Leone — renamed Batchelor's Delight" },
+        { "year": 1684, "season": "winter", "lat": -57.50, "lon": -66.00, "note": "rounds Cape Horn for the South Sea" },
+        { "year": 1684, "season": "summer", "lat": 9.45, "lon": -85.20, "note": "Cooke dies off Cabo Blanco; Davis elected captain, July 1684" },
+        { "year": 1685, "season": "summer", "lat": 8.60, "lon": -79.30, "note": "the buccaneer fleet outmanoeuvred and scattered by the Armada del Mar del Sur in Panama Bay, June 1685" },
+        { "year": 1685, "season": "summer", "lat": 12.30, "lon": -87.40, "note": "joins the sack of León and Realejo on the Nicaragua coast, August 1685" },
+        { "year": 1686, "season": "winter", "lat": -33.62, "lon": -78.83, "note": "winters and refits at Juan Fernández" },
+        { "year": 1687, "season": "spring", "lat": -3.00, "lon": -81.20, "note": "cruises off Guayaquil during Picard and Hutt's raid; shares the ransom" },
+        { "year": 1687, "season": "autumn", "lat": -27.00, "lon": -91.00, "note": "sights 'Davis Land' in the empty South Pacific — a legend that later sent ships hunting toward Easter Island" },
+        { "year": 1688, "season": "summer", "lat": 37.00, "lon": -76.31, "note": "comes in at Point Comfort, Virginia, under the pardon — and is arrested with Wafer" }
+      ],
+      "sources": ["Wafer 1699", "Dampier 1697", "Rogozinski 1995"]
+    },
+    {
+      "id": "jan-willems-yankey",
+      "name": "Jan Willems ('Yankey')",
+      "era": "buccaneer",
+      "active_from": 1681,
+      "active_to": 1688,
+      "ship": "frigate (Spanish prize; name poorly recorded)",
+      "ship_type": "barque, later a prize frigate of ~30 guns",
+      "flag": { "description": "Dutch filibuster under French commission from Petit-Goâve; ensign unrecorded", "motif": "other", "confidence": "unknown" },
+      "crew_size": 60,
+      "notable_crew": [],
+      "lading": [
+        "share of the Cartagena squadron prizes, Christmas 1683",
+        "Veracruz plunder, 1683"
+      ],
+      "fate": "Drops from the record after 1687-88; reported dead on the Mosquito Coast (uncertain)",
+      "track": [
+        { "year": 1682, "season": "summer", "lat": 18.47, "lon": -72.85, "note": "fits out at Petit-Goâve among the filibuster captains" },
+        { "year": 1683, "season": "spring", "lat": 19.18, "lon": -95.90, "note": "sails in the Veracruz expedition under de Graaf and Grammont" },
+        { "year": 1683, "season": "winter", "lat": 10.20, "lon": -75.70, "note": "with de Graaf and Andrieszoon beats the Cartagena squadron and takes its ships, Christmas 1683" },
+        { "year": 1685, "season": "summer", "lat": 19.90, "lon": -90.70, "note": "at the sack of Campeche" },
+        { "year": 1687, "season": "spring", "lat": 14.50, "lon": -82.50, "note": "lingers on the Mosquito Coast as French commissions dry up; last firm reports" }
+      ],
+      "sources": ["Rogozinski 1995", "Exquemelin 1678 (later editions)"]
+    },
+    {
+      "id": "sale-rovers",
+      "name": "Salé Rovers (corsairs of the Bou Regreg)",
+      "era": "privateer",
+      "active_from": 1650,
+      "active_to": 1720,
+      "ship": "squadron entry — no single ship",
+      "ship_type": "shallow-draught xebecs and square-rigged 'Sallee men' of 10-24 guns, able to cross the river bar",
+      "flag": { "description": "Moroccan corsair colours — crescent devices on red or green; varied by raïs and period", "motif": "other", "confidence": "traditional" },
+      "crew_size": 120,
+      "notable_crew": [],
+      "lading": [
+        "Christian captives held for ransom — the principal 'cargo' of every cruise",
+        "wine, cloth, salt and fish from Iberian and Atlantic prizes"
+      ],
+      "fate": "Corsairing declines after the 1721 Anglo-Moroccan treaty ransomed 296 captives; sporadic cruises continue for decades",
+      "track": [
+        { "year": 1650, "season": "summer", "lat": 36.80, "lon": -9.30, "note": "habitual cruising ground off Cape St Vincent for Iberia-bound shipping (representative cruise)" },
+        { "year": 1660, "season": "summer", "lat": 33.00, "lon": -16.50, "note": "lying in the Madeira approaches for wine ships (representative cruise)" },
+        { "year": 1672, "season": "summer", "lat": 36.40, "lon": -7.20, "note": "in the Gulf of Cádiz among the Indies-trade stragglers (representative cruise)" },
+        { "year": 1685, "season": "summer", "lat": 28.80, "lon": -15.20, "note": "off the Canaries; European states begin paying tribute or convoying (representative cruise)" },
+        { "year": 1700, "season": "summer", "lat": 35.90, "lon": -6.10, "note": "off Cape Spartel, within sight of home (representative cruise)" },
+        { "year": 1714, "season": "summer", "lat": 38.55, "lon": -9.50, "note": "prizes taken in the Lisbon approaches after the Utrecht peace fills the sea with unescorted trade" },
+        { "year": 1720, "season": "summer", "lat": 34.04, "lon": -6.88, "note": "over the Bou Regreg bar where no frigate can follow; the 1721 British treaty will ransom 296 captives" }
+      ],
+      "sources": ["Earle, The Pirate Wars", "Rogozinski 1995"]
+    },
+    {
+      "id": "thomas-tew",
+      "name": "Thomas Tew",
+      "era": "pirate-round",
+      "active_from": 1692,
+      "active_to": 1695,
+      "ship": "Amity",
+      "ship_type": "70-ton Bermuda sloop, 8 guns",
+      "flag": { "description": "black flag with an arm holding a cutlass — a 19th-century attribution, not period-documented", "motif": "arm-cutlass", "confidence": "traditional" },
+      "crew_size": 60,
+      "notable_crew": [],
+      "lading": [
+        "gold, silver, ivory, spices and silks worth ~£100,000 from the 1693 Red Sea prize — shares of £1,200-£3,000 a man"
+      ],
+      "fate": "Killed by a cannon shot attacking the Fateh Muhammed at the Red Sea mouth, September 1695 (Johnson)",
+      "track": [
+        { "year": 1693, "season": "winter", "lat": -35.20, "lon": 18.00, "note": "rounds the Cape, having talked his crew out of the Gorée privateering commission: 'a gold chain or a wooden leg'" },
+        { "year": 1693, "season": "summer", "lat": 12.50, "lon": 43.30, "note": "takes a Mughal ship bound from India to Mocha at the Bab-el-Mandeb — almost without loss" },
+        { "year": 1693, "season": "autumn", "lat": -17.00, "lon": 49.86, "note": "waters at Île Sainte-Marie, the new Madagascar pirate mart" },
+        { "year": 1694, "season": "spring", "lat": 41.45, "lon": -71.33, "note": "home to Newport, April 1694 — the toast of Rhode Island, his backers repaid fourteen-fold" },
+        { "year": 1694, "season": "autumn", "lat": 40.40, "lon": -73.90, "note": "sails again in November with a Fletcher privateering commission bought in New York" },
+        { "year": 1695, "season": "summer", "lat": 12.50, "lon": 43.30, "note": "joins Henry Every's six-ship flotilla off the Bab-el-Mandeb" },
+        { "year": 1695, "season": "autumn", "lat": 12.60, "lon": 43.35, "note": "killed attacking the Fateh Muhammed, September 1695 — 'a shot carried away the rim of his belly' (Johnson)" }
+      ],
+      "sources": ["Johnson 1724", "Rediker 2004", "Rogozinski 1995"]
+    },
+    {
+      "id": "henry-every",
+      "name": "Henry Every ('Long Ben')",
+      "era": "pirate-round",
+      "active_from": 1694,
+      "active_to": 1696,
+      "ship": "Fancy",
+      "ship_type": "ex-privateer Charles II, 46 guns, razeed for speed",
+      "flag": { "description": "skull in profile with bandana and earring over crossed bones, on black — traditional attribution only", "motif": "skull-bones", "confidence": "traditional" },
+      "crew_size": 170,
+      "notable_crew": [
+        { "name": "Joseph Dawson", "role": "mate; pleaded guilty at the 1696 trial" },
+        { "name": "William May", "role": "crewman; hanged at Execution Dock, 1696" }
+      ],
+      "lading": [
+        "the Ganj-i-Sawai treasure, September 1695: gold, silver coin and jewels valued £325,000-£600,000 — the richest pirate haul of the century",
+        "coin and goods from the Fateh Muhammed, taken days earlier"
+      ],
+      "fate": "Vanished after landing in Ireland, June 1696, despite the first worldwide manhunt; six of his men hanged at Execution Dock",
+      "track": [
+        { "year": 1694, "season": "spring", "lat": 43.38, "lon": -8.38, "note": "leads the mutiny aboard the laid-up privateer Charles II in A Coruña road, 7 May 1694; renames her Fancy" },
+        { "year": 1694, "season": "summer", "lat": 15.05, "lon": -23.20, "note": "plunders three English ships among the Cape Verdes" },
+        { "year": 1694, "season": "autumn", "lat": 1.60, "lon": 7.30, "note": "takes two Danish ships near Príncipe in the Gulf of Guinea" },
+        { "year": 1695, "season": "winter", "lat": -12.12, "lon": 44.40, "note": "careens at Johanna (Anjouan); razees the Fancy — now one of the fastest ships in any ocean" },
+        { "year": 1695, "season": "summer", "lat": 12.50, "lon": 43.30, "note": "commands the pirate flotilla at the Bab-el-Mandeb — Tew, Faro, Want, Wake, Mayes — waiting for the Mocha fleet" },
+        { "year": 1695, "season": "autumn", "lat": 20.50, "lon": 71.80, "note": "runs down and storms the Mughal Ganj-i-Sawai off the Surat coast, 7-11 September 1695; atrocities aboard provoke an imperial crisis" },
+        { "year": 1696, "season": "winter", "lat": -7.85, "lon": -14.45, "note": "waters at Ascension, turtling, on the long run back across the Atlantic" },
+        { "year": 1696, "season": "spring", "lat": 25.50, "lon": -76.80, "note": "buys Governor Trott's hospitality at New Providence; the Fancy, given as a bribe, is let drift onto the reef" },
+        { "year": 1696, "season": "summer", "lat": 55.30, "lon": -7.90, "note": "lands quietly in the north of Ireland, June 1696 — and is never reliably seen again" }
+      ],
+      "sources": ["Johnson 1724", "1696 trial records (Tryals of Joseph Dawson et al.)", "Rediker 2004", "Woodard 2007"]
+    },
+    {
+      "id": "william-kidd",
+      "name": "William Kidd",
+      "era": "pirate-round",
+      "active_from": 1696,
+      "active_to": 1699,
+      "ship": "Adventure Galley",
+      "ship_type": "purpose-built hybrid oared galley-frigate, 34 guns, 287 tons",
+      "flag": { "description": "sailed under a Crown privateering and pirate-hunting commission and English colours; no pirate flag", "motif": "other", "confidence": "documented" },
+      "crew_size": 152,
+      "notable_crew": [
+        { "name": "William Moore", "role": "gunner; killed by Kidd with a bucket, October 1697" },
+        { "name": "Robert Bradinham", "role": "surgeon; turned King's evidence" },
+        { "name": "Darby Mullins", "role": "crewman; hanged with Kidd, 1701" }
+      ],
+      "lading": [
+        "the Quedagh Merchant's cargo, January 1698: silks, muslins, calico, sugar, opium and iron, sold along the coast for ~£10,000 in gold and goods",
+        "the Rouparelle (renamed November), taken under French passes, November 1697"
+      ],
+      "fate": "Hanged at Execution Dock, 23 May 1701 — the rope broke and he was hanged again; gibbeted at Tilbury Point",
+      "track": [
+        { "year": 1696, "season": "autumn", "lat": 40.40, "lon": -73.80, "note": "sails from New York, 6 September 1696, with a pirate-hunting commission and powerful Whig backers" },
+        { "year": 1696, "season": "winter", "lat": -35.50, "lon": 17.50, "note": "falls in with a Royal Navy squadron off the Cape and slips away by night rather than lose men to the press" },
+        { "year": 1697, "season": "winter", "lat": -23.55, "lon": 43.60, "note": "waters at Tuléar, southwest Madagascar, January 1697" },
+        { "year": 1697, "season": "spring", "lat": -12.45, "lon": 43.70, "note": "careens at Mohéli in the Comoros; some fifty men die of fever" },
+        { "year": 1697, "season": "summer", "lat": 12.50, "lon": 43.30, "note": "lies in wait for the Mocha fleet at the Bab-el-Mandeb, August 1697 — driven off by its East India Company escort: the line into piracy crossed" },
+        { "year": 1697, "season": "autumn", "lat": 11.20, "lon": 75.60, "note": "prowls the Malabar coast; kills gunner William Moore with an ironbound bucket, 30 October 1697; takes the Rouparelle in November" },
+        { "year": 1698, "season": "winter", "lat": 9.90, "lon": 75.90, "note": "takes the Quedagh Merchant off Cochin under French passes, 30 January 1698 — silks, calico, sugar, opium, iron" },
+        { "year": 1698, "season": "spring", "lat": -17.00, "lon": 49.86, "note": "at Île Sainte-Marie most of the crew defect to Culliford's Mocha; the leaking Adventure Galley is stripped and scuttled" },
+        { "year": 1699, "season": "spring", "lat": 18.30, "lon": -63.10, "note": "off Anguilla learns he has been proclaimed a pirate throughout the empire" },
+        { "year": 1699, "season": "spring", "lat": 18.25, "lon": -69.00, "note": "hides the Quedagh Merchant up the Higuey river by Isla Catalina and buys a sloop to go north and bargain" },
+        { "year": 1699, "season": "summer", "lat": 42.30, "lon": -70.80, "note": "comes in to Boston trusting Bellomont's word; arrested 6 July 1699, the Gardiners Island gold dug up as evidence" }
+      ],
+      "sources": ["Johnson 1724", "1701 trial record", "Zacks, The Pirate Hunter", "Cordingly 1995"]
+    },
+    {
+      "id": "robert-culliford",
+      "name": "Robert Culliford",
+      "era": "pirate-round",
+      "active_from": 1690,
+      "active_to": 1699,
+      "ship": "Mocha (renamed Resolution)",
+      "ship_type": "ex-East India Company frigate Mocha, ~30-40 guns",
+      "flag": { "description": "no flag recorded", "motif": "other", "confidence": "unknown" },
+      "crew_size": 140,
+      "notable_crew": [],
+      "lading": [
+        "share of the Great Mohammed's coin, September 1698 — ~£130,000 taken with Chivers' Soldado"
+      ],
+      "fate": "Took the 1699 pardon at Sainte-Marie; it was ruled invalid and he was condemned 1701, then reprieved to testify against Samuel Burgess; thereafter unrecorded",
+      "track": [
+        { "year": 1690, "season": "winter", "lat": 17.20, "lon": -62.00, "note": "with the crew that stole Kidd's privateer Blessed William at Antigua, February 1690 — the start of a long feud (position approximate); years of obscurity and Mughal imprisonment follow" },
+        { "year": 1697, "season": "summer", "lat": 7.60, "lon": 93.50, "note": "commands the mutinied EIC frigate Mocha (Resolution), cruising the Nicobars and Malacca approaches" },
+        { "year": 1698, "season": "spring", "lat": -17.00, "lon": 49.86, "note": "at Île Sainte-Marie; Kidd's crew desert to him almost to a man" },
+        { "year": 1698, "season": "autumn", "lat": 13.50, "lon": 42.80, "note": "with Dirk Chivers takes the Great Mohammed in the Red Sea, September 1698 — ~£130,000" },
+        { "year": 1699, "season": "spring", "lat": -17.00, "lon": 49.86, "note": "surrenders to Commodore Littleton's squadron at Sainte-Marie under the royal pardon" }
+      ],
+      "sources": ["Johnson 1724", "Zacks, The Pirate Hunter", "Rogozinski 1995"]
+    },
+    {
+      "id": "dirk-chivers",
+      "name": "Dirk Chivers",
+      "era": "pirate-round",
+      "active_from": 1694,
+      "active_to": 1699,
+      "ship": "Soldado",
+      "ship_type": "prize ship Soldado, ~28-30 guns",
+      "flag": { "description": "no flag recorded", "motif": "other", "confidence": "unknown" },
+      "crew_size": 110,
+      "notable_crew": [],
+      "lading": [
+        "ransoms extorted from shipping held in Calicut road, 1696",
+        "share of the Great Mohammed's coin, September 1698"
+      ],
+      "fate": "Surrendered under the royal pardon at Île Sainte-Marie, 1699, and shipped for home; thereafter unrecorded",
+      "track": [
+        { "year": 1695, "season": "summer", "lat": 12.50, "lon": 43.30, "note": "reputedly in the strait with Every's flotilla aboard Faro's Portsmouth Adventure (Rogozinski)" },
+        { "year": 1696, "season": "autumn", "lat": 11.25, "lon": 75.60, "note": "holds ships to ransom in Calicut road; writes the famous defiance — 'we acknowledge no country, having sold our own'" },
+        { "year": 1698, "season": "autumn", "lat": 13.50, "lon": 42.80, "note": "the Soldado and Culliford's Resolution take the Great Mohammed in the Red Sea" },
+        { "year": 1699, "season": "spring", "lat": -17.00, "lon": 49.86, "note": "takes Commodore Littleton's pardon at Sainte-Marie" }
+      ],
+      "sources": ["Rogozinski 1995", "Johnson 1724 (vol. II context)"]
+    },
+    {
+      "id": "john-bowen",
+      "name": "John Bowen",
+      "era": "pirate-round",
+      "active_from": 1700,
+      "active_to": 1704,
+      "ship": "Speaker",
+      "ship_type": "50-gun ex-slaver; later the Scots ship Speedy Return and the Defiance",
+      "flag": { "description": "no flag recorded", "motif": "other", "confidence": "unknown" },
+      "crew_size": 170,
+      "notable_crew": [
+        { "name": "Nathaniel North", "role": "quartermaster, later a captain in his own right (Johnson vol. II)" }
+      ],
+      "lading": [
+        "Red Sea and Malabar plunder aboard the Speaker — coin and goods lost and partly saved in the 1702 wreck",
+        "~£70,000 in coin and goods from Mughal ships taken off Surat with Howard's Prosperous, 1703"
+      ],
+      "fate": "Retired rich to Bourbon, March 1704; died of an intestinal illness within six months (Johnson)",
+      "track": [
+        { "year": 1701, "season": "spring", "lat": 12.60, "lon": 43.40, "note": "the Speaker cruises the Red Sea mouth for the Mocha and pilgrim trade" },
+        { "year": 1701, "season": "autumn", "lat": 11.00, "lon": 75.30, "note": "takes Indian prizes along the Malabar coast" },
+        { "year": 1702, "season": "winter", "lat": -20.42, "lon": 57.76, "note": "the Speaker wrecks on the reef at Grand Port, Mauritius, January 1702; the courteous Dutch sell the survivors a sloop" },
+        { "year": 1702, "season": "summer", "lat": -18.00, "lon": 49.60, "note": "seizes the Scots ship Speedy Return on the Madagascar coast while her captain trades ashore (coast position approximate)" },
+        { "year": 1703, "season": "summer", "lat": 20.50, "lon": 71.80, "note": "with Thomas Howard's Prosperous takes great Mughal ships off Surat — ~£70,000; crews merge into the Defiance" },
+        { "year": 1704, "season": "spring", "lat": -20.82, "lon": 55.45, "note": "comes in to the Bourbon roadstead and retires ashore with his fortune, March 1704" }
+      ],
+      "sources": ["Johnson 1724 (vol. II)", "Lizé, wreck of the Speaker", "Rogozinski 1995"]
+    },
+    {
+      "id": "benjamin-hornigold",
+      "name": "Benjamin Hornigold",
+      "era": "post-war",
+      "active_from": 1713,
+      "active_to": 1719,
+      "ship": "Ranger",
+      "ship_type": "large Jamaica-built sloop, ~30 guns — for a time the most powerful ship at Nassau",
+      "flag": { "description": "no flag recorded; famously claimed to attack only foreign ships, sparing the English", "motif": "other", "confidence": "unknown" },
+      "crew_size": 200,
+      "notable_crew": [
+        { "name": "Edward Thatch (Blackbeard)", "role": "protégé, then consort captain 1716-17" },
+        { "name": "Samuel Bellamy", "role": "sailed in his company, 1716" }
+      ],
+      "lading": [
+        "Spanish salvage silver and coin funneled through Nassau after the 1715 plate-fleet wrecks",
+        "sugar, rum and dry goods from Florida Strait prizes"
+      ],
+      "fate": "Pardoned July 1718; turned pirate-hunter for Woodes Rogers; wrecked on an uncharted reef and lost, 1719 (Johnson)",
+      "track": [
+        { "year": 1714, "season": "summer", "lat": 24.00, "lon": -80.50, "note": "periagua and sloop raids on Spanish trade in the Florida Strait from governorless New Providence" },
+        { "year": 1715, "season": "autumn", "lat": 27.80, "lon": -80.30, "note": "cruises the plate-fleet wreck coast as salvage silver floods into Nassau and the Republic of Pirates blooms" },
+        { "year": 1716, "season": "summer", "lat": 22.90, "lon": -79.50, "note": "cruises the old Bahama Channel with Bellamy and Thatch among his company" },
+        { "year": 1717, "season": "spring", "lat": 25.09, "lon": -77.34, "note": "at the height of his standing among the Flying Gang at Nassau" },
+        { "year": 1717, "season": "autumn", "lat": 25.09, "lon": -77.34, "note": "deposed by vote for refusing to plunder English ships; keeps the Ranger" },
+        { "year": 1718, "season": "summer", "lat": 25.09, "lon": -77.34, "note": "takes the King's pardon from Woodes Rogers, July 1718" },
+        { "year": 1718, "season": "autumn", "lat": 23.75, "lon": -75.85, "note": "as Rogers' pirate-hunter runs down John Augur's relapsed gang near Exuma — eight hang at Nassau in December" },
+        { "year": 1719, "season": "autumn", "lat": 24.50, "lon": -81.50, "note": "lost when his ship strikes an uncharted reef on a trading voyage toward New Spain (position conjectural, per Johnson)" }
+      ],
+      "sources": ["Johnson 1724", "Woodard 2007", "Cordingly 1995"]
+    },
+    {
+      "id": "samuel-bellamy",
+      "name": "Samuel 'Black Sam' Bellamy",
+      "era": "post-war",
+      "active_from": 1716,
+      "active_to": 1717,
+      "ship": "Whydah Gally",
+      "ship_type": "galley-built ex-slaver, 300 tons, 28 guns mounted; earlier the Sultana and the sloop Marianne",
+      "flag": { "description": "large black flag with a death's head and crossed bones (survivor testimony at the 1717 Boston trial)", "motif": "skull-bones", "confidence": "documented" },
+      "crew_size": 180,
+      "notable_crew": [
+        { "name": "Paulsgrave Williams", "role": "consort captain of the sloop Marianne" },
+        { "name": "John Julian", "role": "Miskito pilot; survived the wreck" },
+        { "name": "Thomas Davis", "role": "forced carpenter; survived, acquitted at Boston" }
+      ],
+      "lading": [
+        "plunder of ~50 prizes aboard the Whydah: 4.5 tons of silver and gold, gold dust, ivory, indigo and sugar (confirmed by the 1984 excavation)",
+        "£20,000+ in coin taken with the Whydah herself, February 1717"
+      ],
+      "fate": "Drowned with 143 others when the Whydah wrecked off Cape Cod in a nor'easter, 26 April 1717; six survivors tried at Boston",
+      "track": [
+        { "year": 1716, "season": "winter", "lat": 27.50, "lon": -80.20, "note": "tries wreck-fishing on the 1715 plate-fleet coast with Williams, then turns pirate" },
+        { "year": 1716, "season": "summer", "lat": 19.90, "lon": -73.80, "note": "elected captain of the Marianne in the Windward Passage when Hornigold's company splits over sparing English ships" },
+        { "year": 1716, "season": "autumn", "lat": 17.60, "lon": -64.70, "note": "cruises the Virgin Islands in company with Olivier La Buse" },
+        { "year": 1716, "season": "winter", "lat": 17.50, "lon": -63.40, "note": "takes the Sultana near the Saba Bank and makes her flagship" },
+        { "year": 1717, "season": "winter", "lat": 22.80, "lon": -75.50, "note": "after a three-day chase from the Windward Passage takes the slaver Whydah near Long Island, Bahamas — gold dust, ivory, sugar, indigo" },
+        { "year": 1717, "season": "spring", "lat": 36.90, "lon": -75.40, "note": "works north taking prizes; storms scatter the squadron off the Virginia Capes, April 1717" },
+        { "year": 1717, "season": "spring", "lat": 41.90, "lon": -69.95, "note": "the Whydah strikes the bar off Wellfleet, Cape Cod, in a nor'easter, 26 April 1717; Bellamy drowns with 143 men" }
+      ],
+      "sources": ["Johnson 1724", "1717 Boston trial records", "Woodard 2007", "Clifford, Expedition Whydah"]
+    },
+    {
+      "id": "edward-thatch",
+      "name": "Edward Thatch (Blackbeard)",
+      "era": "post-war",
+      "active_from": 1716,
+      "active_to": 1718,
+      "ship": "Queen Anne's Revenge",
+      "ship_type": "frigate (ex-French slaver La Concorde), 40 guns; earlier and later sloops, last the Adventure",
+      "flag": { "description": "horned skeleton spearing a heart, hourglass in hand, on black — a later traditional attribution; contemporaries describe only black colours and a death's head", "motif": "skeleton-heart", "confidence": "traditional" },
+      "crew_size": 300,
+      "notable_crew": [
+        { "name": "Israel Hands", "role": "sailing master; pardoned, testified" },
+        { "name": "William Howard", "role": "quartermaster" },
+        { "name": "Caesar", "role": "crewman of African birth, taken at Ocracoke (trial records)" }
+      ],
+      "lading": [
+        "sugar, indigo and cotton from Charleston prizes, May 1718",
+        "the medicine chest ransomed from Charleston, May 1718",
+        "gold dust, sugar and cocoa dispersed when the Queen Anne's Revenge grounded, June 1718"
+      ],
+      "fate": "Killed at Ocracoke by Lt Robert Maynard, 22 November 1718; his head hung from the bowsprit at Hampton Roads",
+      "track": [
+        { "year": 1716, "season": "autumn", "lat": 23.30, "lon": -80.00, "note": "sails as consort to Hornigold's Ranger along the Cuban coast" },
+        { "year": 1717, "season": "spring", "lat": 36.90, "lon": -75.30, "note": "with Hornigold takes prizes off the Virginia Capes" },
+        { "year": 1717, "season": "autumn", "lat": 38.70, "lon": -74.80, "note": "cruises off the Delaware Capes with Stede Bonnet's Revenge under his command" },
+        { "year": 1717, "season": "autumn", "lat": 14.50, "lon": -59.00, "note": "takes the slaver La Concorde off St Vincent, 28 November 1717" },
+        { "year": 1717, "season": "winter", "lat": 13.00, "lon": -61.28, "note": "refits the prize at Bequia as the 40-gun Queen Anne's Revenge" },
+        { "year": 1718, "season": "winter", "lat": 17.95, "lon": -65.35, "note": "takes the Margaret off Crab Island (Vieques); the squadron grows" },
+        { "year": 1718, "season": "spring", "lat": 17.35, "lon": -87.70, "note": "at Turneffe in the Bay of Honduras takes the sloop Adventure; four vessels, 60+ guns, ~400 men" },
+        { "year": 1718, "season": "spring", "lat": 32.68, "lon": -79.80, "note": "blockades Charleston bar for a week, May 1718, ransoming citizens for a medicine chest" },
+        { "year": 1718, "season": "summer", "lat": 34.68, "lon": -76.69, "note": "runs the Queen Anne's Revenge aground at Beaufort Inlet — likely on purpose — and slips off with the pick of the loot and men, June 1718" },
+        { "year": 1718, "season": "summer", "lat": 35.25, "lon": -76.15, "note": "takes Governor Eden's pardon at Bath and 'retires' to the North Carolina sounds" },
+        { "year": 1718, "season": "autumn", "lat": 35.10, "lon": -75.99, "note": "pirate revel at Ocracoke with Vane and Rackham, October 1718" },
+        { "year": 1718, "season": "autumn", "lat": 35.10, "lon": -75.99, "note": "killed at Teach's Hole by Lt Maynard's boarders, 22 November 1718 — five pistol balls and twenty sword cuts" }
+      ],
+      "sources": ["Johnson 1724", "Woodard 2007", "Konstam, Blackbeard", "Virginia council records 1718"]
+    },
+    {
+      "id": "stede-bonnet",
+      "name": "Stede Bonnet",
+      "era": "post-war",
+      "active_from": 1717,
+      "active_to": 1718,
+      "ship": "Revenge (renamed Royal James)",
+      "ship_type": "10-gun sloop — bought and fitted out with his own money, uniquely among pirates",
+      "flag": { "description": "skull above a single long bone, flanked by a heart and a dagger, on black — traditional attribution", "motif": "other", "confidence": "traditional" },
+      "crew_size": 70,
+      "notable_crew": [
+        { "name": "David Herriot", "role": "pilot/sailing master (deposition survives); shot escaping, 1718" },
+        { "name": "Ignatius Pell", "role": "boatswain; turned King's evidence at the trial" }
+      ],
+      "lading": [
+        "sugar, rum and slaves from two Caribbean prizes, 1717",
+        "tobacco, flour and sundries from eleven prizes off Virginia and Delaware, summer 1718"
+      ],
+      "fate": "Hanged at White Point, Charles Town, 10 December 1718",
+      "track": [
+        { "year": 1717, "season": "spring", "lat": 13.20, "lon": -59.40, "note": "the Barbados planter sails as a pirate — paying his crew wages out of pocket" },
+        { "year": 1717, "season": "summer", "lat": 37.00, "lon": -75.30, "note": "takes the Anne, Turbet and Endeavour off the Virginia Capes" },
+        { "year": 1717, "season": "autumn", "lat": 25.10, "lon": -77.30, "note": "limps to Nassau wounded after fighting a Spanish warship; Thatch takes over the Revenge, Bonnet aboard as 'guest'" },
+        { "year": 1718, "season": "spring", "lat": 17.35, "lon": -87.70, "note": "carried in Blackbeard's squadron to the Bay of Honduras" },
+        { "year": 1718, "season": "summer", "lat": 34.66, "lon": -76.70, "note": "left at Topsail Inlet after Blackbeard strips the company; rescues the marooned men, takes the pardon at Bath, renames his sloop Royal James" },
+        { "year": 1718, "season": "summer", "lat": 38.90, "lon": -74.90, "note": "back to piracy off Delaware Bay as 'Captain Thomas' — eleven prizes" },
+        { "year": 1718, "season": "autumn", "lat": 33.91, "lon": -78.02, "note": "run to ground in the Cape Fear estuary by Col. William Rhett; taken after a five-hour battle on the sandbars, 27 September 1718" }
+      ],
+      "sources": ["Tryals of Major Stede Bonnet 1719", "Johnson 1724", "Woodard 2007"]
+    },
+    {
+      "id": "charles-vane",
+      "name": "Charles Vane",
+      "era": "post-war",
+      "active_from": 1718,
+      "active_to": 1719,
+      "ship": "Ranger",
+      "ship_type": "sloop, later a brigantine of ~12 guns",
+      "flag": { "description": "black colours flown (contemporary reports); device unrecorded", "motif": "black-plain", "confidence": "documented" },
+      "crew_size": 75,
+      "notable_crew": [
+        { "name": "Jack Rackham", "role": "quartermaster; deposed him, November 1718" },
+        { "name": "Robert Deal", "role": "mate, then consort captain; hanged at Jamaica" }
+      ],
+      "lading": [
+        "sundry dry goods, rum and coin from Bahamas and Charleston prizes, 1718"
+      ],
+      "fate": "Shipwrecked in the Bay of Honduras 1719; recognized and taken in 1720; hanged at Gallows Point, Port Royal, 29 March 1721",
+      "track": [
+        { "year": 1718, "season": "spring", "lat": 25.80, "lon": -77.00, "note": "takes the pardon, relapses within weeks, and plunders the Providence Channel shipping lanes" },
+        { "year": 1718, "season": "summer", "lat": 25.09, "lon": -77.34, "note": "defies Woodes Rogers with a fireship and runs the harbour mouth, Nassau, 26 July 1718" },
+        { "year": 1718, "season": "summer", "lat": 32.60, "lon": -79.60, "note": "takes eight ships off the Charleston bar, August 1718" },
+        { "year": 1718, "season": "autumn", "lat": 35.10, "lon": -75.99, "note": "feasts with Blackbeard at Ocracoke, October 1718" },
+        { "year": 1718, "season": "autumn", "lat": 19.80, "lon": -73.90, "note": "declines battle with a French man-of-war, 23 November 1718; branded coward and deposed next day — Rackham elected" },
+        { "year": 1719, "season": "winter", "lat": 16.50, "lon": -86.40, "note": "hurricane wrecks his sloop on an uninhabited cay off the Bay of Honduras, February 1719; a year a castaway before capture" }
+      ],
+      "sources": ["Johnson 1724", "Woodard 2007", "Cordingly 1995"]
+    },
+    {
+      "id": "jack-rackham",
+      "name": "John 'Calico Jack' Rackham",
+      "era": "post-war",
+      "active_from": 1718,
+      "active_to": 1720,
+      "ship": "William",
+      "ship_type": "small Bahamas sloop (stolen from Nassau, 1720); earlier Vane's brigantine and the Kingston prize",
+      "flag": { "description": "skull over crossed cutlasses on black — traditional attribution", "motif": "other", "confidence": "traditional" },
+      "crew_size": 40,
+      "notable_crew": [
+        { "name": "Anne Bonny", "role": "crew; fought to the last at the capture (trial record)" },
+        { "name": "Mary Read", "role": "crew; 'pleaded her belly' and died in prison, 1721" },
+        { "name": "George Fetherston", "role": "sailing master; hanged 1720" },
+        { "name": "Richard Corner", "role": "quartermaster; hanged 1720" }
+      ],
+      "lading": [
+        "Madeira wine from the Kingston prize, December 1718",
+        "fishing tackle, canoes and coasters' sundries from Jamaican waters (1720 trial evidence)"
+      ],
+      "fate": "Hanged at Port Royal, 18 November 1720; gibbeted on the cay now called Rackham's Cay",
+      "track": [
+        { "year": 1718, "season": "autumn", "lat": 19.80, "lon": -73.90, "note": "elected captain in the Windward Passage when Vane is deposed for cowardice" },
+        { "year": 1718, "season": "winter", "lat": 17.80, "lon": -76.20, "note": "takes the Madeira-laden Kingston almost within sight of Port Royal, December 1718" },
+        { "year": 1719, "season": "winter", "lat": 21.30, "lon": -82.90, "note": "loses the Kingston to Jamaican bounty hunters while the crew sports ashore at the Isle of Pines" },
+        { "year": 1719, "season": "summer", "lat": 25.09, "lon": -77.34, "note": "takes the pardon at Nassau; meets Anne Bonny" },
+        { "year": 1720, "season": "summer", "lat": 25.08, "lon": -77.33, "note": "steals the sloop William out of Nassau harbour by night, 22 August 1720, Bonny and Read aboard" },
+        { "year": 1720, "season": "autumn", "lat": 18.60, "lon": -77.50, "note": "raids fishing canoes and coasters along Jamaica's north shore" },
+        { "year": 1720, "season": "autumn", "lat": 18.27, "lon": -78.42, "note": "surprised drunk at anchor off Negril Point by Barnet's privateer — the women fight last, late October 1720" }
+      ],
+      "sources": ["Tryals of Captain John Rackam 1721", "Johnson 1724", "Woodard 2007"]
+    },
+    {
+      "id": "howell-davis",
+      "name": "Howell Davis",
+      "era": "post-war",
+      "active_from": 1718,
+      "active_to": 1719,
+      "ship": "Royal Rover",
+      "ship_type": "32-gun prize ship; earlier the sloop Buck and the Saint James",
+      "flag": { "description": "black colours hoisted at Gambia and Sierra Leone (Johnson); device unrecorded", "motif": "black-plain", "confidence": "documented" },
+      "crew_size": 150,
+      "notable_crew": [
+        { "name": "Bartholomew Roberts", "role": "forced third mate of the Princess, June 1719 — his successor" },
+        { "name": "Walter Kennedy", "role": "crewman, later renegade captain" },
+        { "name": "Thomas Anstis", "role": "Buck mutineer, later captain" }
+      ],
+      "lading": [
+        "~£2,000 in gold bar from Fort James, Gambia, taken by masquerade, February 1719",
+        "gold dust, slaves and trade goods from Guinea coast prizes, 1719"
+      ],
+      "fate": "Shot in a Portuguese ambush ashore at Príncipe, 19 June 1719",
+      "track": [
+        { "year": 1718, "season": "autumn", "lat": 14.50, "lon": -61.20, "note": "leads the mutiny aboard the trading sloop Buck off Martinique — elected captain on 'a counterfeit commission from his own brave fancy'" },
+        { "year": 1719, "season": "winter", "lat": 20.25, "lon": -74.05, "note": "winters at Coxon's Hole on the east end of Cuba" },
+        { "year": 1719, "season": "winter", "lat": 13.48, "lon": -16.75, "note": "takes Fort James' treasure on the Gambia by posing as a Royal African Company merchant, February 1719" },
+        { "year": 1719, "season": "spring", "lat": 8.45, "lon": -13.35, "note": "joins Cocklyn and La Buse at Sierra Leone; the three 'gentlemen of fortune' cruise and quarrel together" },
+        { "year": 1719, "season": "summer", "lat": 5.10, "lon": -1.10, "note": "takes the Princess at Anomabu — third mate Bartholomew Roberts among the forced men, June 1719" },
+        { "year": 1719, "season": "summer", "lat": 1.60, "lon": 7.30, "note": "killed in a Portuguese ambush ashore at Príncipe, 19 June 1719" }
+      ],
+      "sources": ["Johnson 1724", "Rediker 2004", "Cordingly 1995"]
+    },
+    {
+      "id": "bartholomew-roberts",
+      "name": "Bartholomew Roberts ('Black Bart')",
+      "era": "post-war",
+      "active_from": 1719,
+      "active_to": 1722,
+      "ship": "Royal Fortune",
+      "ship_type": "40-gun ship (ex-RAC frigate Onslow) — the last of several prizes renamed Royal Fortune",
+      "flag": { "description": "two documented flags: Roberts and a skeleton holding an hourglass between them; and Roberts standing on two skulls lettered ABH and AMH — 'A Barbadian's Head', 'A Martinican's Head'", "motif": "other", "confidence": "documented" },
+      "crew_size": 260,
+      "notable_crew": [
+        { "name": "Henry Glasby", "role": "forced sailing master; acquitted at Cape Coast" },
+        { "name": "James Skyrme", "role": "captain of the consort Ranger; lost a leg, hanged 1722" },
+        { "name": "Walter Kennedy", "role": "absconded with the Rover and the Bahia loot, 1719; hanged 1721" },
+        { "name": "Thomas Anstis", "role": "deserted with the Good Fortune, April 1721" }
+      ],
+      "lading": [
+        "the Sagrada Família's 40,000 moidores and a diamond-set cross meant for the King of Portugal, Bahia, 1719",
+        "sugar, tobacco and hides from the Lisbon-fleet prize and Brazil trade",
+        "the Royal Africa Company frigate Onslow and a string of RAC and slaver prizes, 1721-22, with gold dust and coin"
+      ],
+      "fate": "Killed by HMS Swallow's grapeshot off Cape Lopez, 10 February 1722, and buried at sea in his finery; 52 of his men hanged at Cape Coast Castle",
+      "track": [
+        { "year": 1719, "season": "summer", "lat": 1.50, "lon": 7.20, "note": "elected captain six weeks after being forced; avenges Davis with a night raid on Príncipe" },
+        { "year": 1719, "season": "autumn", "lat": -13.00, "lon": -38.30, "note": "cuts the Sagrada Família out of the 42-sail Lisbon fleet off Bahia — 40,000 moidores and the king's diamond cross" },
+        { "year": 1719, "season": "autumn", "lat": 5.28, "lon": -52.60, "note": "at the Devil's Islands Kennedy absconds with the Rover and most of the loot" },
+        { "year": 1720, "season": "spring", "lat": 14.00, "lon": -60.00, "note": "rebuilds his company in the Windward Islands with the little Good Fortune" },
+        { "year": 1720, "season": "summer", "lat": 46.72, "lon": -53.36, "note": "storms Trepassey harbour, Newfoundland, black flags flying — 22 ships taken, June 1720" },
+        { "year": 1720, "season": "summer", "lat": 45.00, "lon": -50.00, "note": "takes nine or ten French bankers on the Grand Banks; one becomes the new Royal Fortune" },
+        { "year": 1720, "season": "autumn", "lat": 17.26, "lon": -62.72, "note": "burns shipping in Basseterre road, St Kitts, September 1720" },
+        { "year": 1720, "season": "autumn", "lat": 12.45, "lon": -61.49, "note": "careens at Carriacou, October 1720" },
+        { "year": 1721, "season": "winter", "lat": 14.60, "lon": -61.20, "note": "throttles Martinique's trade — the island's head joins Barbados' on his flag" },
+        { "year": 1721, "season": "spring", "lat": 10.00, "lon": -35.00, "note": "crosses for Guinea on the trades, April-May 1721" },
+        { "year": 1721, "season": "summer", "lat": 15.70, "lon": -17.00, "note": "takes two French ships off the Senegal River, June 1721" },
+        { "year": 1721, "season": "summer", "lat": 8.40, "lon": -13.40, "note": "refits at Sierra Leone among the old pirate-friendly traders, August 1721; takes the RAC frigate Onslow soon after — the last Royal Fortune" },
+        { "year": 1722, "season": "winter", "lat": 6.15, "lon": 2.08, "note": "takes eleven slavers in Ouidah road in a day, January 1722; burns the Porcupine with the enslaved aboard" },
+        { "year": 1722, "season": "winter", "lat": -0.75, "lon": 8.60, "note": "killed at the rail by HMS Swallow's first broadside off Cape Lopez, 10 February 1722; 268 prisoners tried at Cape Coast Castle" }
+      ],
+      "sources": ["Johnson 1724", "1722 Cape Coast trial record", "Rediker 2004", "Cordingly 1995"]
+    },
+    {
+      "id": "edward-england",
+      "name": "Edward England",
+      "era": "post-war",
+      "active_from": 1717,
+      "active_to": 1720,
+      "ship": "Fancy",
+      "ship_type": "34-gun ship; given to Captain Macrae after the Cassandra fight; earlier the Pearl/Royal James",
+      "flag": { "description": "black with white skull over crossed bones — the archetypal Jolly Roger (Johnson 1724)", "motif": "skull-bones", "confidence": "documented" },
+      "crew_size": 300,
+      "notable_crew": [
+        { "name": "John Taylor", "role": "consort captain of the Victory; led the faction that deposed him" }
+      ],
+      "lading": [
+        "the Cassandra and her cargo, valued ~£75,000, taken at Johanna, August 1720",
+        "gold dust, slaves and trade goods from a dozen Guinea-coast prizes, 1719"
+      ],
+      "fate": "Deposed and marooned at Mauritius for sparing Captain Macrae; reached Madagascar on a makeshift boat and died there a beggar, c.1721",
+      "track": [
+        { "year": 1718, "season": "spring", "lat": 25.10, "lon": -77.30, "note": "refuses the pardon as Rogers approaches and sails out of Nassau for Africa" },
+        { "year": 1718, "season": "summer", "lat": 8.40, "lon": -13.50, "note": "takes the Cadogan off Sierra Leone; her captain Skinner murdered by old shipmates" },
+        { "year": 1719, "season": "spring", "lat": 4.80, "lon": -2.00, "note": "sweeps the Gold Coast — a dozen prizes taken, ransomed or burned (Johnson's list)" },
+        { "year": 1720, "season": "spring", "lat": -17.00, "lon": 49.86, "note": "careens at Île Sainte-Marie with the Fancy and Taylor's Victory" },
+        { "year": 1720, "season": "summer", "lat": -12.12, "lon": 44.40, "note": "the Cassandra fight at Johanna, August 1720: Macrae resists for hours, ~90 dead; England takes the ship but spares the captain" },
+        { "year": 1720, "season": "winter", "lat": -20.20, "lon": 57.50, "note": "deposed for that mercy and marooned on Mauritius by Taylor's faction" }
+      ],
+      "sources": ["Johnson 1724", "Macrae's published letter 1720", "E.T. Fox", "Rogozinski 1995"]
+    },
+    {
+      "id": "john-taylor",
+      "name": "John Taylor",
+      "era": "post-war",
+      "active_from": 1720,
+      "active_to": 1723,
+      "ship": "Cassandra",
+      "ship_type": "ex-East India Company ship Cassandra, ~40 guns",
+      "flag": { "description": "black colours reported; device unrecorded", "motif": "black-plain", "confidence": "traditional" },
+      "crew_size": 250,
+      "notable_crew": [],
+      "lading": [
+        "the Nossa Senhora do Cabo's diamonds and treasure, April 1721 — with the gold, silks and church plate, on the order of £800,000: the richest pirate prize of the age",
+        "division at Sainte-Marie: 42 small diamonds a man, or one great one"
+      ],
+      "fate": "Surrendered the Cassandra to Spanish authorities at Portobelo, 1723, for a pardon; reportedly ended an officer of the guarda costas",
+      "track": [
+        { "year": 1720, "season": "summer", "lat": -12.12, "lon": 44.40, "note": "leads the boarding fight against the Cassandra at Johanna and takes her as flagship" },
+        { "year": 1720, "season": "winter", "lat": 9.80, "lon": 75.70, "note": "cruises the Malabar coast with La Buse's Victory, dodging EIC squadrons" },
+        { "year": 1721, "season": "spring", "lat": -20.82, "lon": 55.45, "note": "takes the dismasted Nossa Senhora do Cabo in the Bourbon roadstead with the Goa viceroy aboard, April 1721" },
+        { "year": 1721, "season": "summer", "lat": -17.00, "lon": 49.86, "note": "the great division at Île Sainte-Marie — diamonds measured out by the handful" },
+        { "year": 1721, "season": "winter", "lat": -25.95, "lon": 32.70, "note": "winters and refits at Delagoa Bay, December 1721" },
+        { "year": 1723, "season": "spring", "lat": 9.60, "lon": -79.70, "note": "crosses to the Caribbean and surrenders the Cassandra at Portobelo for a Spanish pardon" }
+      ],
+      "sources": ["Johnson 1724", "E.T. Fox", "Rogozinski 1995"]
+    },
+    {
+      "id": "olivier-levasseur",
+      "name": "Olivier Levasseur ('La Buse')",
+      "era": "post-war",
+      "active_from": 1716,
+      "active_to": 1730,
+      "ship": "Victory",
+      "ship_type": "ship of ~40 guns; earlier the sloop Postillion and others",
+      "flag": { "description": "no flag reliably recorded; later legend gives him a death's-head", "motif": "other", "confidence": "unknown" },
+      "crew_size": 200,
+      "notable_crew": [],
+      "lading": [
+        "share of the Nossa Senhora do Cabo's diamonds, gold bars and silks, 1721",
+        "by legend, the 'Fiery Cross of Goa' — the unrecovered treasure of his cryptogram (legend, not documented)"
+      ],
+      "fate": "Hanged at Saint-Paul, Bourbon, 7 July 1730 — by legend flinging an encrypted note to the crowd: 'find my treasure who can!'",
+      "track": [
+        { "year": 1716, "season": "summer", "lat": 17.60, "lon": -64.70, "note": "consorts with Bellamy and Williams in the Virgin Islands" },
+        { "year": 1719, "season": "spring", "lat": 8.45, "lon": -13.35, "note": "at Sierra Leone with Cocklyn and Howell Davis; the three captains carouse aboard the Bird Galley prize" },
+        { "year": 1720, "season": "spring", "lat": -12.80, "lon": 45.35, "note": "wrecks his ship on Mayotte; rebuilds and rejoins the Indian Ocean cruise" },
+        { "year": 1721, "season": "spring", "lat": -20.82, "lon": 55.45, "note": "with Taylor takes the Nossa Senhora do Cabo at Bourbon — the richest prize of the age, April 1721" },
+        { "year": 1721, "season": "summer", "lat": -17.00, "lon": 49.86, "note": "at the great division at Sainte-Marie" },
+        { "year": 1724, "season": "summer", "lat": -15.60, "lon": 49.75, "note": "lives on at Antongil Bay as trader and pilot; balks at amnesty terms that except his plunder" },
+        { "year": 1730, "season": "summer", "lat": -21.00, "lon": 55.22, "note": "taken off Madagascar, carried to Bourbon; hanged at Saint-Paul, 7 July 1730" }
+      ],
+      "sources": ["Johnson 1724", "Rogozinski 1995", "Bourbon colonial records (execution date)"]
+    },
+    {
+      "id": "christopher-condent",
+      "name": "Christopher Condent",
+      "era": "post-war",
+      "active_from": 1718,
+      "active_to": 1721,
+      "ship": "Flying Dragon",
+      "ship_type": "ex-Dutch ship (the 'Fiery Dragon'), ~40 guns",
+      "flag": { "description": "black flag with three skulls-and-crossbones in a row — traditional attribution", "motif": "skull-bones", "confidence": "traditional" },
+      "crew_size": 150,
+      "notable_crew": [],
+      "lading": [
+        "an Arab/Surat ship taken off Bombay, October 1720, with coin and goods worth ~£150,000 — ~£2,000-£3,000 a man at the division"
+      ],
+      "fate": "Pardoned at Bourbon 1721; married the governor's sister-in-law and died a prosperous Saint-Malo shipowner",
+      "track": [
+        { "year": 1718, "season": "summer", "lat": 25.90, "lon": -77.10, "note": "quits New Providence as Woodes Rogers arrives, bound out across the Atlantic" },
+        { "year": 1718, "season": "autumn", "lat": 15.05, "lon": -23.20, "note": "plunders the salt fleet at Maio and a Dutch war-sloop in the Cape Verdes" },
+        { "year": 1719, "season": "winter", "lat": -7.00, "lon": -34.40, "note": "harries Portuguese shipping along the Brazil coast" },
+        { "year": 1719, "season": "summer", "lat": -35.50, "lon": 19.00, "note": "rounds the Cape for the Indian Ocean" },
+        { "year": 1719, "season": "autumn", "lat": -17.00, "lon": 49.86, "note": "careens at Île Sainte-Marie, finding the old base nearly derelict" },
+        { "year": 1720, "season": "autumn", "lat": 18.80, "lon": 72.40, "note": "takes the great Surat ship off Bombay, October 1720 — ~£150,000, and no prisoners abused, by his order" },
+        { "year": 1721, "season": "spring", "lat": -20.82, "lon": 55.45, "note": "negotiates a pardon at Bourbon; burns the Flying Dragon and settles ashore" }
+      ],
+      "sources": ["Johnson 1724", "E.T. Fox", "de Bry, Fiery Dragon excavation reports"]
+    },
+    {
+      "id": "george-lowther",
+      "name": "George Lowther",
+      "era": "post-war",
+      "active_from": 1721,
+      "active_to": 1723,
+      "ship": "Happy Delivery",
+      "ship_type": "ex-Royal African Company ship Gambia Castle, 16 guns; later the sloop Ranger",
+      "flag": { "description": "no flag reliably recorded", "motif": "other", "confidence": "unknown" },
+      "crew_size": 100,
+      "notable_crew": [
+        { "name": "Edward Low", "role": "lieutenant from January 1722; split away with 44 men that May" },
+        { "name": "John Massey", "role": "soldier co-mutineer; deserted, hanged 1723" }
+      ],
+      "lading": [
+        "the Gambia Castle's Royal African Company trade cargo, 1721",
+        "provisions, rigging and slaver stores from Caribbean and Banks prizes"
+      ],
+      "fate": "Found dead ashore on Blanquilla, October 1723, a discharged pistol beside him — presumed suicide",
+      "track": [
+        { "year": 1721, "season": "summer", "lat": 13.48, "lon": -16.75, "note": "second mate Lowther and Capt. Massey's soldiers seize the RAC's Gambia Castle — renamed Happy Delivery, June 1721" },
+        { "year": 1721, "season": "autumn", "lat": 17.60, "lon": -71.60, "note": "takes prizes off the south coast of Hispaniola" },
+        { "year": 1722, "season": "winter", "lat": 19.25, "lon": -81.50, "note": "at Grand Cayman ships a hard case named Edward Low as lieutenant, January 1722" },
+        { "year": 1722, "season": "spring", "lat": 15.93, "lon": -88.65, "note": "careening camp in the Gulf of Amatique stormed by local attack; the Happy Delivery lost" },
+        { "year": 1722, "season": "spring", "lat": 28.00, "lon": -70.00, "note": "Low splits away with 44 men in a prize brigantine, 28 May 1722 (position approximate)" },
+        { "year": 1722, "season": "autumn", "lat": 32.50, "lon": -78.50, "note": "shattered in a fight with the armed merchantman Amy off South Carolina; winters in a North Carolina inlet" },
+        { "year": 1723, "season": "summer", "lat": 45.50, "lon": -52.00, "note": "rebuilds strength among the Newfoundland fishing fleet" },
+        { "year": 1723, "season": "autumn", "lat": 11.80, "lon": -64.65, "note": "surprised careening at Blanquilla by the sloop Eagle; escapes ashore and is found dead, October 1723" }
+      ],
+      "sources": ["Johnson 1724", "Rediker 2004", "Cordingly 1995"]
+    },
+    {
+      "id": "edward-low",
+      "name": "Edward Low",
+      "era": "post-war",
+      "active_from": 1721,
+      "active_to": 1724,
+      "ship": "Fancy",
+      "ship_type": "schooner Fancy (ex-Mary of Marblehead), 10 guns; later the Rose Pink and Merry Christmas",
+      "flag": { "description": "black flag with a red skeleton (contemporary newspaper descriptions, 1723)", "motif": "full-skeleton", "confidence": "documented" },
+      "crew_size": 100,
+      "notable_crew": [
+        { "name": "Charles Harris", "role": "consort captain of the Ranger; hanged at Newport with 25 men, July 1723" },
+        { "name": "Francis Spriggs", "role": "crewman, later captain in his own right" }
+      ],
+      "lading": [
+        "fish, provisions and thirteen vessels' gear from Port Roseway, June 1722",
+        "wine and sundries from Azores and Canaries prizes, 1722-23",
+        "logwood from the Bay of Honduras"
+      ],
+      "fate": "Fate unrecorded: reported variously as marooned by his own crew and as hanged by the French at Martinique, c.1724",
+      "track": [
+        { "year": 1721, "season": "winter", "lat": 16.30, "lon": -87.00, "note": "turns pirate in the Bay of Honduras after a quarrel over logwood pay; falls in with Lowther soon after" },
+        { "year": 1722, "season": "summer", "lat": 43.60, "lon": -65.30, "note": "takes thirteen fishing vessels at Port Roseway, Nova Scotia; keeps the schooner Mary as the Fancy, June 1722" },
+        { "year": 1722, "season": "summer", "lat": 37.70, "lon": -25.70, "note": "plunders shipping in the road of São Miguel, Azores; the cruelties that made his name begin" },
+        { "year": 1722, "season": "autumn", "lat": 16.50, "lon": -24.50, "note": "works down through the Canaries and Cape Verdes; a failed dash for Brazil" },
+        { "year": 1723, "season": "spring", "lat": 16.00, "lon": -87.50, "note": "massacres the crew of a Spanish sloop that had taken English logwood-men, Bay of Honduras, March 1723" },
+        { "year": 1723, "season": "summer", "lat": 40.95, "lon": -71.30, "note": "mauled by HMS Greyhound off Long Island, 10 June 1723; consort Ranger taken — 26 hanged at Newport — Low flees and turns crueller" },
+        { "year": 1723, "season": "summer", "lat": 41.10, "lon": -69.80, "note": "tortures and murders whaling skipper Nathan Skiff off Nantucket" },
+        { "year": 1723, "season": "autumn", "lat": 38.00, "lon": -27.00, "note": "back to the Azores in the Merry Christmas, flying his red-skeleton black flag" },
+        { "year": 1724, "season": "spring", "lat": 15.00, "lon": -60.00, "note": "last credible reports in the eastern Caribbean; thereafter rumour only (position conjectural)" }
+      ],
+      "sources": ["Johnson 1724", "Boston News-Letter 1723", "Tryals of Charles Harris's crew 1723", "Rediker 2004"]
+    }
+  ]
+}

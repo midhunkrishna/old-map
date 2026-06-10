@@ -256,7 +256,7 @@
     setHUD(`<span class="vg-prompt"><span class="compass-spin" style="display:inline-block">✦</span> Laying the course…</span>`);
     let res, feature;
     try {
-      res = await fetch(`/api/route?from=${A.lon.toFixed(3)},${A.lat.toFixed(3)}&to=${B.lon.toFixed(3)},${B.lat.toFixed(3)}`);
+      res = await engineFetch(`/api/route?from=${A.lon.toFixed(3)},${A.lat.toFixed(3)}&to=${B.lon.toFixed(3)},${B.lat.toFixed(3)}`);
       if (token !== loadToken) return;
       if (!res.ok) {
         let kind = '';

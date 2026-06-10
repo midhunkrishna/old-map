@@ -1,0 +1,1640 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "id": "havana",
+  "title": "Plan of the City and Harbour of San Crist\u00f3bal de la Habana",
+  "survey_basis": "The old-town grid (Obispo, O'Reilly, Oficios, Mercaderes, San Ignacio...) survives intact and is anchored to modern positions. Fortifications after the plans of Bautista Antonelli (Morro, Punta, 1589-1600) and the wall surveys of 1674-1740; cf. Herman Moll's 'Town and Harbour of Havana' inset (1720s).",
+  "center": [
+   -82.35,
+   23.14
+  ],
+  "suggested_zoom": 14
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Havana",
+    "note": "The city side of the harbour; walls landward, the Plaza de Armas by the water"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.366,
+       23.1418
+      ],
+      [
+       -82.363,
+       23.1428
+      ],
+      [
+       -82.36,
+       23.1438
+      ],
+      [
+       -82.359,
+       23.1448
+      ],
+      [
+       -82.3588,
+       23.1456
+      ],
+      [
+       -82.3582,
+       23.146
+      ],
+      [
+       -82.3574,
+       23.1458
+      ],
+      [
+       -82.3568,
+       23.1449
+      ],
+      [
+       -82.356,
+       23.1442
+      ],
+      [
+       -82.355,
+       23.1433
+      ],
+      [
+       -82.354,
+       23.1427
+      ],
+      [
+       -82.353,
+       23.142
+      ],
+      [
+       -82.3515,
+       23.1412
+      ],
+      [
+       -82.35,
+       23.1406
+      ],
+      [
+       -82.3488,
+       23.1401
+      ],
+      [
+       -82.348,
+       23.139
+      ],
+      [
+       -82.3476,
+       23.138
+      ],
+      [
+       -82.3474,
+       23.137
+      ],
+      [
+       -82.3468,
+       23.136
+      ],
+      [
+       -82.3462,
+       23.135
+      ],
+      [
+       -82.3455,
+       23.134
+      ],
+      [
+       -82.3448,
+       23.133
+      ],
+      [
+       -82.3442,
+       23.132
+      ],
+      [
+       -82.3436,
+       23.131
+      ],
+      [
+       -82.343,
+       23.1298
+      ],
+      [
+       -82.3425,
+       23.1288
+      ],
+      [
+       -82.344,
+       23.1278
+      ],
+      [
+       -82.347,
+       23.127
+      ],
+      [
+       -82.352,
+       23.1265
+      ],
+      [
+       -82.36,
+       23.1268
+      ],
+      [
+       -82.366,
+       23.1275
+      ],
+      [
+       -82.366,
+       23.1418
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "El Morro & Casablanca",
+    "note": "The rocky east side of the channel: the Morro on its head, the Caba\u00f1a ridge behind (not yet fortified), fishermen's houses at Casablanca"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3572,
+       23.1524
+      ],
+      [
+       -82.3556,
+       23.153
+      ],
+      [
+       -82.353,
+       23.1533
+      ],
+      [
+       -82.35,
+       23.1534
+      ],
+      [
+       -82.346,
+       23.1532
+      ],
+      [
+       -82.342,
+       23.1526
+      ],
+      [
+       -82.338,
+       23.1517
+      ],
+      [
+       -82.335,
+       23.1505
+      ],
+      [
+       -82.333,
+       23.1485
+      ],
+      [
+       -82.3325,
+       23.146
+      ],
+      [
+       -82.333,
+       23.143
+      ],
+      [
+       -82.334,
+       23.14
+      ],
+      [
+       -82.335,
+       23.137
+      ],
+      [
+       -82.3365,
+       23.1345
+      ],
+      [
+       -82.339,
+       23.133
+      ],
+      [
+       -82.341,
+       23.134
+      ],
+      [
+       -82.3405,
+       23.136
+      ],
+      [
+       -82.34,
+       23.138
+      ],
+      [
+       -82.3405,
+       23.1395
+      ],
+      [
+       -82.3415,
+       23.1406
+      ],
+      [
+       -82.3428,
+       23.1418
+      ],
+      [
+       -82.3442,
+       23.1428
+      ],
+      [
+       -82.346,
+       23.1436
+      ],
+      [
+       -82.3485,
+       23.1442
+      ],
+      [
+       -82.3505,
+       23.145
+      ],
+      [
+       -82.352,
+       23.146
+      ],
+      [
+       -82.3535,
+       23.1475
+      ],
+      [
+       -82.3548,
+       23.149
+      ],
+      [
+       -82.3558,
+       23.1505
+      ],
+      [
+       -82.3566,
+       23.1515
+      ],
+      [
+       -82.3572,
+       23.1524
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "Atar\u00e9s flats",
+    "note": "Mud of the bay-head creeks; careening ground for small craft"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3425,
+       23.1288
+      ],
+      [
+       -82.341,
+       23.1295
+      ],
+      [
+       -82.3395,
+       23.129
+      ],
+      [
+       -82.3395,
+       23.1278
+      ],
+      [
+       -82.341,
+       23.1272
+      ],
+      [
+       -82.3425,
+       23.1278
+      ],
+      [
+       -82.3425,
+       23.1288
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Castillo de los Tres Reyes del Morro",
+    "year_built": 1589,
+    "note": "Antonelli's castle on the harbour throat; the light burns for the plate fleets, and the chain boom runs to La Punta each night"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3576,
+       23.1514
+      ],
+      [
+       -82.3566,
+       23.1523
+      ],
+      [
+       -82.3554,
+       23.1525
+      ],
+      [
+       -82.3544,
+       23.1518
+      ],
+      [
+       -82.3543,
+       23.1508
+      ],
+      [
+       -82.3552,
+       23.15
+      ],
+      [
+       -82.356,
+       23.1496
+      ],
+      [
+       -82.357,
+       23.15
+      ],
+      [
+       -82.3576,
+       23.1506
+      ],
+      [
+       -82.3576,
+       23.1514
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Castillo de San Salvador de la Punta",
+    "year_built": 1600,
+    "note": "The Morro's partner across the channel \u2014 the boom runs between them"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3588,
+       23.1456
+      ],
+      [
+       -82.358,
+       23.1462
+      ],
+      [
+       -82.357,
+       23.146
+      ],
+      [
+       -82.3568,
+       23.1451
+      ],
+      [
+       -82.3576,
+       23.1445
+      ],
+      [
+       -82.3586,
+       23.1447
+      ],
+      [
+       -82.3588,
+       23.1456
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Castillo de la Real Fuerza",
+    "year_built": 1577,
+    "note": "The old square fort with four bastions and a moat, treasury of fleets in transit; the Giraldilla vane turns above it"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3506,
+       23.1416
+      ],
+      [
+       -82.3498,
+       23.1421
+      ],
+      [
+       -82.349,
+       23.1416
+      ],
+      [
+       -82.349,
+       23.1406
+      ],
+      [
+       -82.3498,
+       23.1401
+      ],
+      [
+       -82.3506,
+       23.1406
+      ],
+      [
+       -82.3506,
+       23.1416
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Las Murallas",
+    "year_built": 1674,
+    "note": "The land wall, begun 1674 and all but closed by the 1730s: nine bastions, two gates, twelve feet of rampart"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3582,
+       23.146
+      ],
+      [
+       -82.3578,
+       23.1445
+      ],
+      [
+       -82.3576,
+       23.1425
+      ],
+      [
+       -82.3574,
+       23.1405
+      ],
+      [
+       -82.3576,
+       23.1385
+      ],
+      [
+       -82.3572,
+       23.1365
+      ],
+      [
+       -82.3564,
+       23.1345
+      ],
+      [
+       -82.3552,
+       23.1325
+      ],
+      [
+       -82.3534,
+       23.1307
+      ],
+      [
+       -82.351,
+       23.1293
+      ],
+      [
+       -82.348,
+       23.1283
+      ],
+      [
+       -82.3445,
+       23.1279
+      ],
+      [
+       -82.3425,
+       23.1288
+      ],
+      [
+       -82.3448,
+       23.1288
+      ],
+      [
+       -82.348,
+       23.1292
+      ],
+      [
+       -82.3506,
+       23.1301
+      ],
+      [
+       -82.3526,
+       23.1314
+      ],
+      [
+       -82.3542,
+       23.133
+      ],
+      [
+       -82.3554,
+       23.1348
+      ],
+      [
+       -82.3564,
+       23.1367
+      ],
+      [
+       -82.3568,
+       23.1386
+      ],
+      [
+       -82.3566,
+       23.1406
+      ],
+      [
+       -82.3568,
+       23.1426
+      ],
+      [
+       -82.357,
+       23.1446
+      ],
+      [
+       -82.3574,
+       23.1458
+      ],
+      [
+       -82.3582,
+       23.146
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Bater\u00eda de San Telmo",
+    "guns": 8,
+    "note": "Shore guns inside the channel (plausible siting of the lesser water batteries)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3535,
+     23.1431
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Bater\u00eda de la Contadur\u00eda",
+    "guns": 6,
+    "note": "Covers the careenage and the treasury quay"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3475,
+     23.1375
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle Obispo",
+    "note": "From the Plaza de Armas to the land gate; shops of the silversmiths"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.349,
+      23.1399
+     ],
+     [
+      -82.352,
+      23.1392
+     ],
+     [
+      -82.355,
+      23.1384
+     ],
+     [
+      -82.3572,
+      23.1378
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle O'Reilly",
+    "note": "(later name; the street of the parish gate in 1730)"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3492,
+      23.1406
+     ],
+     [
+      -82.3525,
+      23.1398
+     ],
+     [
+      -82.3555,
+      23.1389
+     ],
+     [
+      -82.3573,
+      23.1385
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle Empedrado"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3514,
+      23.1413
+     ],
+     [
+      -82.354,
+      23.1406
+     ],
+     [
+      -82.3566,
+      23.1398
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle Obrap\u00eda"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3487,
+      23.139
+     ],
+     [
+      -82.3515,
+      23.1382
+     ],
+     [
+      -82.3545,
+      23.1374
+     ],
+     [
+      -82.3566,
+      23.1368
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle Lamparilla"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3484,
+      23.1382
+     ],
+     [
+      -82.3513,
+      23.1374
+     ],
+     [
+      -82.3543,
+      23.1366
+     ],
+     [
+      -82.3563,
+      23.136
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle Amargura",
+    "note": "The Lenten procession street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3481,
+      23.1374
+     ],
+     [
+      -82.351,
+      23.1366
+     ],
+     [
+      -82.354,
+      23.1358
+     ],
+     [
+      -82.356,
+      23.1352
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle del Teniente Rey"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3478,
+      23.1365
+     ],
+     [
+      -82.3508,
+      23.1357
+     ],
+     [
+      -82.3538,
+      23.1349
+     ],
+     [
+      -82.3556,
+      23.1343
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Muralla",
+    "note": "Runs to the principal land gate"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3476,
+      23.1356
+     ],
+     [
+      -82.3506,
+      23.1348
+     ],
+     [
+      -82.3535,
+      23.134
+     ],
+     [
+      -82.355,
+      23.1334
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle del Sol"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3472,
+      23.1347
+     ],
+     [
+      -82.3503,
+      23.1339
+     ],
+     [
+      -82.3532,
+      23.1331
+     ],
+     [
+      -82.3546,
+      23.1325
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Luz"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3467,
+      23.1338
+     ],
+     [
+      -82.3498,
+      23.133
+     ],
+     [
+      -82.3526,
+      23.1322
+     ],
+     [
+      -82.354,
+      23.1316
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de los Oficios",
+    "note": "From the Plaza de Armas past San Francisco to the gate of the Arsenal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.349,
+      23.14
+     ],
+     [
+      -82.3483,
+      23.138
+     ],
+     [
+      -82.3478,
+      23.137
+     ],
+     [
+      -82.3473,
+      23.1355
+     ],
+     [
+      -82.3468,
+      23.1342
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de los Mercaderes"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3512,
+      23.1408
+     ],
+     [
+      -82.3506,
+      23.139
+     ],
+     [
+      -82.3499,
+      23.1372
+     ],
+     [
+      -82.3493,
+      23.1357
+     ],
+     [
+      -82.3487,
+      23.1342
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de San Ignacio"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3519,
+      23.1411
+     ],
+     [
+      -82.3512,
+      23.139
+     ],
+     [
+      -82.3504,
+      23.1365
+     ],
+     [
+      -82.35,
+      23.1351
+     ],
+     [
+      -82.3496,
+      23.1336
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de Cuba"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3528,
+      23.1414
+     ],
+     [
+      -82.352,
+      23.139
+     ],
+     [
+      -82.3513,
+      23.1365
+     ],
+     [
+      -82.3507,
+      23.1342
+     ],
+     [
+      -82.3503,
+      23.1328
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de Aguiar"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3538,
+      23.1417
+     ],
+     [
+      -82.353,
+      23.1392
+     ],
+     [
+      -82.3523,
+      23.1368
+     ],
+     [
+      -82.3517,
+      23.1345
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Habana"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3548,
+      23.142
+     ],
+     [
+      -82.354,
+      23.1395
+     ],
+     [
+      -82.3533,
+      23.137
+     ],
+     [
+      -82.3527,
+      23.1348
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza de Armas",
+    "note": "Parade before La Fuerza and the parish church"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3497,
+       23.1398
+      ],
+      [
+       -82.3488,
+       23.1398
+      ],
+      [
+       -82.3488,
+       23.1407
+      ],
+      [
+       -82.3497,
+       23.1407
+      ],
+      [
+       -82.3497,
+       23.1398
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza Vieja",
+    "note": "Market square; balconied merchant houses"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3499,
+       23.1351
+      ],
+      [
+       -82.349,
+       23.1351
+      ],
+      [
+       -82.349,
+       23.136
+      ],
+      [
+       -82.3499,
+       23.136
+      ],
+      [
+       -82.3499,
+       23.1351
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza de San Francisco",
+    "note": "By the quay; the fleet's business done here"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3483,
+       23.1367
+      ],
+      [
+       -82.3475,
+       23.1367
+      ],
+      [
+       -82.3475,
+       23.1375
+      ],
+      [
+       -82.3483,
+       23.1375
+      ],
+      [
+       -82.3483,
+       23.1367
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plazuela de la Ci\u00e9naga",
+    "note": "The swampy little square \u2014 the cathedral will rise here a generation hence"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3521,
+       23.1409
+      ],
+      [
+       -82.3513,
+       23.1409
+      ],
+      [
+       -82.3513,
+       23.1416
+      ],
+      [
+       -82.3521,
+       23.1416
+      ],
+      [
+       -82.3521,
+       23.1409
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza del Cristo"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -82.3548,
+       23.1348
+      ],
+      [
+       -82.354,
+       23.1348
+      ],
+      [
+       -82.354,
+       23.1356
+      ],
+      [
+       -82.3548,
+       23.1356
+      ],
+      [
+       -82.3548,
+       23.1348
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Parroquial Mayor",
+    "year_built": 1574,
+    "note": "The old parish church on the Plaza de Armas \u2014 Havana's principal church until the cathedral; demolished 1770s for the Captains-General palace"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.349,
+     23.1404
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Convento de San Francisco de As\u00eds",
+    "year_built": 1591,
+    "note": "Rebuilding in the 1720s-30s with its great tower, the tallest in Havana"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3477,
+     23.1367
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Convento de Santa Clara",
+    "year_built": 1644
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3515,
+     23.1353
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Iglesia del Esp\u00edritu Santo",
+    "year_built": 1638,
+    "note": "The free-negroes' parish, the oldest standing church in the city"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.35,
+     23.1335
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Iglesia del Santo Cristo del Buen Viaje",
+    "year_built": 1693,
+    "note": "Sailors' votive church at the head of Amargura"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3543,
+     23.1351
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Muelle de la Contadur\u00eda",
+    "note": "Silver weighed, registered and (some of it) taxed before lading"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3487,
+      23.1395
+     ],
+     [
+      -82.3482,
+      23.1385
+     ],
+     [
+      -82.3478,
+      23.1376
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Muelle de la Caballer\u00eda"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -82.3496,
+      23.1405
+     ],
+     [
+      -82.349,
+      23.1401
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Real Arsenal (shipyard)",
+    "year_built": 1722,
+    "note": "Building the biggest warships in the Americas from Cuban cedar and mahogany"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.342,
+     23.129
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Casa del Gobernador",
+    "note": "The governor lodges by the Plaza de Armas; the great palace is yet unbuilt"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3495,
+     23.1403
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Casa de la Contadur\u00eda (royal counting-house)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.348,
+     23.1371
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 165,
+    "name": "Capitana of the flota",
+    "note": "The plate fleet assembles here for the run home through the Florida Strait"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3485,
+     23.1423
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 170,
+    "name": "Almiranta"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.347,
+     23.1415
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 160,
+    "note": "Register ship of the flota"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3455,
+     23.1405
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 155
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3445,
+     23.139
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 150
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3435,
+     23.137
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 140,
+    "note": "Guarda-costa sloop \u2014 terror of English logwoodmen"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.346,
+     23.135
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 120
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3415,
+     23.132
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "canoe",
+    "heading": 90,
+    "note": "Ferry to Casablanca"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.343,
+     23.141
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Canal de Entrada"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.3555,
+     23.1482
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Casablanca"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.339,
+     23.139
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Bah\u00eda de la Habana"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.344,
+     23.14
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "La Caba\u00f1a heights"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.349,
+     23.1533
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "The sea face"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.362,
+     23.1433
+    ]
+   }
+  }
+ ]
+}

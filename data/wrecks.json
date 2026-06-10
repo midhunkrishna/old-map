@@ -1,0 +1,567 @@
+[
+ {
+  "id": "whydah",
+  "name": "Whydah Gally",
+  "year": 1717,
+  "lat": 41.902,
+  "lon": -69.956,
+  "ship_type": "galley (ex-slaver)",
+  "nationality": "pirate (English)",
+  "captain": "Samuel 'Black Sam' Bellamy",
+  "story": "Bellamy took the brand-new slaver Whydah in 1717 and made her his flagship, plundering 50+ ships. On 26 April 1717 a nor'easter drove her onto the bar off Wellfleet, Cape Cod; 144 drowned, including Bellamy. Only two men aboard survived.",
+  "cargo": "Plunder of ~50 prizes: 4.5 tons of silver and gold, indigo, ivory",
+  "discovery": "Found by Barry Clifford in 1984 — the first authenticated pirate shipwreck ever recovered (ship's bell inscribed THE WHYDAH GALLY 1716).",
+  "precision": "exact",
+  "sources": [
+   "Whydah Pirate Museum",
+   "Clifford, Expedition Whydah"
+  ]
+ },
+ {
+  "id": "queen-annes-revenge",
+  "name": "Queen Anne's Revenge",
+  "year": 1718,
+  "lat": 34.69,
+  "lon": -76.694,
+  "ship_type": "frigate (ex-slaver La Concorde)",
+  "nationality": "pirate (English)",
+  "captain": "Edward Teach — Blackbeard",
+  "story": "Blackbeard's 40-gun flagship, the French slaver La Concorde taken in 1717, ran aground on the bar of Beaufort Inlet in June 1718 — possibly deliberately, to break up his 400-man company and slip away with the loot in a sloop.",
+  "cargo": "Stripped before loss; cannon, anchors and gold dust remained",
+  "discovery": "Located 1996 by Intersal; thirty-one cannon and a quarter-million artifacts raised; identification confirmed 2011.",
+  "precision": "exact",
+  "sources": [
+   "NC Dept. of Natural & Cultural Resources, QAR Project"
+  ]
+ },
+ {
+  "id": "urca-de-lima",
+  "name": "Urca de Lima (1715 fleet)",
+  "year": 1715,
+  "lat": 27.513,
+  "lon": -80.293,
+  "ship_type": "storeship (urca)",
+  "nationality": "Spain",
+  "captain": "flota of Juan Esteban de Ubilla",
+  "story": "On 31 July 1715 a hurricane destroyed the combined homeward plate fleet on the Florida reefs — eleven ships and ~1,000 men. The Urca de Lima grounded nearly intact off Fort Pierce; Spanish salvage camps ashore were soon raided by Henry Jennings, which helped ignite the Nassau pirate republic.",
+  "cargo": "Hides, chocolate, incense; her registered silver was largely salvaged 1715–16",
+  "discovery": "Rediscovered 1928; Florida's first Underwater Archaeological Preserve (1987).",
+  "precision": "exact",
+  "sources": [
+   "Florida Division of Historical Resources"
+  ]
+ },
+ {
+  "id": "nuestra-senora-regla",
+  "name": "Nuestra Señora de la Regla (1715 fleet capitana)",
+  "year": 1715,
+  "lat": 27.862,
+  "lon": -80.442,
+  "ship_type": "galleon, capitana",
+  "nationality": "Spain",
+  "captain": "Juan Esteban de Ubilla",
+  "story": "Ubilla's flagship struck off present-day Sebastian Inlet in the 1715 hurricane and broke apart in minutes, drowning the general and over 200 men. Her silver spilled along the beach that treasure hunters still comb — Florida's 'Treasure Coast' is named for this fleet.",
+  "cargo": "~1,300 chests of silver pesos, Mexican gold",
+  "discovery": "Salvaged by Spain 1715–18 and by Real Eight Co. from 1961; coins still wash ashore after storms.",
+  "precision": "approximate",
+  "sources": [
+   "Florida Division of Historical Resources",
+   "McLarty Treasure Museum"
+  ]
+ },
+ {
+  "id": "san-jose",
+  "name": "San José",
+  "year": 1708,
+  "lat": 10.15,
+  "lon": -75.75,
+  "ship_type": "60-gun galleon",
+  "nationality": "Spain",
+  "captain": "José Fernández de Santillán",
+  "story": "Flagship of the Tierra Firme fleet, blown up in action with Commodore Wager's squadron off Barú on 8 June 1708, during the War of the Spanish Succession. She sank in minutes with ~600 men and the silver of the Portobelo fair — the richest wreck on earth.",
+  "cargo": "Gold, silver and emeralds valued at 7–11 million pesos (billions today)",
+  "discovery": "Located by Colombia in 2015 at ~600 m depth; exact site a state secret, recovery still disputed.",
+  "precision": "general-area",
+  "sources": [
+   "Woods Hole Oceanographic Institution",
+   "Gov. of Colombia announcements 2015–2024"
+  ]
+ },
+ {
+  "id": "adventure-galley",
+  "name": "Adventure Galley",
+  "year": 1698,
+  "lat": -17.06,
+  "lon": 49.855,
+  "ship_type": "hybrid oared galley-frigate",
+  "nationality": "England (privateer)",
+  "captain": "William Kidd",
+  "story": "Kidd's purpose-built pirate-hunter — which turned pirate instead — was leaking so badly by 1698 that he stripped and scuttled her in the harbour of Île Sainte-Marie, transferring to his prize the Quedagh Merchant. Kidd hanged at Execution Dock in 1701.",
+  "cargo": "None (stripped); ballast and timbers remain",
+  "discovery": "Timbers and ballast investigated off Îlot Madame; a 2015 'silver ingot' claim was debunked by UNESCO (the bar was lead).",
+  "precision": "approximate",
+  "sources": [
+   "UNESCO mission report 2015",
+   "Zacks, The Pirate Hunter"
+  ]
+ },
+ {
+  "id": "fiery-dragon",
+  "name": "Fiery Dragon",
+  "year": 1721,
+  "lat": -17.0,
+  "lon": 49.86,
+  "ship_type": "ship (ex-Dutch)",
+  "nationality": "pirate",
+  "captain": "William Condon (Condent)",
+  "story": "The flagship of Christopher Condent's successor burned and sank in the pirate anchorage of Île Sainte-Marie in 1721. Excavations found Chinese porcelain, gold dust and cowries — the sweepings of the Indian Ocean trade.",
+  "cargo": "Porcelain, gold dust, trade goods from Red Sea prizes",
+  "discovery": "Excavated 2000s by a joint Malagasy–US team (Center for Historic Shipwreck Preservation).",
+  "precision": "approximate",
+  "sources": [
+   "de Bry & Beeker excavation reports"
+  ]
+ },
+ {
+  "id": "speaker",
+  "name": "Speaker",
+  "year": 1702,
+  "lat": -20.42,
+  "lon": 57.76,
+  "ship_type": "50-gun ship (ex-slaver)",
+  "nationality": "pirate (English)",
+  "captain": "John Bowen",
+  "story": "Bowen's pirate ship, returning fat from the Red Sea, struck the reef at Grand Port, Mauritius, in January 1702. The crew got ashore with much of the loot, were courteously hosted by the Dutch, and bought a sloop to sail away — piracy had friends everywhere.",
+  "cargo": "Red Sea plunder; coins and pewter recovered",
+  "discovery": "Found 1979 by Jacques Dumas; excavated by Patrick Lizé — first pirate wreck ever excavated.",
+  "precision": "approximate",
+  "sources": [
+   "Lizé, 'The Wreck of the Pirate Ship Speaker'"
+  ]
+ },
+ {
+  "id": "henrietta-marie",
+  "name": "Henrietta Marie",
+  "year": 1700,
+  "lat": 24.62,
+  "lon": -82.12,
+  "ship_type": "slave ship",
+  "nationality": "England",
+  "captain": "Thomas Chamberlain",
+  "story": "Homeward from delivering 190 enslaved Africans at Jamaica, the London slaver sank on New Ground Reef west of Key West in 1700. She is the most complete early slave-ship wreck known, her iron shackles a unique direct testimony of the trade the pirates both preyed on and joined.",
+  "cargo": "Sugar, logwood, cotton; 80+ pairs of shackles found",
+  "discovery": "Found 1972 by Mel Fisher's team hunting the Atocha; identified by her bell in 1983.",
+  "precision": "exact",
+  "sources": [
+   "Mel Fisher Maritime Museum",
+   "NABS memorial 1993"
+  ]
+ },
+ {
+  "id": "san-pedro-1733",
+  "name": "San Pedro (1733 fleet)",
+  "year": 1733,
+  "lat": 24.852,
+  "lon": -80.681,
+  "ship_type": "Dutch-built galleon",
+  "nationality": "Spain",
+  "captain": "flota of Rodrigo de Torres",
+  "story": "On 15 July 1733 a hurricane wrecked the entire New Spain flota — nineteen ships — along eighty miles of the Florida Keys. Spain mounted a massive salvage, recovering more silver than the manifests admitted existed; the San Pedro lies in Hawk Channel off Islamorada.",
+  "cargo": "16,000 pesos registered silver, Chinese porcelain (much salvaged 1733–38)",
+  "discovery": "Located 1960s; Florida Underwater Archaeological Preserve since 1989.",
+  "precision": "exact",
+  "sources": [
+   "Florida Division of Historical Resources, 1733 Spanish Galleon Trail"
+  ]
+ },
+ {
+  "id": "vliegent-hart",
+  "name": "'t Vliegent Hart",
+  "year": 1735,
+  "lat": 51.43,
+  "lon": 3.31,
+  "ship_type": "VOC East Indiaman",
+  "nationality": "Dutch Republic",
+  "captain": "Cornelis van der Horst",
+  "story": "Outward bound for Batavia with coin chests aboard, the Flying Hart missed the channel off Vlissingen on 3 February 1735 and went down with all ~256 hands in sight of land. Her mailbag, recovered two centuries later, still held legible letters.",
+  "cargo": "Three chests of gold ducats and silver, wine, supplies",
+  "discovery": "Found 1981; ducats, wine bottles and letters recovered through the 1990s.",
+  "precision": "exact",
+  "sources": [
+   "Rijksmuseum & Zeeland maritime records"
+  ]
+ },
+ {
+  "id": "hms-association",
+  "name": "HMS Association",
+  "year": 1707,
+  "lat": 49.872,
+  "lon": -6.398,
+  "ship_type": "90-gun second rate",
+  "nationality": "Great Britain (Royal Navy)",
+  "captain": "Admiral Sir Cloudesley Shovell (fleet flag)",
+  "story": "Returning from Toulon, Shovell's fleet misjudged its longitude and ran onto the Scilly rocks on the night of 22 October 1707; the Association, Eagle and Romney sank with ~1,450 men, the admiral among them. The disaster drove Parliament's Longitude Act of 1714 — the problem every navigator on this map sails with.",
+  "cargo": "Fleet pay chests and plate",
+  "discovery": "Found 1967 off Gilstone Ledge; coins and cannon raised.",
+  "precision": "exact",
+  "sources": [
+   "Sobel, Longitude",
+   "Isles of Scilly Museum"
+  ]
+ },
+ {
+  "id": "quedagh-merchant",
+  "name": "Quedagh Merchant (Cara Merchant)",
+  "year": 1699,
+  "lat": 18.34,
+  "lon": -68.99,
+  "ship_type": "Armenian-owned Indian merchantman",
+  "nationality": "prize of England",
+  "captain": "William Kidd (prize)",
+  "story": "Kidd's great prize, taken off India with French passes in 1698, was left at Hispaniola when he sailed north to clear his name in 1699. His trustees promptly looted and burned her off Isla Catalina. The wreck — cannon and anchors in three metres of water — waited 308 years.",
+  "cargo": "Silk, calico, sugar, opium, iron (mostly looted before burning)",
+  "discovery": "Found 2007 by Indiana University divers; now a Dominican living museum preserve.",
+  "precision": "exact",
+  "sources": [
+   "Indiana University Center for Underwater Science"
+  ]
+ },
+ {
+  "id": "guadalupe-1724",
+  "name": "Nuestra Señora de Guadalupe",
+  "year": 1724,
+  "lat": 19.18,
+  "lon": -69.44,
+  "ship_type": "azogue (mercury ship)",
+  "nationality": "Spain",
+  "captain": "flota of Baltasar de Guevara",
+  "story": "Carrying quicksilver — the mercury without which the silver mines of Mexico stopped — the Guadalupe and the Tolosa were driven into Samaná Bay by a hurricane in August 1724. Some 600 died between the two ships; survivors on the Tolosa's mizzen-top lived a month on rainwater and chocolate.",
+  "cargo": "144 tons of mercury, wine, ironwork",
+  "discovery": "Found 1976–77; thousands of artifacts in the Museo de las Casas Reales, Santo Domingo.",
+  "precision": "approximate",
+  "sources": [
+   "Borrell, Historia y rescate del galeón Guadalupe"
+  ]
+ },
+ {
+  "id": "tolosa-1724",
+  "name": "Conde de Tolosa",
+  "year": 1724,
+  "lat": 19.29,
+  "lon": -69.56,
+  "ship_type": "azogue (mercury ship)",
+  "nationality": "Spain",
+  "captain": "(see Guadalupe)",
+  "story": "The Tolosa struck a reef deeper in Samaná Bay in the same August 1724 hurricane; only 40 of ~600 aboard survived, eight of them after 32 days in the rigging. With the Guadalupe she is the best-preserved window on Spain's mercury lifeline.",
+  "cargo": "Mercury, passengers' goods, Puebla pottery",
+  "discovery": "Excavated 1976–77 with the Guadalupe.",
+  "precision": "approximate",
+  "sources": [
+   "Museo de las Casas Reales, Santo Domingo"
+  ]
+ },
+ {
+  "id": "slot-ter-hooge",
+  "name": "Slot ter Hooge",
+  "year": 1724,
+  "lat": 33.07,
+  "lon": -16.33,
+  "ship_type": "VOC East Indiaman",
+  "nationality": "Dutch Republic",
+  "captain": "Steven Boom",
+  "story": "Outward for Batavia with silver bars, she anchored off Porto Santo (Madeira) in a November 1724 gale and was driven onto the rocks; 221 of 254 drowned. John Lethbridge, the Devon diver with his famous wooden 'diving barrel', salvaged most of the silver for the VOC in 1725–27.",
+  "cargo": "~1,500 silver bars and 3 chests of coin",
+  "discovery": "Relocated 1974 by Sténuit; Lethbridge's barrel dives of the 1720s are a legend of early salvage.",
+  "precision": "approximate",
+  "sources": [
+   "Sténuit, 'The Treasure of Porto Santo'"
+  ]
+ },
+ {
+  "id": "de-liefde",
+  "name": "De Liefde",
+  "year": 1711,
+  "lat": 60.424,
+  "lon": -0.738,
+  "ship_type": "VOC East Indiaman",
+  "nationality": "Dutch Republic",
+  "captain": "Barent Muijkens",
+  "story": "Taking the northern route around Scotland to dodge French privateers, the Liefde struck the Out Skerries, Shetland, on 7 November 1711. One man — the lookout, thrown onto the rocks — survived of ~300. Her chests held coin for the Indies trade.",
+  "cargo": "227,000 guilders in silver coin",
+  "discovery": "Salvaged 1965–68; ducatons displayed in Lerwick.",
+  "precision": "exact",
+  "sources": [
+   "Shetland Museum",
+   "Bax & Martin survey"
+  ]
+ },
+ {
+  "id": "akerendam",
+  "name": "Akerendam",
+  "year": 1725,
+  "lat": 62.4,
+  "lon": 5.62,
+  "ship_type": "VOC East Indiaman",
+  "nationality": "Dutch Republic",
+  "captain": "Nicolaas de Roy",
+  "story": "On her maiden voyage to Batavia by the northern route, the Akerendam wrecked on Runde island, Norway, in a March 1725 storm — all ~200 hands lost. Divers in 1972 found her coin chests: the largest treasure ever recovered in Norway.",
+  "cargo": "19 chests — 57,000 gold and silver coins",
+  "discovery": "Found 1972; 'Runde treasure' split between Norway and the Netherlands.",
+  "precision": "exact",
+  "sources": [
+   "Bergen Maritime Museum"
+  ]
+ },
+ {
+  "id": "maravillas",
+  "name": "Nuestra Señora de las Maravillas",
+  "year": 1656,
+  "lat": 27.0,
+  "lon": -79.1,
+  "ship_type": "galleon, almiranta",
+  "nationality": "Spain",
+  "captain": "Matías de Orellana",
+  "story": "The almiranta of the 1656 fleet, rammed and sunk on Little Bahama Bank with five million pesos. For eighty years afterward — including the whole pirate era — Spanish, English and freelance 'wrackers' fished her bones; half the divers in the Bahamas of 1730 learned the trade on her.",
+  "cargo": "~5 million pesos silver, gold, emeralds; salvaged piecemeal for a century",
+  "discovery": "Relocated repeatedly (Marx 1972; AllenX 2020s exhibit in Nassau).",
+  "precision": "general-area",
+  "sources": [
+   "Bahamas Maritime Museum",
+   "Marx, Shipwrecks of the Western Hemisphere"
+  ]
+ },
+ {
+  "id": "atocha",
+  "name": "Nuestra Señora de Atocha",
+  "year": 1622,
+  "lat": 24.55,
+  "lon": -82.46,
+  "ship_type": "galleon, almiranta",
+  "nationality": "Spain",
+  "captain": "(fleet of Tierra Firme, 1622)",
+  "story": "Lost on the Marquesas shoals in the hurricane of 1622, the Atocha was the great unfinished salvage of the Spanish Caribbean — her story was still told in every Havana tavern in 1730. Mel Fisher's 1985 recovery of her 'motherlode' made her the most famous treasure wreck of all.",
+  "cargo": "24 tons of silver, 125 gold bars, 70 lb of emeralds",
+  "discovery": "Motherlode found 4 July 1985 after a 16-year search that cost Fisher his son.",
+  "precision": "exact",
+  "sources": [
+   "Mel Fisher Maritime Museum",
+   "Mathewson, Treasure of the Atocha"
+  ]
+ },
+ {
+  "id": "batavia-1629",
+  "name": "Batavia",
+  "year": 1629,
+  "lat": -28.49,
+  "lon": 113.79,
+  "ship_type": "VOC East Indiaman",
+  "nationality": "Dutch Republic",
+  "captain": "Francisco Pelsaert (commander)",
+  "story": "The VOC's new flagship overshot the Brouwer-route turn and struck the Houtman Abrolhos off Australia in 1629. What followed — mutiny, massacre of 125 castaways, and hangings on the spot — is the darkest sea story of the age, and the standing warning to every captain running the forties for Sunda Strait.",
+  "cargo": "Silver coin chests, sandstone portico for Batavia castle",
+  "discovery": "Found 1963; hull timbers and skeletons in the Fremantle museum.",
+  "precision": "exact",
+  "sources": [
+   "Western Australian Museum",
+   "Dash, Batavia's Graveyard"
+  ]
+ },
+ {
+  "id": "hms-feversham",
+  "name": "HMS Feversham",
+  "year": 1711,
+  "lat": 45.95,
+  "lon": -59.78,
+  "ship_type": "32-gun frigate",
+  "nationality": "Great Britain (Royal Navy)",
+  "captain": "Robert Paston",
+  "story": "Convoying for the Quebec expedition, the Feversham and three transports wrecked on Scatarie Island, Cape Breton, in October 1711 — over 100 lost, with the colonial pay chests. New York and New England coin from her wreck documents the cash that actually circulated in the colonies.",
+  "cargo": "Colonial pay: Spanish, Massachusetts and New York coin",
+  "discovery": "Found 1968; coins surfaced at auction through the 1990s.",
+  "precision": "approximate",
+  "sources": [
+   "Parks Canada",
+   "Nova Scotia Museum"
+  ]
+ },
+ {
+  "id": "royal-james",
+  "name": "Royal James (ex-Revenge)",
+  "year": 1718,
+  "lat": 33.92,
+  "lon": -78.02,
+  "ship_type": "10-gun sloop",
+  "nationality": "pirate (English)",
+  "captain": "Stede Bonnet",
+  "story": "The 'gentleman pirate' Stede Bonnet, run to ground in the Cape Fear River, fought a five-hour battle on the sandbars against Colonel Rhett's sloops in September 1718. The grounded and battered Royal James was taken; Bonnet hanged at Charleston that December. The river bars still hide the battle's debris.",
+  "cargo": "None of note — Bonnet's luck had run out",
+  "discovery": "Battle site surveyed; no confirmed hull found.",
+  "precision": "general-area",
+  "sources": [
+   "Trial of Stede Bonnet (1719)",
+   "SC Maritime Archaeology"
+  ]
+ },
+ {
+  "id": "el-rubi-capitana-1733",
+  "name": "El Rubi Segundo (Capitana), 1733 New Spain Flota",
+  "year": 1733,
+  "lat": 24.92,
+  "lon": -80.51,
+  "ship_type": "galleon / warship, capitana of the flota",
+  "nationality": "Spanish",
+  "captain": "Rodrigo de Torres (lieutenant general of the fleet)",
+  "story": "Flagship of the 1733 flota, driven onto the reefs off the upper Keys in the 15 July 1733 hurricane. Survivors camped on the islands while Spanish divers salvaged the registered treasure; the wrecks were then burned to the waterline to deter freelance wreckers.",
+  "cargo": "Silver specie and bullion (largely recovered by Spanish salvors 1733-34), plus general New Spain produce.",
+  "discovery": "Found in 1938 off Plantation Key by pioneering hard-hat salvor Art McKee, who built his 'Museum of Sunken Treasure' around it — often called the first treasure-wreck salvage in the Keys.",
+  "precision": "approximate",
+  "sources": [
+   "Florida Keys National Marine Sanctuary, 1733 Spanish Galleon Trail (Capitana El Rubi)",
+   "Robert F. Marx, Shipwrecks in the Americas"
+  ]
+ },
+ {
+  "id": "zuytdorp",
+  "name": "Zuytdorp",
+  "year": 1712,
+  "lat": -27.19,
+  "lon": 113.94,
+  "ship_type": "VOC East Indiaman (~700 tons)",
+  "nationality": "Dutch (VOC, Zeeland chamber)",
+  "captain": "Marinus Wijsvliet",
+  "story": "Bound from the Cape to Batavia in 1712 with a coin cargo, she overshot the Brouwer-route turn north and struck the base of towering cliffs (now the Zuytdorp Cliffs) between the Murchison River and Shark Bay, Western Australia. Survivors reached the clifftop — relics and camps suggest some lived with, or died among, Aboriginal people; no survivor ever reached Batavia, and the VOC never learned her fate.",
+  "cargo": "Newly minted 1711 silver schellingen and double stuivers from the Middelburg mint; a 'carpet of silver' was found in the surf zone.",
+  "discovery": "Wreckage and coins spotted by stockman Tom Pepper in 1927; identified in 1958 (Phillip Playford); investigated by the Western Australian Museum from the 1970s; protected under the Commonwealth Historic Shipwrecks Act.",
+  "precision": "approximate",
+  "sources": [
+   "Western Australian Museum, Zuytdorp wreck site records",
+   "Phillip Playford, Carpet of Silver: The Wreck of the Zuytdorp (1996)"
+  ]
+ },
+ {
+  "id": "zeewijk",
+  "name": "Zeewijk",
+  "year": 1727,
+  "lat": -28.88,
+  "lon": 113.81,
+  "ship_type": "VOC East Indiaman (~140 ft, ~600 tons)",
+  "nationality": "Dutch (VOC, Zeeland chamber)",
+  "captain": "Jan Steyns",
+  "story": "Running her easting down for Batavia, she struck Half Moon Reef in the Pelsaert Group of the Houtman Abrolhos off Western Australia on 9 June 1727. Survivors lived for months on the islands, and after a longboat sent for help vanished, built a small sloop — the Sloepie, the first European-style vessel built in Australia — from wreckage and mangrove wood, sailing 82 survivors and most of the money chests to Batavia in 1728.",
+  "cargo": "Ten chests of silver coin (~315,800 guilders), most carried to Batavia in the Sloepie.",
+  "discovery": "Wreck site identified in the 19th-20th centuries (guano workers, then systematic Western Australian Museum survey/excavation 1976-1981); large artifact collection in the WA Museum.",
+  "precision": "approximate",
+  "sources": [
+   "Western Australian Museum, Zeewijk site reports",
+   "Hugh Edwards, Islands of Angry Ghosts (context); VOC daghregister of the survivors"
+  ]
+ },
+ {
+  "id": "le-chameau",
+  "name": "Le Chameau",
+  "year": 1725,
+  "lat": 45.9,
+  "lon": -59.93,
+  "ship_type": "French royal flute / transport (~600 tons, 48 guns)",
+  "nationality": "French (Royal)",
+  "captain": "Jean de Saint-James",
+  "story": "The crown transport carrying the year's pay and funds for New France, plus incoming officials, was driven onto rocks (Chameau Rock, off Kelpy Cove near Louisbourg, Cape Breton) in a gale on the night of 26-27 August 1725; all ~310-316 aboard died, including the incoming intendant of New France. One of the worst disasters in French colonial Canada.",
+  "cargo": "Approximately 290,000 livres in gold louis d'or and silver ecus for the garrison and government of New France, plus passengers' goods.",
+  "discovery": "Treasure pocket located in 1965 by Alex Storm, David MacEachern and Harvey MacLeod after a systematic search; coins auctioned 1971 — Canada's most famous treasure-wreck recovery.",
+  "precision": "approximate",
+  "sources": [
+   "Alex Storm, Canada's Treasure Hunt / Seaweed and Gold",
+   "Parks Canada and Nova Scotia Museum records on Le Chameau",
+   "French colonial archives (Archives nationales d'outre-mer) on the 1725 loss"
+  ]
+ },
+ {
+  "id": "hms-stirling-castle",
+  "name": "HMS Stirling Castle",
+  "year": 1703,
+  "lat": 51.276,
+  "lon": 1.518,
+  "ship_type": "70-gun third rate",
+  "nationality": "Great Britain (Royal Navy)",
+  "captain": "John Johnson",
+  "story": "The Great Storm of 26–27 November 1703 — the worst in English record — drove four warships onto the Goodwin Sands in one night; some 1,200 sailors drowned within sight of the Kent shore. The Stirling Castle lies remarkably preserved in the sand that killed her.",
+  "cargo": "Stores of a ship of the line",
+  "discovery": "Found 1979 with hull, guns and gear intact; a protected wreck site.",
+  "precision": "exact",
+  "sources": [
+   "Historic England protected wreck list",
+   "Defoe, The Storm (1704)"
+  ]
+ },
+ {
+  "id": "hms-sussex",
+  "name": "HMS Sussex",
+  "year": 1694,
+  "lat": 36.05,
+  "lon": -5.1,
+  "ship_type": "80-gun third rate",
+  "nationality": "England (Royal Navy)",
+  "captain": "Admiral Sir Francis Wheler (flag)",
+  "story": "Wheler's fleet was caught by a levanter gale off Gibraltar in February 1694; the Sussex went down with all but two of ~550 men — and, by strong documentary evidence, a great shipment of coin meant to buy the Duke of Savoy's loyalty in the war against France.",
+  "cargo": "Reputedly ~10 tons of gold coin for the Savoy subsidy",
+  "discovery": "Odyssey Marine claimed a deep-water identification in 2001; recovery stalled in British–Spanish diplomacy.",
+  "precision": "general-area",
+  "sources": [
+   "UK National Archives subsidy correspondence",
+   "Odyssey Marine reports"
+  ]
+ },
+ {
+  "id": "hms-winchester",
+  "name": "HMS Winchester",
+  "year": 1695,
+  "lat": 25.222,
+  "lon": -80.211,
+  "ship_type": "60-gun fourth rate",
+  "nationality": "England (Royal Navy)",
+  "captain": "John Soule",
+  "story": "Returning from a disease-ravaged Caribbean campaign with scarcely men enough to work her, the Winchester drove onto Carysfort Reef off Key Largo in September 1695. She was the first of the Keys' great warship wrecks, found again in 1938.",
+  "cargo": "Guns and stores; her crew already dead or dying of scurvy",
+  "discovery": "Located 1938; cannon raised for Florida collections.",
+  "precision": "exact",
+  "sources": [
+   "Royal Navy loss records",
+   "Florida Keys wreck surveys"
+  ]
+ },
+ {
+  "id": "vergulde-draeck",
+  "name": "Vergulde Draeck (Gilt Dragon)",
+  "year": 1656,
+  "lat": -31.226,
+  "lon": 115.359,
+  "ship_type": "VOC jacht",
+  "nationality": "Dutch Republic",
+  "captain": "Pieter Albertszoon",
+  "story": "Outward for Batavia with eight chests of coin, the Gilt Dragon ran onto the reefs of the Brouwer route's deadly lee shore — Western Australia — in 1656. Seventy-five survivors reached the beach; a boat made Batavia, but rescue ships found no one. Their fate is one of the sea's open questions, still told in 1730 as the route's standing warning.",
+  "cargo": "78,600 guilders in silver coin, trade goods",
+  "discovery": "Found 1963 by skindivers north of Perth; coins and elephant tusks recovered.",
+  "precision": "exact",
+  "sources": [
+   "Western Australian Museum"
+  ]
+ },
+ {
+  "id": "golden-fleece",
+  "name": "Golden Fleece",
+  "year": 1686,
+  "lat": 19.205,
+  "lon": -69.33,
+  "ship_type": "pirate ship (ex-merchant)",
+  "nationality": "pirate (English)",
+  "captain": "Joseph Bannister",
+  "story": "Bannister, a respectable Jamaica captain turned pirate, was cornered careening at Samaná Bay in June 1686 by two Royal Navy frigates. In a two-day gun duel fought from shore batteries he wrecked his own ship rather than surrender — then escaped overland. Jamaica hanged him at a yardarm in 1687.",
+  "cargo": "Stripped during the careening fight",
+  "discovery": "Identified 2015 by the Chatterton–Mattera search recounted in 'Pirate Hunters'.",
+  "precision": "approximate",
+  "sources": [
+   "Kurson, Pirate Hunters (2015)",
+   "Jamaica council records"
+  ]
+ }
+]

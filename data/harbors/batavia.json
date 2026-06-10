@@ -1,0 +1,1758 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "id": "batavia",
+  "title": "Plan of the Castle and City of Batavia, Capital of the Dutch East Indies",
+  "survey_basis": "After the VOC city plans (Clemendt de Jonghe c.1650, and the 18th-century 'Plattegrond van Batavia' tradition), anchored to surviving points of old Jakarta: the Stadhuis of 1710 (Fatahillah Square), the Kali Besar, and the Portuguese Buitenkerk (Gereja Sion, 1695). The Kasteel and most walls are gone today; placed from the plans against the modern river line.",
+  "center": [
+   106.8125,
+   -6.133
+  ],
+  "suggested_zoom": 14
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Batavia",
+    "note": "The walled city on the silting shore of the bay; the haven-canal piers run far out over the mud"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.802,
+       -6.125
+      ],
+      [
+       106.805,
+       -6.1242
+      ],
+      [
+       106.808,
+       -6.1238
+      ],
+      [
+       106.8087,
+       -6.12
+      ],
+      [
+       106.8093,
+       -6.115
+      ],
+      [
+       106.8098,
+       -6.11
+      ],
+      [
+       106.8104,
+       -6.11
+      ],
+      [
+       106.81,
+       -6.115
+      ],
+      [
+       106.8096,
+       -6.12
+      ],
+      [
+       106.8092,
+       -6.1238
+      ],
+      [
+       106.812,
+       -6.1235
+      ],
+      [
+       106.816,
+       -6.1233
+      ],
+      [
+       106.82,
+       -6.1238
+      ],
+      [
+       106.824,
+       -6.125
+      ],
+      [
+       106.826,
+       -6.13
+      ],
+      [
+       106.826,
+       -6.136
+      ],
+      [
+       106.825,
+       -6.143
+      ],
+      [
+       106.823,
+       -6.148
+      ],
+      [
+       106.818,
+       -6.149
+      ],
+      [
+       106.812,
+       -6.1495
+      ],
+      [
+       106.806,
+       -6.149
+      ],
+      [
+       106.801,
+       -6.148
+      ],
+      [
+       106.8,
+       -6.14
+      ],
+      [
+       106.8005,
+       -6.132
+      ],
+      [
+       106.801,
+       -6.128
+      ],
+      [
+       106.802,
+       -6.125
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Kuiper Island",
+    "note": "Warehouse islet in the roads; Onrust, the careening island, lies further west"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.825,
+       -6.105
+      ],
+      [
+       106.827,
+       -6.1044
+      ],
+      [
+       106.829,
+       -6.105
+      ],
+      [
+       106.828,
+       -6.1062
+      ],
+      [
+       106.8255,
+       -6.1062
+      ],
+      [
+       106.825,
+       -6.105
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "The West Flats",
+    "note": "Soft mud, dry at low springs; the fever-marshes that make Batavia 'the graveyard of Europeans'"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.802,
+       -6.1238
+      ],
+      [
+       106.803,
+       -6.118
+      ],
+      [
+       106.8045,
+       -6.112
+      ],
+      [
+       106.806,
+       -6.108
+      ],
+      [
+       106.8093,
+       -6.108
+      ],
+      [
+       106.8087,
+       -6.115
+      ],
+      [
+       106.8082,
+       -6.12
+      ],
+      [
+       106.808,
+       -6.1238
+      ],
+      [
+       106.802,
+       -6.1238
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "The East Flats",
+    "note": "Ships lie two miles out and lighter their cargo up the canal"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8104,
+       -6.108
+      ],
+      [
+       106.814,
+       -6.109
+      ],
+      [
+       106.819,
+       -6.112
+      ],
+      [
+       106.823,
+       -6.117
+      ],
+      [
+       106.824,
+       -6.123
+      ],
+      [
+       106.82,
+       -6.1238
+      ],
+      [
+       106.816,
+       -6.1233
+      ],
+      [
+       106.811,
+       -6.1235
+      ],
+      [
+       106.81,
+       -6.118
+      ],
+      [
+       106.81,
+       -6.112
+      ],
+      [
+       106.8104,
+       -6.108
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Het Kasteel van Batavia",
+    "year_built": 1619,
+    "note": "Coen's castle, rebuilt in stone 1627-45: the Governor-General, the Council of the Indies, the spice warehouses and the gallows yard within its four bastions"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8108,
+       -6.1248
+      ],
+      [
+       106.8114,
+       -6.1242
+      ],
+      [
+       106.8123,
+       -6.1245
+      ],
+      [
+       106.8133,
+       -6.1242
+      ],
+      [
+       106.814,
+       -6.1248
+      ],
+      [
+       106.8138,
+       -6.1257
+      ],
+      [
+       106.8142,
+       -6.1266
+      ],
+      [
+       106.8135,
+       -6.1272
+      ],
+      [
+       106.8126,
+       -6.1269
+      ],
+      [
+       106.8115,
+       -6.1272
+      ],
+      [
+       106.8108,
+       -6.1266
+      ],
+      [
+       106.8111,
+       -6.1257
+      ],
+      [
+       106.8108,
+       -6.1248
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "De Stadsmuur",
+    "year_built": 1645,
+    "note": "The brick enceinte with its twenty-two bastions \u2014 Hollandia, Zeelandia, Gelderland and the rest \u2014 and five gates"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.806,
+       -6.125
+      ],
+      [
+       106.8195,
+       -6.1248
+      ],
+      [
+       106.821,
+       -6.13
+      ],
+      [
+       106.8215,
+       -6.138
+      ],
+      [
+       106.8205,
+       -6.1435
+      ],
+      [
+       106.812,
+       -6.1445
+      ],
+      [
+       106.805,
+       -6.1438
+      ],
+      [
+       106.8045,
+       -6.135
+      ],
+      [
+       106.805,
+       -6.129
+      ],
+      [
+       106.806,
+       -6.125
+      ]
+     ],
+     [
+      [
+       106.8068,
+       -6.1258
+      ],
+      [
+       106.8188,
+       -6.1256
+      ],
+      [
+       106.8202,
+       -6.1302
+      ],
+      [
+       106.8207,
+       -6.1379
+      ],
+      [
+       106.8197,
+       -6.1427
+      ],
+      [
+       106.8121,
+       -6.1437
+      ],
+      [
+       106.8058,
+       -6.143
+      ],
+      [
+       106.8053,
+       -6.1351
+      ],
+      [
+       106.8058,
+       -6.1294
+      ],
+      [
+       106.8068,
+       -6.1258
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Waterpas battery",
+    "guns": 8,
+    "note": "Guns at the canal head commanding the roads approach"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8098,
+     -6.1105
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Bastion Culemborg",
+    "guns": 10,
+    "note": "Sea-corner of the east wall"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8195,
+     -6.125
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "canal",
+    "name": "Kali Besar (Groote Rivier)",
+    "note": "The canalised Ciliwung, the city's spine; prahus and lighters work it on the tide"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8105,
+      -6.142
+     ],
+     [
+      106.8106,
+      -6.137
+     ],
+     [
+      106.8107,
+      -6.133
+     ],
+     [
+      106.8109,
+      -6.129
+     ],
+     [
+      106.8111,
+      -6.127
+     ],
+     [
+      106.8106,
+      -6.124
+     ],
+     [
+      106.8098,
+      -6.12
+     ],
+     [
+      106.8093,
+      -6.115
+     ],
+     [
+      106.8099,
+      -6.11
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "canal",
+    "name": "Tijgersgracht",
+    "note": "The Tiger Canal: the handsomest of the grachten, shaded with tamarinds \u2014 and the deadliest in fever season"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8154,
+      -6.129
+     ],
+     [
+      106.8153,
+      -6.133
+     ],
+     [
+      106.8152,
+      -6.137
+     ],
+     [
+      106.8151,
+      -6.141
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "canal",
+    "name": "Leeuwinnegracht"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.807,
+      -6.131
+     ],
+     [
+      106.8107,
+      -6.131
+     ],
+     [
+      106.8154,
+      -6.1308
+     ],
+     [
+      106.8205,
+      -6.1306
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "canal",
+    "name": "Kaaimansgracht"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8065,
+      -6.139
+     ],
+     [
+      106.8106,
+      -6.1388
+     ],
+     [
+      106.8152,
+      -6.1386
+     ],
+     [
+      106.8208,
+      -6.1384
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "canal",
+    "name": "Amsterdamsche Gracht"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8183,
+      -6.129
+     ],
+     [
+      106.8182,
+      -6.134
+     ],
+     [
+      106.8181,
+      -6.1384
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "canal",
+    "name": "Maleische Gracht",
+    "note": "West of the river, by the Malay quarter"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.808,
+      -6.129
+     ],
+     [
+      106.8079,
+      -6.134
+     ],
+     [
+      106.8078,
+      -6.139
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Prinsenstraat",
+    "note": "From the castle gate to the Stadhuis square"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8124,
+      -6.1275
+     ],
+     [
+      106.8125,
+      -6.13
+     ],
+     [
+      106.8126,
+      -6.1325
+     ],
+     [
+      106.8127,
+      -6.1345
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Heerenstraat",
+    "note": "The merchants' street between the river and the Tijgersgracht"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8112,
+      -6.133
+     ],
+     [
+      106.8135,
+      -6.1329
+     ],
+     [
+      106.8153,
+      -6.1328
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Nieuwpoortstraat",
+    "note": "South from the Stadhuis to the New Gate"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8129,
+      -6.1356
+     ],
+     [
+      106.813,
+      -6.138
+     ],
+     [
+      106.8131,
+      -6.141
+     ],
+     [
+      106.8132,
+      -6.144
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Utrechtsestraat",
+    "note": "To the Utrecht Gate and the eastward suburbs"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8112,
+      -6.136
+     ],
+     [
+      106.8135,
+      -6.1359
+     ],
+     [
+      106.8153,
+      -6.1358
+     ],
+     [
+      106.818,
+      -6.1357
+     ],
+     [
+      106.8207,
+      -6.1356
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Jonkersstraat"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8135,
+      -6.129
+     ],
+     [
+      106.8153,
+      -6.1289
+     ],
+     [
+      106.8175,
+      -6.1288
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Theewaterstraat"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8112,
+      -6.1345
+     ],
+     [
+      106.8135,
+      -6.1344
+     ],
+     [
+      106.8153,
+      -6.1343
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Visbrugstraat",
+    "note": "To the fish bridge over the Kali Besar"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.81,
+      -6.129
+     ],
+     [
+      106.8109,
+      -6.129
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Buiten Portugeesche straat",
+    "note": "West bank lane (plausible name-form)"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.808,
+      -6.133
+     ],
+     [
+      106.8079,
+      -6.136
+     ],
+     [
+      106.8078,
+      -6.139
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Caymansstraat"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8153,
+      -6.1328
+     ],
+     [
+      106.817,
+      -6.1327
+     ],
+     [
+      106.8183,
+      -6.1326
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Buiten Nieuwpoortstraat",
+    "note": "Through the gate to the Chinese campong and the Jacatra road"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.813,
+      -6.144
+     ],
+     [
+      106.8135,
+      -6.147
+     ],
+     [
+      106.814,
+      -6.1495
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8112,
+       -6.1327
+      ],
+      [
+       106.815,
+       -6.1327
+      ],
+      [
+       106.815,
+       -6.1308
+      ],
+      [
+       106.8112,
+       -6.1308
+      ],
+      [
+       106.8112,
+       -6.1327
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8112,
+       -6.1343
+      ],
+      [
+       106.815,
+       -6.1343
+      ],
+      [
+       106.815,
+       -6.1331
+      ],
+      [
+       106.8112,
+       -6.1331
+      ],
+      [
+       106.8112,
+       -6.1343
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8112,
+       -6.1358
+      ],
+      [
+       106.8126,
+       -6.1358
+      ],
+      [
+       106.8126,
+       -6.1347
+      ],
+      [
+       106.8112,
+       -6.1347
+      ],
+      [
+       106.8112,
+       -6.1358
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "Stadhuis block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8133,
+       -6.1358
+      ],
+      [
+       106.815,
+       -6.1358
+      ],
+      [
+       106.815,
+       -6.1347
+      ],
+      [
+       106.8133,
+       -6.1347
+      ],
+      [
+       106.8133,
+       -6.1358
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8156,
+       -6.1327
+      ],
+      [
+       106.8181,
+       -6.1327
+      ],
+      [
+       106.8181,
+       -6.1309
+      ],
+      [
+       106.8156,
+       -6.1309
+      ],
+      [
+       106.8156,
+       -6.1327
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8156,
+       -6.1356
+      ],
+      [
+       106.8181,
+       -6.1356
+      ],
+      [
+       106.8181,
+       -6.1331
+      ],
+      [
+       106.8156,
+       -6.1331
+      ],
+      [
+       106.8156,
+       -6.1356
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8112,
+       -6.1384
+      ],
+      [
+       106.8127,
+       -6.1384
+      ],
+      [
+       106.8127,
+       -6.1362
+      ],
+      [
+       106.8112,
+       -6.1362
+      ],
+      [
+       106.8112,
+       -6.1384
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8133,
+       -6.1384
+      ],
+      [
+       106.815,
+       -6.1384
+      ],
+      [
+       106.815,
+       -6.1362
+      ],
+      [
+       106.8133,
+       -6.1362
+      ],
+      [
+       106.8133,
+       -6.1384
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8156,
+       -6.1384
+      ],
+      [
+       106.8179,
+       -6.1384
+      ],
+      [
+       106.8179,
+       -6.136
+      ],
+      [
+       106.8156,
+       -6.136
+      ],
+      [
+       106.8156,
+       -6.1384
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "West-side warehouses"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8085,
+       -6.134
+      ],
+      [
+       106.8103,
+       -6.134
+      ],
+      [
+       106.8103,
+       -6.1315
+      ],
+      [
+       106.8085,
+       -6.1315
+      ],
+      [
+       106.8085,
+       -6.134
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8085,
+       -6.1385
+      ],
+      [
+       106.8103,
+       -6.1385
+      ],
+      [
+       106.8103,
+       -6.1345
+      ],
+      [
+       106.8085,
+       -6.1345
+      ],
+      [
+       106.8085,
+       -6.1385
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8112,
+       -6.143
+      ],
+      [
+       106.815,
+       -6.143
+      ],
+      [
+       106.815,
+       -6.139
+      ],
+      [
+       106.8112,
+       -6.139
+      ],
+      [
+       106.8112,
+       -6.143
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8156,
+       -6.1425
+      ],
+      [
+       106.8195,
+       -6.1425
+      ],
+      [
+       106.8195,
+       -6.139
+      ],
+      [
+       106.8156,
+       -6.139
+      ],
+      [
+       106.8156,
+       -6.1425
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Kruiskerk (Hollandsche Kerk)",
+    "year_built": 1640,
+    "note": "The Dutch cross-church west of the Stadhuis; to be replaced by the domed Nieuwe Hollandsche Kerk in 1736"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8129,
+     -6.1349
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Portugeesche Buitenkerk",
+    "year_built": 1695,
+    "note": "Church of the Portuguese-speaking Mardijkers, outside the original plan \u2014 it alone survives today (Gereja Sion)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8166,
+     -6.1378
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Portugeesche Binnenkerk",
+    "year_built": 1673,
+    "note": "The inner Portuguese church, west of the river"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8082,
+     -6.1325
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Stadhuis",
+    "year_built": 1710,
+    "note": "The town hall of 1710: justice, the orphan chamber and the dungeons beneath \u2014 it still stands"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8133,
+     -6.1352
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Government House (within the Kasteel)",
+    "note": "The Governor-General Diederik Durven keeps state here in 1730"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8125,
+     -6.1258
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "De Waag (weigh-house)",
+    "note": "By the fish bridge on the Kali Besar"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.811,
+     -6.1295
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Chinese hospital",
+    "note": "In the campong outside the Nieuwpoort; the Chinese are the city's craftsmen and sugar-millers"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8145,
+     -6.1455
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Stadhuisplein",
+    "note": "The town hall square: parades, proclamations and public punishments"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       106.8127,
+       -6.1345
+      ],
+      [
+       106.814,
+       -6.1345
+      ],
+      [
+       106.814,
+       -6.1335
+      ],
+      [
+       106.8127,
+       -6.1335
+      ],
+      [
+       106.8127,
+       -6.1345
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "gallows",
+    "name": "The Castle gallows yard",
+    "note": "Within the Kasteel's outworks; pirates and mutineers of the Company's seas end here"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8128,
+     -6.126
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "The Boom (west mole)",
+    "note": "The harbour-canal pier; the boom chain closes the canal each night"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8093,
+      -6.115
+     ],
+     [
+      106.8098,
+      -6.11
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Kali Besar quay",
+    "note": "The Company's lighters discharge along the great canal"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      106.8112,
+      -6.129
+     ],
+     [
+      106.8111,
+      -6.1315
+     ],
+     [
+      106.811,
+      -6.134
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 300,
+    "name": "Retourschip",
+    "note": "VOC East Indiaman loading pepper and coffee for Texel"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.818,
+     -6.098
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 310,
+    "name": "Retourschip"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.822,
+     -6.095
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 305,
+    "note": "Indiaman from Bengal in the roads"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.826,
+     -6.1
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 295,
+    "note": "China ship with tea and porcelain"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.814,
+     -6.103
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 290,
+    "note": "Company ship of force, guard of the roads"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.82,
+     -6.106
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 280,
+    "note": "Pilot boat at the canal head"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.811,
+     -6.109
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "canoe",
+    "heading": 10,
+    "note": "Prahu lighter working up the canal"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8096,
+     -6.117
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 285,
+    "note": "Country trader for the Spice Islands"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.824,
+     -6.11
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Batavia Roads"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.819,
+     -6.099
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "The Haven-Canal"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8098,
+     -6.113
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Chineesche Campong"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.814,
+     -6.1465
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Jacatra side"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.823,
+     -6.146
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "The Western suburbs"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.803,
+     -6.135
+    ]
+   }
+  }
+ ]
+}

@@ -532,9 +532,9 @@
   const ok = (r) => { if (!r.ok) throw new Error(r.status); return r.json(); };
   fetch('/data/overlays/kingdoms.json').then(ok).then(addKingdoms)
     .catch(() => disableRow('kingdoms'));
-  fetch('/api/wind').then(ok).then(addWind)
+  fetch('/wind.json').then(ok).then(addWind)
     .catch(() => disableRow('winds'));
-  fetch('/api/currents').then(ok).then(addCurrents)
+  fetch('/currents.json').then(ok).then(addCurrents)
     .catch(() => disableRow('currents'));
   fetch('/data/overlays/fleets.json').then(ok).then((d) => { stations = d.stations || []; renderFleets(); })
     .catch(() => disableRow('fleets'));

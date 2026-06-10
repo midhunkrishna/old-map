@@ -1,0 +1,1386 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "id": "bridgetown",
+  "title": "Plan of Bridge-Town and Carlisle Bay, Barbados",
+  "survey_basis": "After William Mayo's 'New & Exact Map of the Island of Barbadoes' (surveyed 1717-21, published 1722) with its inset plan of Bridge Town, anchored to the surviving street pattern (Broad, Swan, High, Roebuck Streets and the Careenage).",
+  "center": [
+   -59.613,
+   13.094
+  ],
+  "suggested_zoom": 14
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Bridge Town & St Michael's shore",
+    "note": "The town about the Careenage; the bay shore runs south to Needham's Point"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.626,
+       13.104
+      ],
+      [
+       -59.6235,
+       13.102
+      ],
+      [
+       -59.6215,
+       13.1005
+      ],
+      [
+       -59.62,
+       13.099
+      ],
+      [
+       -59.619,
+       13.0978
+      ],
+      [
+       -59.6188,
+       13.0968
+      ],
+      [
+       -59.617,
+       13.0966
+      ],
+      [
+       -59.615,
+       13.0965
+      ],
+      [
+       -59.6135,
+       13.0964
+      ],
+      [
+       -59.612,
+       13.0964
+      ],
+      [
+       -59.6105,
+       13.0966
+      ],
+      [
+       -59.6095,
+       13.097
+      ],
+      [
+       -59.609,
+       13.0962
+      ],
+      [
+       -59.6105,
+       13.0957
+      ],
+      [
+       -59.6125,
+       13.0955
+      ],
+      [
+       -59.6145,
+       13.09545
+      ],
+      [
+       -59.6165,
+       13.0954
+      ],
+      [
+       -59.618,
+       13.0952
+      ],
+      [
+       -59.6185,
+       13.0943
+      ],
+      [
+       -59.617,
+       13.093
+      ],
+      [
+       -59.615,
+       13.0915
+      ],
+      [
+       -59.613,
+       13.0895
+      ],
+      [
+       -59.6115,
+       13.0875
+      ],
+      [
+       -59.61,
+       13.085
+      ],
+      [
+       -59.609,
+       13.0825
+      ],
+      [
+       -59.6088,
+       13.08
+      ],
+      [
+       -59.6092,
+       13.078
+      ],
+      [
+       -59.6105,
+       13.0768
+      ],
+      [
+       -59.612,
+       13.0762
+      ],
+      [
+       -59.6115,
+       13.0753
+      ],
+      [
+       -59.6095,
+       13.0748
+      ],
+      [
+       -59.607,
+       13.0745
+      ],
+      [
+       -59.604,
+       13.0745
+      ],
+      [
+       -59.6,
+       13.0748
+      ],
+      [
+       -59.596,
+       13.0753
+      ],
+      [
+       -59.596,
+       13.104
+      ],
+      [
+       -59.626,
+       13.104
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Pelican Island",
+    "note": "Low rock off the wharves; Willoughby's Fort upon it"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6233,
+       13.0987
+      ],
+      [
+       -59.622,
+       13.0993
+      ],
+      [
+       -59.6208,
+       13.0988
+      ],
+      [
+       -59.6215,
+       13.0979
+      ],
+      [
+       -59.6229,
+       13.0979
+      ],
+      [
+       -59.6233,
+       13.0987
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "The Shallows off the Mole",
+    "note": "Coral patch off the Careenage mouth; pilots keep the church tower open of the fort"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.619,
+       13.096
+      ],
+      [
+       -59.6205,
+       13.0955
+      ],
+      [
+       -59.6215,
+       13.0945
+      ],
+      [
+       -59.62,
+       13.0938
+      ],
+      [
+       -59.6188,
+       13.0948
+      ],
+      [
+       -59.619,
+       13.096
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Charles Fort (Needham's Point)",
+    "year_built": 1650,
+    "note": "James Fort's guns cover the bay's southern horn \u2014 the principal sea battery, 30-odd guns"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6124,
+       13.077
+      ],
+      [
+       -59.6114,
+       13.0776
+      ],
+      [
+       -59.6103,
+       13.0773
+      ],
+      [
+       -59.6101,
+       13.0763
+      ],
+      [
+       -59.6111,
+       13.0757
+      ],
+      [
+       -59.6123,
+       13.076
+      ],
+      [
+       -59.6124,
+       13.077
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Willoughby's Fort",
+    "year_built": 1656,
+    "note": "On Pelican Island, commanding the road and the Careenage mouth; half-ruinous, a few guns kept"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6228,
+       13.0988
+      ],
+      [
+       -59.622,
+       13.0992
+      ],
+      [
+       -59.6212,
+       13.0988
+      ],
+      [
+       -59.6215,
+       13.0981
+      ],
+      [
+       -59.6226,
+       13.0981
+      ],
+      [
+       -59.6228,
+       13.0988
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "St Ann's Fort",
+    "year_built": 1705,
+    "note": "The citadel begun 1704-05 behind Needham's; magazine and the militia's rallying place"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6056,
+       13.0784
+      ],
+      [
+       -59.6045,
+       13.079
+      ],
+      [
+       -59.6033,
+       13.0786
+      ],
+      [
+       -59.6034,
+       13.0774
+      ],
+      [
+       -59.6047,
+       13.077
+      ],
+      [
+       -59.6057,
+       13.0774
+      ],
+      [
+       -59.6056,
+       13.0784
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "James Fort",
+    "year_built": 1650,
+    "note": "Small work on the north horn of the Careenage mouth"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6189,
+       13.0964
+      ],
+      [
+       -59.6182,
+       13.0968
+      ],
+      [
+       -59.6175,
+       13.0964
+      ],
+      [
+       -59.6179,
+       13.0958
+      ],
+      [
+       -59.6187,
+       13.0958
+      ],
+      [
+       -59.6189,
+       13.0964
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "The Mole Head battery",
+    "guns": 6,
+    "note": "Guns on the south pier of the Careenage"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.6185,
+     13.0942
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Broad Street",
+    "note": "The Exchange of the island: merchants, Jews' shops and ordinaries"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.619,
+      13.0976
+     ],
+     [
+      -59.617,
+      13.0973
+     ],
+     [
+      -59.615,
+      13.0971
+     ],
+     [
+      -59.6135,
+      13.0969
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Swan Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.6185,
+      13.0985
+     ],
+     [
+      -59.6165,
+      13.0982
+     ],
+     [
+      -59.6145,
+      13.098
+     ],
+     [
+      -59.613,
+      13.0979
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "High Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.6135,
+      13.0969
+     ],
+     [
+      -59.6132,
+      13.0979
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Roebuck Street",
+    "note": "The high road to the windward parishes"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.6128,
+      13.0979
+     ],
+     [
+      -59.6122,
+      13.0992
+     ],
+     [
+      -59.6115,
+      13.1005
+     ],
+     [
+      -59.6108,
+      13.1018
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Tudor Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.617,
+      13.0966
+     ],
+     [
+      -59.6168,
+      13.0976
+     ],
+     [
+      -59.6165,
+      13.0982
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Milk Market lane"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.615,
+      13.0965
+     ],
+     [
+      -59.6148,
+      13.0971
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Marhill Street",
+    "note": "Up from the bridge to St Michael's church"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.6135,
+      13.0964
+     ],
+     [
+      -59.6128,
+      13.097
+     ],
+     [
+      -59.612,
+      13.0978
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Cheapside",
+    "note": "West to Fontabelle and the burying ground"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.619,
+      13.0976
+     ],
+     [
+      -59.6205,
+      13.098
+     ],
+     [
+      -59.622,
+      13.0987
+     ],
+     [
+      -59.624,
+      13.0998
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Bay Street",
+    "note": "Along Carlisle Bay to Needham's; the garrison road"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.6132,
+      13.0964
+     ],
+     [
+      -59.613,
+      13.0945
+     ],
+     [
+      -59.6125,
+      13.092
+     ],
+     [
+      -59.6112,
+      13.089
+     ],
+     [
+      -59.61,
+      13.0855
+     ],
+     [
+      -59.6093,
+      13.082
+     ],
+     [
+      -59.6096,
+      13.0785
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "The Wharf (Careenage front)"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.612,
+      13.0964
+     ],
+     [
+      -59.611,
+      13.0964
+     ],
+     [
+      -59.6098,
+      13.0968
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Constitution Road",
+    "note": "Across the swamp bridge to the country (plausible alignment)"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.6105,
+      13.0966
+     ],
+     [
+      -59.6098,
+      13.0978
+     ],
+     [
+      -59.609,
+      13.099
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6188,
+       13.0968
+      ],
+      [
+       -59.617,
+       13.0968
+      ],
+      [
+       -59.617,
+       13.0974
+      ],
+      [
+       -59.6188,
+       13.0974
+      ],
+      [
+       -59.6188,
+       13.0968
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6168,
+       13.0967
+      ],
+      [
+       -59.615,
+       13.0967
+      ],
+      [
+       -59.615,
+       13.0972
+      ],
+      [
+       -59.6168,
+       13.0972
+      ],
+      [
+       -59.6168,
+       13.0967
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6148,
+       13.0966
+      ],
+      [
+       -59.6136,
+       13.0966
+      ],
+      [
+       -59.6136,
+       13.097
+      ],
+      [
+       -59.6148,
+       13.097
+      ],
+      [
+       -59.6148,
+       13.0966
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6187,
+       13.0978
+      ],
+      [
+       -59.6168,
+       13.0978
+      ],
+      [
+       -59.6168,
+       13.0983
+      ],
+      [
+       -59.6187,
+       13.0983
+      ],
+      [
+       -59.6187,
+       13.0978
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6166,
+       13.0976
+      ],
+      [
+       -59.6148,
+       13.0976
+      ],
+      [
+       -59.6148,
+       13.0981
+      ],
+      [
+       -59.6166,
+       13.0981
+      ],
+      [
+       -59.6166,
+       13.0976
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6146,
+       13.0973
+      ],
+      [
+       -59.613,
+       13.0973
+      ],
+      [
+       -59.613,
+       13.098
+      ],
+      [
+       -59.6146,
+       13.098
+      ],
+      [
+       -59.6146,
+       13.0973
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "Church block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6128,
+       13.0966
+      ],
+      [
+       -59.6112,
+       13.0966
+      ],
+      [
+       -59.6112,
+       13.0976
+      ],
+      [
+       -59.6128,
+       13.0976
+      ],
+      [
+       -59.6128,
+       13.0966
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.6126,
+       13.0983
+      ],
+      [
+       -59.6112,
+       13.0983
+      ],
+      [
+       -59.6112,
+       13.0995
+      ],
+      [
+       -59.6126,
+       13.0995
+      ],
+      [
+       -59.6126,
+       13.0983
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "Bay Street fronts"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.613,
+       13.0938
+      ],
+      [
+       -59.6118,
+       13.0938
+      ],
+      [
+       -59.6118,
+       13.0955
+      ],
+      [
+       -59.613,
+       13.0955
+      ],
+      [
+       -59.613,
+       13.0938
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "St Michael's Church",
+    "year_built": 1665,
+    "note": "The great parish church, rebuilt in stone after the 1780 hurricane will take this one; seats a thousand"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.611,
+     13.097
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "The Cage",
+    "note": "Lock-up for runaways and disorderly seamen, by the bridge"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.614,
+     13.0967
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Town Hall & Court House",
+    "note": "The Assembly of Barbados sits here"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.6133,
+     13.097
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "The Royal Navy victualling office",
+    "note": "Carlisle Bay being the fleet's rendezvous for the windward station (plausible siting)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.6175,
+     13.097
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "The Globe tavern",
+    "note": "Broad Street ordinary (plausible; the street kept a dozen)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.6156,
+     13.0969
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "The Wharves",
+    "note": "Sugar out, everything in \u2014 including, in season, the slave sales that feed the whole machine"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.618,
+      13.09655
+     ],
+     [
+      -59.616,
+      13.09645
+     ],
+     [
+      -59.614,
+      13.09638
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "The Mole Head"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -59.6185,
+      13.0943
+     ],
+     [
+      -59.6188,
+      13.095
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "The Garrison Savannah",
+    "note": "Drill ground behind St Ann's; horse races when the militia is not called"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -59.606,
+       13.079
+      ],
+      [
+       -59.6025,
+       13.079
+      ],
+      [
+       -59.6025,
+       13.082
+      ],
+      [
+       -59.606,
+       13.082
+      ],
+      [
+       -59.606,
+       13.079
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 70,
+    "note": "Sugar ship loading by lighter"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.615,
+     13.09
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 75
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.617,
+     13.087
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 65,
+    "note": "Bristol slaver, newly in from the Guinea coast"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.619,
+     13.089
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 80,
+    "name": "HMS station ship",
+    "note": "The Barbados guard ship in the bay"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.614,
+     13.085
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 60,
+    "note": "Island sloop for the Leewards"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.613,
+     13.091
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "brigantine",
+    "heading": 85
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.621,
+     13.093
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 250,
+    "note": "Hove down in the Careenage"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.6155,
+     13.096
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "canoe",
+    "heading": 90,
+    "note": "Lighter plying to the road"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.6135,
+     13.093
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Carlisle Bay"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.618,
+     13.086
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "The Careenage"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.6145,
+     13.0962
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Needham's Point"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.6115,
+     13.0756
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Fontabelle"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.624,
+     13.1025
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Constitution Swamp"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.608,
+     13.0975
+    ]
+   }
+  }
+ ]
+}

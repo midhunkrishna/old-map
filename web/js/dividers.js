@@ -259,8 +259,8 @@
     const q = (p, r) => `/api/route?from=${p[0].toFixed(4)},${p[1].toFixed(4)}&to=${r[0].toFixed(4)},${r[1].toFixed(4)}`;
     try {
       const [thither, back] = await Promise.all([
-        fetch(q(a, b), { signal: ac.signal }),
-        fetch(q(b, a), { signal: ac.signal }),
+        engineFetch(q(a, b), { signal: ac.signal }),
+        engineFetch(q(b, a), { signal: ac.signal }),
       ]);
       if (ac.signal.aborted) return;
       if (!thither.ok || !back.ok) {

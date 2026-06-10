@@ -1,0 +1,14 @@
+# Cloudflare Pages headers. Cloudflare serves .wasm as application/wasm and
+# auto-compresses text responses (json/js/geojson) at the edge.
+
+# Immutable engine + grid: safe to cache hard until the next deploy reuploads.
+/oldmap.wasm
+  Cache-Control: public, max-age=86400
+/grid.bin
+  Cache-Control: public, max-age=86400
+
+# Precomputed isochrones and map data rarely change.
+/iso/*
+  Cache-Control: public, max-age=86400
+/data/*
+  Cache-Control: public, max-age=86400

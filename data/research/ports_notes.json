@@ -1,0 +1,620 @@
+[
+  {
+    "id": "london",
+    "name_1730": "London",
+    "nation_1730": "Great Britain",
+    "pirate_significance": "Execution Dock at Wapping: Kidd hanged 1701; Admiralty courts and the legal machinery of pirate suppression.",
+    "note": "Europe's largest city and the hub of Atlantic and East India commerce; home of the South Sea Company, Royal African Company and East India Company.",
+    "population_c1730": 630000,
+    "sources": ["E.A. Wrigley, 'A Simple Model of London's Importance' (1967)", "Ian K. Steele, The English Atlantic 1675-1740"]
+  },
+  {
+    "id": "bristol",
+    "name_1730": "Bristol",
+    "nation_1730": "Great Britain",
+    "pirate_significance": "Home port of Woodes Rogers; birthplace-by-legend of Blackbeard; outfitting port for privateers.",
+    "note": "England's second port c.1730 and briefly its leading slave-trading port (1720s-30s) before Liverpool overtook it.",
+    "population_c1730": 45000,
+    "sources": ["David Richardson, Bristol, Africa and the Eighteenth-Century Slave Trade", "Kenneth Morgan, Bristol and the Atlantic Trade"]
+  },
+  {
+    "id": "amsterdam",
+    "name_1730": "Amsterdam",
+    "nation_1730": "Dutch Republic",
+    "pirate_significance": null,
+    "note": "Headquarters of the VOC (Amsterdam chamber) and WIC; Europe's financial entrepot; outward Indiamen staged at Texel.",
+    "population_c1730": 220000,
+    "sources": ["Jonathan Israel, Dutch Primacy in World Trade", "Bruijn/Gaastra/Schoffer, Dutch-Asiatic Shipping"]
+  },
+  {
+    "id": "nantes",
+    "name_1730": "Nantes",
+    "nation_1730": "France",
+    "pirate_significance": "La Concorde, taken by Blackbeard in 1717 and made Queen Anne's Revenge, was a Nantes slaver.",
+    "note": "France's leading slave-trading port in the 18th century, dominating the French triangular trade to Saint-Domingue.",
+    "population_c1730": 45000,
+    "sources": ["Robert Louis Stein, The French Slave Trade in the Eighteenth Century", "Jean Mettas, Repertoire des expeditions negrieres francaises"]
+  },
+  {
+    "id": "lisbon",
+    "name_1730": "Lisbon",
+    "nation_1730": "Portugal",
+    "pirate_significance": "Terminus of the Brazil fleets whose gold made Portuguese ships prime pirate targets (e.g., Bartholomew Roberts' 1719 Sagrada Familia prize taken from a Lisbon-bound fleet).",
+    "note": "Capital of a re-enriched empire: Minas Gerais gold flowed through Lisbon's annual Brazil frotas; the pre-1755-earthquake city.",
+    "population_c1730": 175000,
+    "sources": ["C.R. Boxer, The Golden Age of Brazil 1695-1750"]
+  },
+  {
+    "id": "cadiz",
+    "name_1730": "Cadiz",
+    "nation_1730": "Spain",
+    "pirate_significance": null,
+    "note": "The Casa de Contratacion and the American monopoly trade moved here from Seville in 1717; departure/arrival port of the flotas and galeones.",
+    "population_c1730": 40000,
+    "sources": ["A. Garcia-Baquero Gonzalez, Cadiz y el Atlantico 1717-1778"]
+  },
+  {
+    "id": "madeira-funchal",
+    "name_1730": "Funchal, Madeira",
+    "nation_1730": "Portugal",
+    "pirate_significance": "Standard first victualling call on the outbound Atlantic track; occasionally used for water and wine by pirate crews.",
+    "note": "Wine island and near-universal first stop for English ships bound for the Americas; Madeira wine a staple export to the colonies.",
+    "population_c1730": null,
+    "sources": ["David Hancock, Oceans of Wine: Madeira and the Emergence of American Trade (2009)"]
+  },
+  {
+    "id": "tenerife",
+    "name_1730": "Santa Cruz de Tenerife",
+    "nation_1730": "Spain",
+    "pirate_significance": null,
+    "note": "Canary Islands waypoint on the Spanish and general outbound tracks; Canary wine trade; flotas passed via the islands to pick up the NE trades.",
+    "population_c1730": null,
+    "sources": ["Pierre & Huguette Chaunu, Seville et l'Atlantique"]
+  },
+  {
+    "id": "praia-cape-verde",
+    "name_1730": "Praia, Santiago, Cape Verde",
+    "nation_1730": "Portugal",
+    "pirate_significance": "Watering stop on the Guinea and Brazil tracks; the old capital Ribeira Grande was sacked by Jacques Cassard's French squadron in 1712, accelerating the shift to Praia.",
+    "note": "After the 1712 sack of Ribeira Grande (Cidade Velha), Praia's better-defended bay became the islands' effective port and seat (formally capital in 1770).",
+    "population_c1730": null,
+    "sources": ["T. Bentley Duncan, Atlantic Islands: Madeira, the Azores and the Cape Verdes (1972)"]
+  },
+  {
+    "id": "sale",
+    "name_1730": "Sale (Rabat-Sale)",
+    "nation_1730": "Morocco (Alaouite Sultanate)",
+    "pirate_significance": "Home of the 'Sallee Rovers'. The independent corsair republic of Bou Regreg (1627-1668) was long gone by 1730; corsairing continued on a reduced scale under the sultan's license.",
+    "note": "By 1730 Sale corsairs operated as state-sanctioned privateers of the Alaouite makhzen, a shadow of the early-17th-century peak; still a byword for Barbary captivity in European print (Robinson Crusoe).",
+    "population_c1730": null,
+    "sources": ["Leila Maziane, Sale et ses corsaires 1666-1727 (2007)", "Peter Lamborn Wilson, Pirate Utopias"]
+  },
+  {
+    "id": "algiers",
+    "name_1730": "Algiers",
+    "nation_1730": "Regency of Algiers (Ottoman, ruled by deys)",
+    "pirate_significance": "Principal Barbary corsair port: state-organized maritime raiding and ransom economy; treaties with Britain and the Dutch periodically exempted their shipping while smaller nations paid tribute.",
+    "note": "An autonomous Ottoman regency under the deys; corsairing and ransom remained central but the fleet was smaller than its 17th-century peak.",
+    "population_c1730": 75000,
+    "sources": ["John B. Wolf, The Barbary Coast: Algiers under the Turks", "Daniel Panzac, Barbary Corsairs: The End of a Legend"]
+  },
+  {
+    "id": "boston",
+    "name_1730": "Boston",
+    "nation_1730": "Great Britain (Province of Massachusetts Bay)",
+    "pirate_significance": "Admiralty trials and hangings of Bellamy's survivors (1717) and William Fly (1726, corpse gibbeted); Cotton Mather's gallows sermons.",
+    "note": "Largest town and busiest port in British North America c.1730; shipbuilding, fish and provisioning trades to the West Indies.",
+    "population_c1730": 13000,
+    "sources": ["US Census Bureau colonial town estimates", "Ian K. Steele, The English Atlantic"]
+  },
+  {
+    "id": "newport",
+    "name_1730": "Newport",
+    "nation_1730": "Great Britain (Colony of Rhode Island)",
+    "pirate_significance": "Pirate-friendly in the 1690s Red Sea era (Thomas Tew sailed from here); 26 of Charles Harris's crew hanged at Gravelly Point in July 1723, one of the largest mass pirate executions in the colonies.",
+    "note": "Thriving Rhode Island port pivoting from illicit trade toward rum distilling and a growing role in the African slave trade.",
+    "population_c1730": 4600,
+    "sources": ["US Census Bureau colonial estimates", "Marcus Rediker, Villains of All Nations (2004)"]
+  },
+  {
+    "id": "new-york",
+    "name_1730": "New York",
+    "nation_1730": "Great Britain (Province of New York)",
+    "pirate_significance": "1690s haven for Red Sea men under Gov. Fletcher (Frederick Philipse financed the Madagascar trade); Kidd's home port. By 1730 respectable.",
+    "note": "Second port of British North America; flour, provisions and the West Indies trade; the 1730 census counted ~8,600 inhabitants.",
+    "population_c1730": 8600,
+    "sources": ["Robert C. Ritchie, Captain Kidd and the War against the Pirates", "US Census Bureau colonial estimates"]
+  },
+  {
+    "id": "philadelphia",
+    "name_1730": "Philadelphia",
+    "nation_1730": "Great Britain (Province of Pennsylvania)",
+    "pirate_significance": null,
+    "note": "Fast-growing Quaker port shipping flour and provisions to the Caribbean; would pass Boston in size by mid-century.",
+    "population_c1730": 7500,
+    "sources": ["US Census Bureau colonial estimates", "Gary Nash, The Urban Crucible"]
+  },
+  {
+    "id": "hampton-chesapeake",
+    "name_1730": "Hampton / Hampton Roads, Virginia",
+    "nation_1730": "Great Britain (Colony of Virginia)",
+    "pirate_significance": "Base of Lt. Robert Maynard's 1718 expedition (sent by Gov. Spotswood) that killed Blackbeard; Blackbeard's head was displayed on a pole at the mouth of the Hampton River ('Blackbeard's Point').",
+    "note": "Anchorage and convoy rendezvous for the Chesapeake tobacco fleets, the most valuable commodity trade of British America; Royal Navy guardships stationed here.",
+    "population_c1730": null,
+    "sources": ["Robert E. Lee, Blackbeard the Pirate (1974)", "Virginia colonial records (Spotswood papers)"]
+  },
+  {
+    "id": "charleston",
+    "name_1730": "Charles Town (Charleston)",
+    "nation_1730": "Great Britain (Province of South Carolina, royal colony from 1729)",
+    "pirate_significance": "Blockaded by Blackbeard in May-June 1718 (hostages ransomed for a medicine chest); Stede Bonnet and ~30 others tried and hanged at White Point in late 1718.",
+    "note": "Rice-boom port and principal town of the southern mainland colonies; heavy slave imports through Sullivan's Island.",
+    "population_c1730": 4500,
+    "sources": ["Colin Woodard, The Republic of Pirates", "Peter Wood, Black Majority"]
+  },
+  {
+    "id": "bath-ocracoke",
+    "name_1730": "Bath and Ocracoke Inlet, North Carolina",
+    "nation_1730": "Great Britain (Province of North Carolina, royal from 1729)",
+    "pirate_significance": "Blackbeard took Gov. Eden's pardon at Bath in June 1718, settled there, and used Ocracoke anchorage as his base; killed there in action with Maynard on 22 November 1718 ('Teach's Hole').",
+    "note": "Tiny capital village and the shoal-guarded inlet serving it; by 1730 a quiet backwater whose pirate decade was over.",
+    "population_c1730": null,
+    "sources": ["Robert E. Lee, Blackbeard the Pirate", "North Carolina Office of Archives and History"]
+  },
+  {
+    "id": "st-augustine",
+    "name_1730": "San Agustin (St Augustine)",
+    "nation_1730": "Spain (Florida)",
+    "pirate_significance": "Spanish salvage authority over the 1715 wrecks operated from here; the camps were raided by English freebooters (Jennings, 1716), helping seed the Nassau pirate republic.",
+    "note": "Fortified presidio (Castillo de San Marcos) subsisting on the situado; guarded the Bahama Channel homeward route.",
+    "population_c1730": 1500,
+    "sources": ["Verne Chatelain, The Defenses of Spanish Florida", "Amy Bushnell, The Situado and Sabana"]
+  },
+  {
+    "id": "bermuda",
+    "name_1730": "St George's, Bermuda",
+    "nation_1730": "Great Britain",
+    "pirate_significance": "Bermuda sloops were the fast vessels prized and stolen by pirates; Bermudian wreckers and traders ranged the Bahamas.",
+    "note": "Maritime economy of fast cedar sloops, salt-raking at the Turks Islands, and carrying trades; key navigational waypoint on the homeward Gulf Stream-Azores track.",
+    "population_c1730": 8000,
+    "sources": ["Michael Jarvis, In the Eye of All Trade: Bermuda, Bermudians, and the Maritime Atlantic World 1680-1783 (2010)"]
+  },
+  {
+    "id": "nassau",
+    "name_1730": "Nassau, New Providence",
+    "nation_1730": "Great Britain (Bahamas, crown colony from 1718)",
+    "pirate_significance": "Capital of the 'pirate republic' c.1706-1718 (Hornigold, Jennings, Vane, Blackbeard, Anne Bonny). Woodes Rogers arrived July 1718 with the royal pardon, hanged nine holdouts that December, and adopted the motto 'Expulsis Piratis Restituta Commercia'.",
+    "note": "By 1730 a pacified, poor colonial port living on wrecking, salt and timber; Rogers served a second term as governor (1729-1732) and died there in 1732.",
+    "population_c1730": 1500,
+    "sources": ["Colin Woodard, The Republic of Pirates (2007)", "David Cordingly, Spanish Gold: Captain Woodes Rogers and the Pirates of the Caribbean"]
+  },
+  {
+    "id": "havana",
+    "name_1730": "La Habana (Havana)",
+    "nation_1730": "Spain (Cuba)",
+    "pirate_significance": "Rendezvous where flotas and galeones combined for the homeward run; base of the guarda costas whose seizures of British ships fed the tensions leading to the War of Jenkins' Ear.",
+    "note": "The strategic key of the Indies: fortified harbor, and from the 1720s the royal shipyard built major warships of Cuban hardwoods; the doomed 1733 flota sailed from here into the Keys hurricane.",
+    "population_c1730": 30000,
+    "sources": ["Hugh Thomas, Cuba: The Pursuit of Freedom", "AGI records; studies of the Havana arsenal (e.g., G. Douglas Inglis)"]
+  },
+  {
+    "id": "port-royal-kingston",
+    "name_1730": "Port Royal and Kingston, Jamaica",
+    "nation_1730": "Great Britain",
+    "pirate_significance": "Buccaneer capital of the 1660s-80s (Henry Morgan); two-thirds of the town sank in the 7 June 1692 earthquake. Calico Jack Rackham was gibbeted on a cay off Port Royal (1720); Anne Bonny and Mary Read were tried at Spanish Town.",
+    "note": "After the 1692 quake, 1703 fire and 1722 hurricane, commerce moved to Kingston (founded 1693), by 1730 Jamaica's commercial hub, while Port Royal remained the Royal Navy station.",
+    "population_c1730": null,
+    "sources": ["Michael Pawson & David Buisseret, Port Royal, Jamaica (1975)", "Nuala Zahedieh, 'Trade, Plunder, and Economic Development in Early English Jamaica'"]
+  },
+  {
+    "id": "santiago-de-cuba",
+    "name_1730": "Santiago de Cuba",
+    "nation_1730": "Spain (Cuba)",
+    "pirate_significance": "Major guarda costa / Spanish privateer base preying on British and Dutch shipping in the Windward Passage.",
+    "note": "Eastern Cuba's port, facing Jamaica across the Windward Passage; copper-mining hinterland (El Cobre).",
+    "population_c1730": null,
+    "sources": ["Richard Pares, War and Trade in the West Indies 1739-1763 (guarda costa background)"]
+  },
+  {
+    "id": "tortuga",
+    "name_1730": "Tortuga (Ile de la Tortue)",
+    "nation_1730": "France (dependency of Saint-Domingue)",
+    "pirate_significance": "The original buccaneer stronghold of the 1630s-1670s (Le Vasseur's Fort de Rocher, d'Ogeron's governorship). By 1730 long abandoned as a freebooter base — its people had moved to the Saint-Domingue mainland.",
+    "note": "By c.1730 a thinly peopled adjunct of booming plantation Saint-Domingue; its piratical role was entirely historical.",
+    "population_c1730": null,
+    "sources": ["Alexandre Exquemelin, The Buccaneers of America (1678)", "Pierre de Charlevoix, Histoire de l'Isle Espagnole ou de Saint-Domingue (1730-31)"]
+  },
+  {
+    "id": "cap-francais",
+    "name_1730": "Cap-Francais (Le Cap)",
+    "nation_1730": "France (Saint-Domingue)",
+    "pirate_significance": null,
+    "note": "Commercial capital of the fastest-growing sugar colony on earth; by 1730 the north-plain sugar boom made Le Cap the richest French American port.",
+    "population_c1730": null,
+    "sources": ["Charlevoix, Histoire de Saint-Domingue (1730-31)", "James McClellan, Colonialism and Science: Saint Domingue in the Old Regime"]
+  },
+  {
+    "id": "petit-goave",
+    "name_1730": "Petit-Goave",
+    "nation_1730": "France (Saint-Domingue)",
+    "pirate_significance": "Chief flibustier (French buccaneer) base of the 1680s — de Grammont and de Graaf sailed from here; seat of early French government in Saint-Domingue.",
+    "note": "By 1730 eclipsed: government had moved to Leogane and Petit-Goave was a modest sugar and coasting port; its buccaneer generation had been converted to planters after the 1697 Peace of Ryswick.",
+    "population_c1730": null,
+    "sources": ["Charlevoix, Histoire de Saint-Domingue", "Philip Boucher, France and the American Tropics"]
+  },
+  {
+    "id": "santo-domingo",
+    "name_1730": "Santo Domingo",
+    "nation_1730": "Spain (Hispaniola)",
+    "pirate_significance": null,
+    "note": "Oldest European city in the Americas, by 1730 a poor administrative and ranching outpost overshadowed by the French west of the island.",
+    "population_c1730": null,
+    "sources": ["Frank Moya Pons, The Dominican Republic: A National History"]
+  },
+  {
+    "id": "san-juan",
+    "name_1730": "San Juan de Puerto Rico",
+    "nation_1730": "Spain (Puerto Rico)",
+    "pirate_significance": "Base of Miguel Enriquez, the mulatto guarda costa privateer who dominated local waters c.1701-1735 and became one of the richest men in the Spanish Caribbean before his fall.",
+    "note": "Fortified presidio (El Morro) living on the situado and contraband; Enriquez's corsair fleet made it a real local naval power.",
+    "population_c1730": null,
+    "sources": ["Angel Lopez Cantos, Miguel Enriquez: corsario boricua del siglo XVIII", "AGI Santo Domingo records"]
+  },
+  {
+    "id": "cartagena",
+    "name_1730": "Cartagena de Indias",
+    "nation_1730": "Spain (New Granada)",
+    "pirate_significance": "Sacked by Pointis and du Casse's buccaneers in 1697 — the buccaneers' last great raid; the treasure galleon San Jose blew up offshore in 1708.",
+    "note": "Heavily fortified asiento slave port and terminus for the Tierra Firme galeones, serving the Portobelo fairs; rebuilt and strengthened after 1697.",
+    "population_c1730": null,
+    "sources": ["Carla Rahn Phillips, The Treasure of the San Jose", "Lance Grahn, The Political Economy of Smuggling (New Granada)"]
+  },
+  {
+    "id": "portobelo",
+    "name_1730": "Portobelo",
+    "nation_1730": "Spain (Tierra Firme / Panama)",
+    "pirate_significance": "Sacked by Henry Morgan in 1668 and by Coxon's buccaneers in 1680; its treasure fair was the great prize of the Carrera de Indias.",
+    "note": "Site of the famous galeones fair exchanging Peruvian silver for European goods; by 1730 the fairs were irregular and withering under South Sea Company competition and contraband (Vernon took the town in 1739).",
+    "population_c1730": null,
+    "sources": ["Geoffrey Walker, Spanish Politics and Imperial Trade 1700-1789", "Christopher Ward, Imperial Panama"]
+  },
+  {
+    "id": "veracruz",
+    "name_1730": "Veracruz (with San Juan de Ulua)",
+    "nation_1730": "Spain (New Spain)",
+    "pirate_significance": "The 1683 sack by Laurens de Graaf and Grammont was the most notorious late-buccaneer raid; thereafter heavily guarded.",
+    "note": "Sole legal Atlantic port of New Spain and terminus of the flota; Mexican silver and cochineal outbound, European goods and mercury inbound.",
+    "population_c1730": null,
+    "sources": ["Chaunu, Seville et l'Atlantique", "Garcia-Baquero, Cadiz y el Atlantico"]
+  },
+  {
+    "id": "campeche",
+    "name_1730": "Campeche",
+    "nation_1730": "Spain (Yucatan)",
+    "pirate_significance": "Repeatedly sacked by buccaneers (1663, 1678, 1685); the half-buccaneer logwood-cutters' nest at nearby Laguna de Terminos was expelled by Spain in 1716-17, pushing the Baymen toward Belize.",
+    "note": "Walled (from 1704) logwood and provisions port; the logwood frontier conflict with British cutters defined its early-18th-century politics.",
+    "population_c1730": null,
+    "sources": ["Arne Bialuschewski, articles on logwood cutters and piracy in Jamaica/Yucatan", "AGI Yucatan records"]
+  },
+  {
+    "id": "bridgetown",
+    "name_1730": "Bridgetown, Barbados",
+    "nation_1730": "Great Britain",
+    "pirate_significance": "Rich sugar shipping made the Barbados approaches favorite pirate cruising grounds; Stede Bonnet, 'the gentleman pirate', was a Barbados planter who turned pirate in 1717.",
+    "note": "The first great English sugar island's port and one of the largest towns in English America; standard first landfall for ships from Europe and Africa.",
+    "population_c1730": 13000,
+    "sources": ["Richard Dunn, Sugar and Slaves", "Ian K. Steele, The English Atlantic"]
+  },
+  {
+    "id": "saint-pierre-martinique",
+    "name_1730": "Saint-Pierre, Martinique",
+    "nation_1730": "France",
+    "pirate_significance": "Blackbeard captured La Concorde off Martinique in November 1717; French colonial justice here condemned captured pirates.",
+    "note": "Commercial capital of the French Windward Islands (Fort-Royal was the naval/government seat); sugar and the entrepot trade of the French Antilles.",
+    "population_c1730": null,
+    "sources": ["Philip Boucher, France and the American Tropics", "Jean Mettas, Repertoire des expeditions negrieres francaises"]
+  },
+  {
+    "id": "willemstad",
+    "name_1730": "Willemstad, Curacao",
+    "nation_1730": "Dutch Republic (WIC)",
+    "pirate_significance": null,
+    "note": "Premier Dutch entrepot of the Caribbean: free-trading (largely contraband) hub funneling goods and enslaved people into Spanish Tierra Firme.",
+    "population_c1730": null,
+    "sources": ["Wim Klooster, Illicit Riches: Dutch Trade in the Caribbean 1648-1795"]
+  },
+  {
+    "id": "goree",
+    "name_1730": "Goree",
+    "nation_1730": "France (Compagnie des Indes)",
+    "pirate_significance": null,
+    "note": "Fortified island factory off Cap-Vert anchoring French Senegambia trade in gum, gold and enslaved people.",
+    "population_c1730": null,
+    "sources": ["Philip Curtin, Economic Change in Precolonial Africa: Senegambia in the Era of the Slave Trade"]
+  },
+  {
+    "id": "ouidah",
+    "name_1730": "Ouidah (Whydah)",
+    "nation_1730": "Kingdom of Dahomey (conquered from Hueda in 1727); English, French and Portuguese forts on shore",
+    "pirate_significance": "Namesake of Bellamy's Whydah Gally; Bartholomew Roberts raided the roadstead in January 1722, ransoming ~10 slavers and burning the Porpoise with enslaved people aboard, weeks before his death at Cape Lopez.",
+    "note": "One of the busiest slave ports in Africa; King Agaja of Dahomey conquered it in 1727, disrupting and then reorganizing the trade under Dahomean control.",
+    "population_c1730": null,
+    "sources": ["Robin Law, Ouidah: The Social History of a West African Slaving 'Port' 1727-1892 (2004)", "slavevoyages.org embarkation data"]
+  },
+  {
+    "id": "cape-coast-castle",
+    "name_1730": "Cape Coast Castle",
+    "nation_1730": "Great Britain (Royal African Company), among Fante polities on the Gold Coast",
+    "pirate_significance": "After HMS Swallow defeated Bartholomew Roberts at Cape Lopez (Feb 1722), 169 of his men were tried here in the largest pirate trial of the age; 52 were hanged, many in chains along the shore (1722).",
+    "note": "RAC headquarters on the Gold Coast, exporting gold and enslaved people; flanked by rival Dutch Elmina 13 km west.",
+    "population_c1730": null,
+    "sources": ["A Full and Exact Account of the Tryal of All the Pyrates Lately Taken by Captain Ogle (London 1723)", "William St Clair, The Grand Slave Emporium"]
+  },
+  {
+    "id": "cape-town",
+    "name_1730": "Cape Town (Kaapstad, Table Bay)",
+    "nation_1730": "Dutch Republic (VOC)",
+    "pirate_significance": "Refreshment point that Pirate Round crews had to avoid or bluff past en route to Madagascar; VOC ships were warned here of Indian Ocean pirates.",
+    "note": "The VOC's mandatory refreshment station ('Tavern of the Seas') between Europe and Asia; a few thousand free inhabitants plus Company servants and enslaved people.",
+    "population_c1730": 3000,
+    "sources": ["Bruijn/Gaastra/Schoffer, Dutch-Asiatic Shipping", "Nigel Worden et al., Cape Town: The Making of a City"]
+  },
+  {
+    "id": "saint-denis-bourbon",
+    "name_1730": "Saint-Denis, Ile Bourbon (Reunion)",
+    "nation_1730": "France (Compagnie des Indes)",
+    "pirate_significance": "Bourbon was where retiring Indian Ocean pirates took French amnesties (Condent settled and married there c.1721); Olivier Levasseur ('La Buse') was hanged on Bourbon on 7 July 1730 — the symbolic end of the Indian Ocean pirate era.",
+    "note": "Coffee colony in full boom under the Compagnie des Indes; Saint-Paul was still the chef-lieu, with Saint-Denis becoming capital in 1738.",
+    "population_c1730": null,
+    "sources": ["Histoire de La Reunion scholarship (J. Barassin; Ho Hai Quang)", "Charles Grey, Pirates of the Eastern Seas 1618-1723"]
+  },
+  {
+    "id": "port-louis-ile-de-france",
+    "name_1730": "Port Louis, Ile de France (Mauritius)",
+    "nation_1730": "France (Compagnie des Indes; claimed 1715, settled from 1721)",
+    "pirate_significance": "The Dutch abandoned Mauritius (1710) partly because it sheltered pirates; France took it in 1715 largely to deny them the base.",
+    "note": "In 1730 barely a hamlet: the Compagnie designated Port Louis its chief port c.1731, and only under Mahe de La Bourdonnais (governor from 1735) did it become the famous Indian Ocean naval base — a chronology often misstated on maps.",
+    "population_c1730": null,
+    "sources": ["Auguste Toussaint, Port Louis: deux siecles d'histoire / Histoire de l'Ile Maurice", "Megan Vaughan, Creating the Creole Island"]
+  },
+  {
+    "id": "ile-sainte-marie",
+    "name_1730": "Ile Sainte-Marie (Nosy Boraha), Madagascar",
+    "nation_1730": "Independent Madagascar (Betsimisaraka confederation under Ratsimilaho); no European sovereignty",
+    "pirate_significance": "THE Indian Ocean pirate haven c.1690-1720: Adam Baldridge's trading post (1691-97) supplied the Pirate Round; Kidd, Halsey, Condent, England and others based or ended here; Adventure Galley and Fiery Dragon lie in its harbor; the 'pirate cemetery' survives. Ratsimilaho, who unified the Betsimisaraka c.1712, was reputedly the son of an English pirate and a Malagasy princess.",
+    "note": "By 1730 the heyday was over — the last big crews dispersed or took pardons by the mid-1720s — but ex-pirates and their mixed descendants (zana-malata) remained influential; France only gained the island by cession in 1750.",
+    "population_c1730": null,
+    "sources": ["Jan Rogozinski, Honor Among Thieves: Captain Kidd, Henry Every, and the Pirate Democracy in the Indian Ocean (2000)", "UNESCO expert mission report, Ile Sainte-Marie (2015)", "Arne Bialuschewski, 'Pirates, Slavers, and the Indigenous Population in Madagascar'"]
+  },
+  {
+    "id": "mocha",
+    "name_1730": "Mocha (al-Mukha)",
+    "nation_1730": "Yemen (Qasimid Imamate)",
+    "pirate_significance": "The 'Mocha fleet' of rich Indian pilgrim/trade ships passing the Bab-el-Mandeb was the supreme prize of the Pirate Round (Every's Ganj-i-Sawai 1695; Kidd lurked at the straits in 1697).",
+    "note": "World's premier coffee port c.1730, with English, French and Dutch factories buying for Europe; coffee shipped from the Yemeni highlands via the Red Sea.",
+    "population_c1730": null,
+    "sources": ["Nancy Um, The Merchant Houses of Mocha (2009)", "Robert C. Ritchie, Captain Kidd and the War against the Pirates"]
+  },
+  {
+    "id": "surat",
+    "name_1730": "Surat",
+    "nation_1730": "Mughal Empire",
+    "pirate_significance": "Owner-city of the great hajj ships plundered by Every (1695) and Kidd; European companies in Surat were held answerable for pirate outrages and pressed into convoying Mughal shipping.",
+    "note": "Still a great Mughal commercial port c.1730 but declining as Mughal authority waned and Bombay rose; English, Dutch and French factories present.",
+    "population_c1730": null,
+    "sources": ["Ashin Das Gupta, Indian Merchants and the Decline of Surat c.1700-1750 (1979)"]
+  },
+  {
+    "id": "bombay",
+    "name_1730": "Bombay",
+    "nation_1730": "Great Britain (East India Company)",
+    "pirate_significance": "The EIC's Bombay Marine waged constant war on Kanhoji Angre, the Maratha admiral the English branded a 'pirate', whose fleet dominated the Konkan coast until his death in 1729.",
+    "note": "EIC headquarters for western India since 1687; fortified harbor city with a growing dockyard (Parsi Wadia master-builders engaged from 1736).",
+    "population_c1730": null,
+    "sources": ["K.N. Chaudhuri, The Trading World of Asia and the English East India Company", "Studies of Kanhoji Angre and the Bombay Marine (e.g., Manohar Malgonkar, Kanhoji Angrey)"]
+  },
+  {
+    "id": "goa",
+    "name_1730": "Goa",
+    "nation_1730": "Portugal (Estado da India)",
+    "pirate_significance": null,
+    "note": "Capital of the Portuguese Estado da India, much decayed; under Maratha pressure that would cost it the Province of the North (Bassein) in 1737-39.",
+    "population_c1730": null,
+    "sources": ["C.R. Boxer, The Portuguese Seaborne Empire 1415-1825"]
+  },
+  {
+    "id": "madras",
+    "name_1730": "Madras (Fort St George)",
+    "nation_1730": "Great Britain (East India Company)",
+    "pirate_significance": "EIC shipping from Coromandel was a Pirate Round target in the 1690s; Governor Thomas Pitt fought the trade with the Madagascar men.",
+    "note": "EIC's chief settlement on the Coromandel coast, exporting cotton textiles; a thriving dual 'white town / black town' city.",
+    "population_c1730": null,
+    "sources": ["K.N. Chaudhuri, The Trading World of Asia", "H.D. Love, Vestiges of Old Madras"]
+  },
+  {
+    "id": "calcutta",
+    "name_1730": "Calcutta (Fort William)",
+    "nation_1730": "Great Britain (East India Company), under Bengal Nawabi suzerainty",
+    "pirate_significance": null,
+    "note": "Founded 1690; by 1730 the booming EIC gateway to Bengal textiles and saltpetre, fast becoming the company's most profitable trade.",
+    "population_c1730": null,
+    "sources": ["K.N. Chaudhuri, The Trading World of Asia", "P.J. Marshall, Bengal: The British Bridgehead"]
+  },
+  {
+    "id": "batavia",
+    "name_1730": "Batavia (Jakarta)",
+    "nation_1730": "Dutch Republic (VOC)",
+    "pirate_significance": null,
+    "note": "The VOC's Asian capital and rendezvous of all its shipping; c.1730 increasingly malarial (beginning its 'graveyard of the East' decades) yet still the greatest European city in Asia.",
+    "population_c1730": null,
+    "sources": ["Bruijn/Gaastra/Schoffer, Dutch-Asiatic Shipping", "Leonard Blusse, Strange Company: Chinese Settlers, Mestizo Women and the Dutch in VOC Batavia"]
+  },
+  {
+    "id": "manila",
+    "name_1730": "Manila",
+    "nation_1730": "Spain (Philippines)",
+    "pirate_significance": "Terminus of the Manila galleon — the single richest ship afloat and the dream prize of every raider (Rogers took the Encarnacion off Cabo San Lucas in 1709; Anson took the Covadonga in 1743).",
+    "note": "Entrepot exchanging American silver for Chinese silks and porcelain via the annual Acapulco galleon; the Chinese (Sangley) merchant community ran much of the trade.",
+    "population_c1730": null,
+    "sources": ["W.L. Schurz, The Manila Galleon (1939)"]
+  },
+  {
+    "id": "canton-whampoa",
+    "name_1730": "Canton (Guangzhou) / Whampoa anchorage",
+    "nation_1730": "Qing China",
+    "pirate_significance": null,
+    "note": "By the 1720s-30s European China trade (tea, porcelain, silk) had concentrated at Canton, with ships mooring downriver at Whampoa; the formal 'Canton System' monopoly dates from 1757 but the pattern was set by 1730.",
+    "population_c1730": null,
+    "sources": ["Paul Van Dyke, The Canton Trade: Life and Enterprise on the China Coast 1700-1845 (2005)"]
+  },
+  {
+    "id": "acapulco",
+    "name_1730": "Acapulco",
+    "nation_1730": "Spain (New Spain)",
+    "pirate_significance": "Galleon terminus whose silver fair enticed every South Sea raider of the age.",
+    "note": "Sleepy fortified bay (Fuerte de San Diego) that exploded into life for the annual galleon fair, then emptied; goods packed overland to Mexico City.",
+    "population_c1730": null,
+    "sources": ["W.L. Schurz, The Manila Galleon"]
+  },
+  {
+    "id": "panama-city",
+    "name_1730": "Panama City (Nueva Panama)",
+    "nation_1730": "Spain (Tierra Firme)",
+    "pirate_significance": "Old Panama burned after Morgan's 1671 raid; the new walled city (founded 1673) anchored the Pacific end of the silver portage that 1680s buccaneers crossed the isthmus to raid.",
+    "note": "Pacific terminus of the Portobelo fair route; transshipment of Peruvian silver across the Camino Real.",
+    "population_c1730": null,
+    "sources": ["Christopher Ward, Imperial Panama: Commerce and Conflict in Isthmian America", "Peter Earle, The Sack of Panama"]
+  },
+  {
+    "id": "callao",
+    "name_1730": "Callao",
+    "nation_1730": "Spain (Viceroyalty of Peru)",
+    "pirate_significance": "Base of the Armada del Mar del Sur guarding silver shipments; in the raid zone of South Sea intruders (Rogers 1709, Clipperton and Shelvocke 1719-21).",
+    "note": "Lima's fortified port shipping Potosi silver north to Panama; destroyed by the great 1746 earthquake-tsunami (after our date).",
+    "population_c1730": null,
+    "sources": ["Peter Bradley, The Lure of Peru: Maritime Intrusion into the South Sea 1598-1701 (and 18th-c. sequels)", "Geoffrey Walker, Spanish Politics and Imperial Trade"]
+  },
+  {
+    "id": "rio-de-janeiro",
+    "name_1730": "Rio de Janeiro",
+    "nation_1730": "Portugal (Brazil)",
+    "pirate_significance": "Captured and ransomed by Rene Duguay-Trouin's French squadron in 1711 (after Duclerc's failed 1710 raid) — the biggest amphibious prize-taking of the era.",
+    "note": "Boom port of the Minas Gerais gold rush; the gold frota sailed annually to Lisbon; it replaced Salvador as capital only in 1763.",
+    "population_c1730": 25000,
+    "sources": ["C.R. Boxer, The Golden Age of Brazil 1695-1750"]
+  },
+  {
+    "id": "salvador-bahia",
+    "name_1730": "Salvador da Bahia",
+    "nation_1730": "Portugal (Brazil)",
+    "pirate_significance": "Bartholomew Roberts' first exploit as captain (1719) was cutting out the rich Sagrada Familia from the Lisbon-bound fleet in the Bay of All Saints.",
+    "note": "Capital of Brazil until 1763 and one of the largest cities in the Americas; sugar, tobacco and the Mina slave trade.",
+    "population_c1730": 40000,
+    "sources": ["C.R. Boxer, The Golden Age of Brazil", "Stuart Schwartz, Sugar Plantations in the Formation of Brazilian Society"]
+  },
+  {
+    "id": "recife",
+    "name_1730": "Recife, Pernambuco",
+    "nation_1730": "Portugal (Brazil)",
+    "pirate_significance": null,
+    "note": "Pernambuco's sugar port, recently riven by the Guerra dos Mascates (1710-11) between Recife merchants and Olinda planters; elevated to town status in 1709.",
+    "population_c1730": null,
+    "sources": ["C.R. Boxer, The Golden Age of Brazil"]
+  },
+  {
+    "id": "liverpool",
+    "suggested_addition": true,
+    "lat": 53.41,
+    "lon": -3.0,
+    "name_1730": "Liverpool",
+    "nation_1730": "Great Britain",
+    "pirate_significance": null,
+    "note": "SUGGESTED ADDITION: fast-rising third English slave port in the 1730s, soon to overtake Bristol; completes the British triangular-trade picture.",
+    "population_c1730": 15000,
+    "sources": ["David Richardson, Suzanne Schwarz & Anthony Tibbles (eds.), Liverpool and Transatlantic Slavery"]
+  },
+  {
+    "id": "leogane",
+    "suggested_addition": true,
+    "lat": 18.51,
+    "lon": -72.63,
+    "name_1730": "Leogane, Saint-Domingue",
+    "nation_1730": "France (Saint-Domingue)",
+    "pirate_significance": "Successor to Petit-Goave as the colony's seat; many ex-flibustier families settled the plain.",
+    "note": "SUGGESTED ADDITION: seat of French colonial government of Saint-Domingue c.1730, between Petit-Goave's decline and Port-au-Prince's founding (1749).",
+    "population_c1730": null,
+    "sources": ["Charlevoix, Histoire de Saint-Domingue (1730-31)"]
+  },
+  {
+    "id": "elmina",
+    "suggested_addition": true,
+    "lat": 5.08,
+    "lon": -1.35,
+    "name_1730": "Elmina (Sao Jorge da Mina)",
+    "nation_1730": "Dutch Republic (WIC)",
+    "pirate_significance": null,
+    "note": "SUGGESTED ADDITION: Dutch WIC headquarters on the Gold Coast, 13 km from Cape Coast Castle; the oldest European building in sub-Saharan Africa.",
+    "population_c1730": null,
+    "sources": ["Harvey Feinberg, Africans and Europeans in West Africa: Elminans and Dutchmen on the Gold Coast"]
+  },
+  {
+    "id": "luanda",
+    "suggested_addition": true,
+    "lat": -8.81,
+    "lon": 13.23,
+    "name_1730": "Sao Paulo de Luanda",
+    "nation_1730": "Portugal (Angola)",
+    "pirate_significance": null,
+    "note": "SUGGESTED ADDITION: the single largest slave-embarkation port in Africa, feeding Brazil; essential for any slave-route layer.",
+    "population_c1730": null,
+    "sources": ["slavevoyages.org embarkation totals", "Joseph Miller, Way of Death: Merchant Capitalism and the Angolan Slave Trade"]
+  },
+  {
+    "id": "saint-malo",
+    "suggested_addition": true,
+    "lat": 48.65,
+    "lon": -2.03,
+    "name_1730": "Saint-Malo",
+    "nation_1730": "France",
+    "pirate_significance": "France's premier corsair (privateer) port — Duguay-Trouin's home; Malouin interlopers ran the illicit South Sea (Peru) trade c.1700-1724.",
+    "note": "SUGGESTED ADDITION: corsair wealth and the Compagnie des Indes connection make it the French counterpart to Bristol.",
+    "population_c1730": null,
+    "sources": ["Andre Lespagnol, Messieurs de Saint-Malo: une elite negociante au temps de Louis XIV"]
+  },
+  {
+    "id": "pondicherry",
+    "suggested_addition": true,
+    "lat": 11.93,
+    "lon": 79.83,
+    "name_1730": "Pondicherry",
+    "nation_1730": "France (Compagnie des Indes)",
+    "pirate_significance": null,
+    "note": "SUGGESTED ADDITION: headquarters of the French Compagnie des Indes in India, flourishing under Governor Lenoir c.1730; balances the EIC ports.",
+    "population_c1730": null,
+    "sources": ["Philippe Haudrere, La Compagnie francaise des Indes au XVIIIe siecle"]
+  },
+  {
+    "id": "macau",
+    "suggested_addition": true,
+    "lat": 22.2,
+    "lon": 113.55,
+    "name_1730": "Macau",
+    "nation_1730": "Portugal (under Chinese suzerainty)",
+    "pirate_significance": null,
+    "note": "SUGGESTED ADDITION: Portuguese gateway to the China trade and pilot station for Canton-bound ships; the standard European landfall in the Pearl River approaches.",
+    "population_c1730": null,
+    "sources": ["C.R. Boxer, Fidalgos in the Far East", "Paul Van Dyke, The Canton Trade"]
+  },
+  {
+    "id": "buenos-aires",
+    "suggested_addition": true,
+    "lat": -34.61,
+    "lon": -58.37,
+    "name_1730": "Buenos Aires",
+    "nation_1730": "Spain (Rio de la Plata)",
+    "pirate_significance": null,
+    "note": "SUGGESTED ADDITION: South Sea Company asiento factory and the great contraband back door toward Potosi silver; documents the southern Atlantic route.",
+    "population_c1730": null,
+    "sources": ["Geoffrey Walker, Spanish Politics and Imperial Trade 1700-1789", "Zacarias Moutoukias, studies of Buenos Aires contraband"]
+  }
+]

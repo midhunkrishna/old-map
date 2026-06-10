@@ -1,0 +1,602 @@
+{
+  "whydah": {
+    "depth_m": 5,
+    "treasure": {
+      "summary": "Accumulated plunder of ~50 prizes: coin, gold dust, Akan gold jewelry, ivory, indigo",
+      "period_value": "£20,000–30,000 (survivor testimony, 1717)",
+      "modern_estimate": "$400m (claimed; bulk still unrecovered)",
+      "recovered": "200,000+ artifacts incl. the inscribed ship's bell, coins, gold Akan jewelry; main coin mass still sought"
+    },
+    "salvage": "Cyprian Southack, sent by Massachusetts, salvaged almost nothing in 1717; Barry Clifford found her in 1984 and excavation continues.",
+    "condition": "Artifacts and concretions scattered in shifting sand; no coherent hull.",
+    "epitaph": "Here foundered the Whydah of Black Sam Bellamy, with the wealth of fifty prizes in her hold; of seven-score souls but two came ashore alive.",
+    "manifest": [
+      "~180 sacks of coin, fifty pounds apiece (trial testimony of survivors)",
+      "Gold dust and Akan gold jewelry",
+      "Elephants' teeth (ivory)",
+      "Indigo and Jesuit's bark (quinine)",
+      "28 mounted cannon"
+    ],
+    "souls": { "aboard": 146, "lost": 144, "survived": 2 }
+  },
+  "queen-annes-revenge": {
+    "depth_m": 8.5,
+    "treasure": {
+      "summary": "Stripped by Blackbeard before the grounding; only traces of gold dust remained",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "31 cannon, anchors and hundreds of thousands of artifacts, incl. gold dust grains, medical instruments and a bell cast 1705"
+    },
+    "salvage": "No contemporary salvage; located 1996 by Intersal, excavated by North Carolina's QAR Project since 1997.",
+    "condition": "Ballast mound with concreted cannon and anchors; little hull structure survives.",
+    "epitaph": "Here Black Beard ran his great ship upon the bar, and cheated his own company of their shares.",
+    "manifest": [
+      "31 cast-iron cannon of French, English and Swedish founding",
+      "Gold dust scattered through the ballast",
+      "Medical instruments, incl. a urethral syringe — relics of the Charleston ransom of 1718",
+      "Lead sounding weights, pewter and glassware",
+      "Bell cast 1705, likely Spanish"
+    ],
+    "souls": { "aboard": null, "lost": 0, "survived": null }
+  },
+  "urca-de-lima": {
+    "depth_m": 3.5,
+    "treasure": {
+      "summary": "A storeship's cargo — hides, chocolate, incense — with private silver chests, salvaged in period",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Spanish salvors emptied her 1715–16; the modern preserve holds ballast and hull, not treasure"
+    },
+    "salvage": "Spanish salvage camps worked her 1715–16; Henry Jennings raided the camp at Palmar de Ays in 1716; Florida preserve since 1987.",
+    "condition": "Ballast and lower hull remains with replica cannon in ~3 m off Fort Pierce.",
+    "epitaph": "Here the storm set down the Urca de Lima, alone of all the flota to keep her bones together.",
+    "manifest": [
+      "Cowhides and tanned leather",
+      "Chocolate (cacao), vanilla and sassafras",
+      "Incense",
+      "Private chests of silver specie (salvaged 1715–16)"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "nuestra-senora-regla": {
+    "depth_m": 5,
+    "treasure": {
+      "summary": "The royal consignment of the 1715 flota: ~1,300 chests of silver pesos and Mexican gold",
+      "period_value": "part of ~14 million pesos lost with the 1715 fleet",
+      "modern_estimate": null,
+      "recovered": "Spain salvaged much of the registered silver 1715–18; Real Eight Co. raised thousands of coins from 1961; coins still wash ashore after storms"
+    },
+    "salvage": "Spanish salvage camps 1715–18; Kip Wagner's Real Eight Co. from 1961 founded modern Treasure Coast salvage.",
+    "condition": "Broken and dispersed off Sebastian Inlet; ballast scatter and coin trails in shallow sand.",
+    "epitaph": "Here broke the capitana of the flota in minutes, and General Ubilla and two hundred more went down with the King's silver.",
+    "manifest": [
+      "~1,300 chests of silver pesos",
+      "Mexican gold coin and worked plate",
+      "New Spain produce: cochineal, indigo, hides",
+      "Passengers' private fortunes, registered and not"
+    ],
+    "souls": { "aboard": null, "lost": 225, "survived": null }
+  },
+  "san-jose": {
+    "depth_m": 600,
+    "treasure": {
+      "summary": "The treasure of the Portobelo fair: gold and silver coin and ingots, Peruvian emeralds",
+      "period_value": "7–11 million pesos",
+      "modern_estimate": "$4–17 billion (widely quoted, speculative)",
+      "recovered": "Nothing raised; cannon, coin and porcelain photographed in situ by Colombian missions"
+    },
+    "salvage": "Never salvaged; located 2015 by a REMUS 6000 AUV (WHOI with the Colombian Navy); ownership contested by Colombia, Spain and Sea Search Armada.",
+    "condition": "Broken hull and wide debris field at ~600 m; bronze cannon with dolphin handles visible on the seabed.",
+    "epitaph": "Here blew up the great San José in action with Wager, and six hundred men and the King of Spain's treasure went down in a breath.",
+    "manifest": [
+      "Gold and silver coin of the Lima mint",
+      "Silver ingots and worked plate",
+      "Emeralds of the Muzo mines",
+      "Chinese export porcelain (seen in the debris field)"
+    ],
+    "souls": { "aboard": 600, "lost": 589, "survived": 11 }
+  },
+  "adventure-galley": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "No treasure — stripped, burned and scuttled at Kidd's own order",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Ballast stones and timber fragments; the 2015 'silver ingot' proved to be lead"
+    },
+    "salvage": "Stripped by Kidd's company in 1698; Clifford expeditions 1999–2015; a 2015 UNESCO mission disputed the hull identification.",
+    "condition": "Ballast pile and scattered timbers in harbour silt at Île Sainte-Marie; identification debated.",
+    "epitaph": "Here Captain Kidd burned his leaking Adventure, and with her every hope of an honest accounting.",
+    "manifest": [
+      "Ballast stones and sheathing only",
+      "34 guns when fitted out in 1695, removed before scuttling",
+      "Her plunder carried away in the Quedagh Merchant"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "fiery-dragon": {
+    "depth_m": 4,
+    "treasure": {
+      "summary": "Sweepings of the Indian Ocean trade: Kangxi porcelain, gold dust, cowries",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Thousands of porcelain sherds, gold dust, glass and cowries excavated in the 2000s"
+    },
+    "salvage": "Excavated in the 2000s by the Center for Historic Shipwreck Preservation with Malagasy partners.",
+    "condition": "Burned lower hull and artifact scatter under the silt of the pirate anchorage.",
+    "epitaph": "Here burned the Fiery Dragon at her moorings, her China-ware strewn upon the harbour floor.",
+    "manifest": [
+      "Chinese Kangxi-era export porcelain",
+      "Gold dust",
+      "Cowrie shells, the money of the Guinea trade",
+      "Glassware and goods from Red Sea prizes"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "speaker": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "Red Sea plunder; the crew carried much of the loot ashore with them",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Coins (Arabian and Indian among them), pewter and cannon recovered from 1979"
+    },
+    "salvage": "The pirates salvaged their own loot in 1702; found 1979 by Jacques Dumas, excavated by Patrick Lizé — the first pirate wreck ever excavated.",
+    "condition": "Cannon and ballast scattered on the Grand Port reef.",
+    "epitaph": "Here the Speaker struck the reef at Grand Port, and her pirates waded ashore richer than their hosts.",
+    "manifest": [
+      "Coin of Arabia and India from Red Sea prizes",
+      "Pewter ware",
+      "Cannon and small arms",
+      "The remainder carried ashore by the crew"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "henrietta-marie": {
+    "depth_m": 9,
+    "treasure": {
+      "summary": "No treasure: homeward sugar and logwood — and the iron evidence of the slave trade",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Her bell ('THE HENRIETTA MARIE 1699'), more than 80 pairs of shackles, cannon, ivory and pewter"
+    },
+    "salvage": "No contemporary salvage; found 1972 by Mel Fisher's divers hunting the Atocha, identified by her bell in 1983; NABS memorial plaque laid on the site 1993.",
+    "condition": "Ballast, cannon and hull fragments on New Ground Reef.",
+    "epitaph": "Here sank the slaver Henrietta Marie, her irons empty, her reckoning eternal.",
+    "manifest": [
+      "Sugar and logwood from Jamaica",
+      "Cotton",
+      "More than 80 pairs of iron shackles (bilboes)",
+      "Elephant ivory from the Guinea coast",
+      "Ship's bell cast 1699"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "san-pedro-1733": {
+    "depth_m": 5.5,
+    "treasure": {
+      "summary": "16,000 pesos of registered silver and Chinese porcelain, mostly fished up by Spanish divers",
+      "period_value": "16,000 pesos registered",
+      "modern_estimate": null,
+      "recovered": "Spanish salvors recovered most of the silver 1733–38; the preserve retains ballast and replica cannon"
+    },
+    "salvage": "Spanish salvage camps 1733–38 recovered more silver than the manifests admitted; Florida preserve since 1989.",
+    "condition": "Ballast mound with replica cannon and anchor in Hawk Channel sand and seagrass.",
+    "epitaph": "Here the San Pedro settled in Hawk Channel, her silver fished up almost to the last peso.",
+    "manifest": [
+      "16,000 pesos in registered silver",
+      "Chinese porcelain, come by way of Manila and Veracruz",
+      "Tanned hides and dyewoods",
+      "Contraband silver beyond the registry, betrayed by the salvage tallies"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "vliegent-hart": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "Three chests of coin for Batavia — gold ducats and silver ducatons",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Some 2,000 gold ducats, silver coin, wine bottles and a sealed mailbag of legible letters (1981–1990s)"
+    },
+    "salvage": "VOC attempts in 1735 failed; located 1981 by a Rex Cowan–Dutch partnership and excavated through the 1990s.",
+    "condition": "Broken and buried in mobile sand off the Deurloo channel.",
+    "epitaph": "Here went down the Flying Hart with all her people, in sight of the steeples of Vlissingen.",
+    "manifest": [
+      "Three chests of coin: gold ducats and silver ducatons",
+      "Wine and beer in bottles and casks",
+      "Ironwork and stores for Batavia",
+      "A mailbag of private letters, recovered legible after 250 years"
+    ],
+    "souls": { "aboard": 256, "lost": 256, "survived": 0 }
+  },
+  "hms-association": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "Fleet pay chests and the admiral's plate",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Coins and cannon raised from 1967; finds dispersed at auction"
+    },
+    "salvage": "Relocated 1967 by Royal Navy divers; commercial salvage scattered her coin and guns through the auction rooms.",
+    "condition": "Wreckage strewn through gullies off the Gilstone Ledge; nothing coherent.",
+    "epitaph": "Here the rocks of Scilly took the Association and her admiral, for want of a longitude.",
+    "manifest": [
+      "Pay chests of the Mediterranean fleet",
+      "Admiral Shovell's plate and effects",
+      "90 guns of a second rate",
+      "Homeward Mediterranean goods"
+    ],
+    "souls": { "aboard": 800, "lost": 800, "survived": 0 }
+  },
+  "quedagh-merchant": {
+    "depth_m": 3,
+    "treasure": {
+      "summary": "Kidd's great prize, looted by his trustees before they burned her",
+      "period_value": "cargo sold off India valued near £50,000 when taken (disputed)",
+      "modern_estimate": null,
+      "recovered": "26 cannon and anchors mapped in situ; nothing removed — a living museum preserve"
+    },
+    "salvage": "Looted and burned by Kidd's trustees in 1699; found 2007 by Indiana University divers; Dominican living museum since 2011.",
+    "condition": "Pile of cannon and anchors on coral rubble in three metres of water off Isla Catalina.",
+    "epitaph": "Here Kidd's great prize was rifled and burnt by the very men he trusted to keep her.",
+    "manifest": [
+      "Bengal silk and muslin (sold off before the burning)",
+      "Calico and chintz",
+      "Sugar and opium",
+      "Iron and saltpetre"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "guadalupe-1724": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "Quicksilver for the silver mines of Mexico, in iron-bound chests",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Thousands of artifacts — mercury, wine bottles, pottery — raised 1976–77, now in the Museo de las Casas Reales"
+    },
+    "salvage": "Spain recovered survivors and some cargo 1724–25; Tracy Bowden's Caribe Salvage excavated her 1976–77 under Dominican contract.",
+    "condition": "Lower hull in the sand of Samaná Bay shallows.",
+    "epitaph": "Here the Guadalupe drove ashore with the King's quicksilver, that the mines of Mexico might go hungry.",
+    "manifest": [
+      "Quicksilver (144 tons between her and the Tolosa)",
+      "Wine and brandy in onion-bottles",
+      "Ironwork and tools",
+      "Passengers' chests and effects"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "tolosa-1724": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "Mercury, passengers' jewels and pearls, Puebla pottery",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Mercury, gold jewelry, pearls and Puebla majolica raised 1976–77"
+    },
+    "salvage": "Excavated 1976–77 with the Guadalupe by Caribe Salvage; finds in Santo Domingo.",
+    "condition": "Broken on a reef deeper in Samaná Bay; artifact-rich lower works in sand.",
+    "epitaph": "Here the Tolosa broke on Samaná's reef; eight men lived a month in her mizzen-top on rain and chocolate.",
+    "manifest": [
+      "Quicksilver in skins, boxed in chests",
+      "Gold jewelry and pearls of her passengers",
+      "Puebla majolica pottery",
+      "Wine bottles by the thousand"
+    ],
+    "souls": { "aboard": 600, "lost": 560, "survived": 40 }
+  },
+  "slot-ter-hooge": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "~1,500 silver bars and three chests of coin, outward for Batavia",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Lethbridge raised the greater part of the silver 1725–27 from his diving barrel; Sténuit recovered remaining bars and coin in 1974"
+    },
+    "salvage": "John Lethbridge's famous wooden 'diving engine' worked her for the VOC 1725–27; Robert Sténuit relocated and finished the job in 1974.",
+    "condition": "Scattered remains under sand and rock off Porto Santo, Madeira.",
+    "epitaph": "Here sank the Slot ter Hooge upon Porto Santo, whence the diver Lethbridge drew her silver up in his barrel.",
+    "manifest": [
+      "~1,500 silver bars",
+      "Three chests of silver coin",
+      "Trade goods and stores for the Indies"
+    ],
+    "souls": { "aboard": 254, "lost": 221, "survived": 33 }
+  },
+  "de-liefde": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "227,000 guilders in coin for the Indies trade",
+      "period_value": "227,000 guilders",
+      "modern_estimate": null,
+      "recovered": "Thousands of silver ducatons and gold ducats raised 1965–68; displayed in Lerwick"
+    },
+    "salvage": "Early fishing of guns by Shetlanders; systematic salvage 1965–68 by a consortium including Navy divers.",
+    "condition": "Scattered through kelp gullies off the Out Skerries.",
+    "epitaph": "Here the Liefde struck the Out Skerries by night; one man alone was cast living on the rocks.",
+    "manifest": [
+      "227,000 guilders in silver ducatons and gold ducats",
+      "Trade goods for Batavia",
+      "Ship's guns and stores"
+    ],
+    "souls": { "aboard": 300, "lost": 299, "survived": 1 }
+  },
+  "akerendam": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "Nineteen chests of new coin — some 57,000 gold and silver pieces",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "~57,000 coins — the 'Runde treasure' — raised 1972 and shared between Norway and the Netherlands"
+    },
+    "salvage": "No period salvage; found by sport divers off Runde in 1972 — the largest treasure ever recovered in Norway.",
+    "condition": "Scattered at the foot of the Runde skerries; guns and anchors remain.",
+    "epitaph": "Here perished the Akerendam on her maiden voyage, all hands, her gold beneath the skerries of Runde.",
+    "manifest": [
+      "Nineteen chests of newly minted coin: gold ducats and silver",
+      "Stores and goods for the outward voyage",
+      "Cannon and anchors, still on the bottom"
+    ],
+    "souls": { "aboard": 200, "lost": 200, "survived": 0 }
+  },
+  "maravillas": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "~5 million pesos in silver, gold and emeralds, much of it contraband",
+      "period_value": "~5 million pesos",
+      "modern_estimate": null,
+      "recovered": "Salvaged piecemeal for a century by Spanish divers and Bahamian 'wrackers'; modern finds incl. gold chains and gemstones (Allen Exploration, Bahamas Maritime Museum)"
+    },
+    "salvage": "Spanish expeditions from 1656, then English and freelance wrackers for eighty years; Marx 1972; Marex 1980s–90s; Allen Exploration from 2020.",
+    "condition": "Scattered for miles along Little Bahama Bank; no hull survives.",
+    "epitaph": "Here the Maravillas was rammed and lost with five millions; eighty years of wrackers have fished her bones.",
+    "manifest": [
+      "Registered silver of the 1656 fleet, with contraband above it",
+      "Gold chains and worked plate",
+      "Colombian emeralds and amethysts",
+      "Bronze cannon, long since fished up"
+    ],
+    "souls": { "aboard": 650, "lost": 605, "survived": 45 }
+  },
+  "atocha": {
+    "depth_m": 16.5,
+    "treasure": {
+      "summary": "Registered silver, gold and emeralds of the 1622 Tierra Firme fleet",
+      "period_value": "~1 million pesos (1622 registry)",
+      "modern_estimate": "$400m+ (the 1985 'Motherlode')",
+      "recovered": "Mel Fisher's 1985 motherlode: silver ingots, ~thousands of coins, gold bars and emeralds; the sterncastle treasure is still missing"
+    },
+    "salvage": "Spanish salvors marked but never reached her, 1622–23 (her consort Margarita was part-salvaged by Melián's diving bell from 1626); Fisher's crews searched 1969–85.",
+    "condition": "Scattered along a miles-long trail in the Marquesas; lower hull timbers found beneath the sand.",
+    "epitaph": "Here lies the Atocha, the great unfinished salvage of the Indies, her silver told of in every Havana tavern.",
+    "manifest": [
+      "901 silver ingots and ~255,000 silver coins (registry of 1622)",
+      "161 gold bars and discs",
+      "Raw emeralds of the Muzo mines",
+      "Copper ingots, indigo and tobacco"
+    ],
+    "souls": { "aboard": 265, "lost": 260, "survived": 5 }
+  },
+  "batavia-1629": {
+    "depth_m": 5,
+    "treasure": {
+      "summary": "Twelve chests of silver coin and rich trade goods for the Indies",
+      "period_value": "~250,000 guilders in coin",
+      "modern_estimate": null,
+      "recovered": "Pelsaert's salvors raised ten of twelve coin chests in 1629; hull timbers, the stone portico and victims' skeletons excavated from the 1970s"
+    },
+    "salvage": "Pelsaert returned in the Sardam, salvaged the chests and hanged the mutineers on the spot, 1629; Western Australian Museum excavation from the 1970s.",
+    "condition": "Articulated stern hull section raised and displayed at Fremantle; ballast and guns remain on Morning Reef.",
+    "epitaph": "Here struck the Batavia, and what men did after upon these isles is not fit to be told at length.",
+    "manifest": [
+      "Twelve chests of silver rijksdaalders (ten recovered 1629)",
+      "Antiquities and jewels for the Mughal trade, incl. a great agate cameo",
+      "A pre-cut sandstone portico for the gate of Batavia castle",
+      "Trade silver and cloth"
+    ],
+    "souls": { "aboard": 341, "lost": 219, "survived": 122 }
+  },
+  "hms-feversham": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "Colonial pay chests: Spanish-American, Massachusetts and New York silver",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Coins recovered after 1968 surfaced at auction through the 1990s — a unique sample of the cash that circulated in the colonies"
+    },
+    "salvage": "Located 1968 by Alex Storm after his Chameau success; partial recovery, finds dispersed at auction.",
+    "condition": "Broken on the shoals of Scatarie Island; artifacts scattered.",
+    "epitaph": "Here the Feversham and her convoy broke on Scatarie, the soldiers' pay strewn among the rocks.",
+    "manifest": [
+      "Massachusetts pine-tree shillings",
+      "New York and Spanish-American silver coin",
+      "Guns and stores of the Quebec expedition"
+    ],
+    "souls": { "aboard": null, "lost": 100, "survived": null }
+  },
+  "royal-james": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "None of note — Bonnet's last cruise had earned only small river prizes",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Nothing; no confirmed hull has been found"
+    },
+    "salvage": "None; South Carolina archaeologists have surveyed the Cape Fear engagement area without a confirmed wreck.",
+    "condition": "Unlocated; the river's shifting sandbars cover any remains of the battle.",
+    "epitaph": "Here the gentleman pirate fought Colonel Rhett five hours upon the sands, and lost his ship, and after, his neck.",
+    "manifest": [
+      "Ten guns of small calibre",
+      "Stores and small plunder of a river cruise",
+      "Battle debris of the five-hour fight on the bars"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "el-rubi-capitana-1733": {
+    "depth_m": 6,
+    "treasure": {
+      "summary": "Registered silver of the flota, recovered almost wholly by Spanish divers — with contraband besides",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Spain recovered more silver than the registry admitted, 1733–34; Art McKee raised cannon, anchors and coin from 1938"
+    },
+    "salvage": "Spanish salvage camps 1733–34, the wrecks then burned to the waterline; Art McKee's pioneering hard-hat salvage from 1938.",
+    "condition": "Burned to the waterline in 1733; ballast mound and scattered fittings off Plantation Key.",
+    "epitaph": "Here the Capitana of the flota was driven on the reef and burned, her silver counted twice over.",
+    "manifest": [
+      "Registered silver specie and bullion (salvaged 1733–34)",
+      "Cochineal, indigo and dyewoods",
+      "New Spain produce: hides, vanilla, chocolate",
+      "Unregistered contraband, betrayed by the salvage tallies"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "zuytdorp": {
+    "depth_m": 5,
+    "treasure": {
+      "summary": "Chests of new-minted 1711 Middelburg silver — schellingen and double stuivers",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "A 'carpet of silver' coins recovered from the surf zone by Western Australian Museum expeditions"
+    },
+    "salvage": "None in period — the VOC never learned her fate; wreckage found by stockman Tom Pepper 1927, identified 1958, museum work from the 1970s.",
+    "condition": "Ground to pieces in the surf at the cliff foot; coin carpet, cannon and fittings.",
+    "epitaph": "Here the Zuytdorp drove against the iron cliffs of the South Land, and no word of her ever came to Batavia.",
+    "manifest": [
+      "Chests of silver schellingen and double stuivers, Middelburg mint, 1711",
+      "VOC trade goods and outward stores",
+      "Cannon and anchors at the cliff base"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "zeewijk": {
+    "depth_m": 4,
+    "treasure": {
+      "summary": "Ten chests of coin, 315,836 guilders — nearly all carried away to Batavia by her own castaways",
+      "period_value": "315,836 guilders",
+      "modern_estimate": null,
+      "recovered": "Most specie saved by the survivors themselves in the Sloepie, 1728; WA Museum recovered artifacts 1976–81"
+    },
+    "salvage": "Self-salvage by the castaways 1727–28; systematic Western Australian Museum excavation 1976–81.",
+    "condition": "Guns, anchors and scatter on Half Moon Reef; survivor camp remains on Gun Island.",
+    "epitaph": "Here the Zeewijk struck, and her men built from her bones the first ship ever made in the South Land.",
+    "manifest": [
+      "Ten chests of silver coin (315,836 guilders)",
+      "Building materials and trade goods for Batavia",
+      "Guns and anchors, still on the reef",
+      "Camp debris on Gun Island: bottles, clay pipes, tools"
+    ],
+    "souls": { "aboard": 208, "lost": 126, "survived": 82 }
+  },
+  "le-chameau": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "The year's funds for New France in gold louis d'or and silver écus",
+      "period_value": "~290,000 livres",
+      "modern_estimate": null,
+      "recovered": "Alex Storm's team raised the coin pocket in 1965; the treasure was auctioned in 1971"
+    },
+    "salvage": "French parties in 1725 recovered bodies and flotsam only; Storm, MacEachern and MacLeod found the pay after a systematic search, 1965.",
+    "condition": "Wreckage strewn from Chameau Rock across the seabed; nothing coherent.",
+    "epitaph": "Here the Chameau struck in the dark with all the money of Canada, and not one soul came ashore alive.",
+    "manifest": [
+      "Gold louis d'or and silver écus (~290,000 livres)",
+      "Stores and goods for Quebec and Louisbourg",
+      "Effects of the incoming intendant and officials of New France"
+    ],
+    "souls": { "aboard": 316, "lost": 316, "survived": 0 }
+  },
+  "hms-stirling-castle": {
+    "depth_m": 15,
+    "treasure": {
+      "summary": "No treasure — her extraordinary preservation is the prize",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Guns, the ship's copper kettle and navigation gear recovered as the sands shift; protected wreck"
+    },
+    "salvage": "None in period; discovered 1979 when the Goodwins uncovered her; protected and monitored since 1980.",
+    "condition": "Remarkably intact hull, periodically exposed and reburied by the Goodwin Sands.",
+    "epitaph": "Here the Great Storm swallowed the Stirling Castle into the Goodwins, which keep her yet, wondrous whole.",
+    "manifest": [
+      "70 guns of a third rate",
+      "The ship's copper galley kettle",
+      "Surgeon's and navigator's instruments",
+      "Stores of a ship of the line"
+    ],
+    "souls": { "aboard": 349, "lost": 279, "survived": 70 }
+  },
+  "hms-sussex": {
+    "depth_m": 800,
+    "treasure": {
+      "summary": "By strong documentary evidence, a great coin shipment to buy the Duke of Savoy's alliance",
+      "period_value": null,
+      "modern_estimate": "up to $500m (speculative; nothing proven)",
+      "recovered": "Nothing; Odyssey Marine's 2002 recovery agreement stalled in British–Spanish diplomacy"
+    },
+    "salvage": "Impossible in period at such depth; Odyssey Marine surveyed a deep-water candidate site in 2001.",
+    "condition": "Deep-water cannon mound ~800 m down in the Gibraltar approaches; identification unconfirmed.",
+    "epitaph": "Here the levanter overset the Sussex with the King's gold for Savoy; the sea keeps both the secret and the subsidy.",
+    "manifest": [
+      "A reputed ~10 tons of coin for the Savoy subsidy (National Archives correspondence)",
+      "80 guns of a third rate",
+      "Stores of the Mediterranean fleet"
+    ],
+    "souls": { "aboard": 550, "lost": 548, "survived": 2 }
+  },
+  "hms-winchester": {
+    "depth_m": 8.5,
+    "treasure": {
+      "summary": "No treasure: guns and stores, her crew already dead or dying of disease",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Cannon raised 1938–39 for Florida collections; anchors and fittings"
+    },
+    "salvage": "Charles Brookfield's hard-hat salvage of 1938–39, recounted in National Geographic.",
+    "condition": "Ballast and cannon scatter on Carysfort Reef.",
+    "epitaph": "Here drove the Winchester upon Carysfort Reef, her people too few and too sick to wear ship.",
+    "manifest": [
+      "60 guns of a fourth rate",
+      "Stores depleted by a dying crew",
+      "Surgeon's stores exhausted by scurvy and fever"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  },
+  "vergulde-draeck": {
+    "depth_m": 5,
+    "treasure": {
+      "summary": "Eight chests of silver coin, 78,600 guilders, for the Batavia trade",
+      "period_value": "78,600 guilders",
+      "modern_estimate": null,
+      "recovered": "Coins, elephant tusks, ballast and fittings recovered after 1963 by the Western Australian Museum"
+    },
+    "salvage": "VOC rescue voyages 1656–58 found no survivors and lost more men; WA Museum excavation from 1972.",
+    "condition": "Broken on an inshore reef; concreted coin masses and tusks recovered.",
+    "epitaph": "Here the Gilt Dragon spilled her silver on the reefs of the South Land, and her people walked into silence.",
+    "manifest": [
+      "Eight chests of silver coin (78,600 guilders)",
+      "Elephant tusks",
+      "Trade goods for Batavia",
+      "Ballast bricks"
+    ],
+    "souls": { "aboard": 193, "lost": 118, "survived": 75 }
+  },
+  "golden-fleece": {
+    "depth_m": null,
+    "treasure": {
+      "summary": "Nothing — stripped for careening before the battle that destroyed her",
+      "period_value": null,
+      "modern_estimate": null,
+      "recovered": "Site identified 2015 by the Chatterton–Mattera search; artifacts surveyed, little raised"
+    },
+    "salvage": "Burned in the two-day action of June 1686; identified 2015, the hunt recounted in Kurson's 'Pirate Hunters'.",
+    "condition": "Burned remains under sand in a careening cove of Samaná Bay.",
+    "epitaph": "Here Bannister careened the Golden Fleece and fought two of the King's frigates from the shore — then walked away.",
+    "manifest": [
+      "Careening gear and shore-battery guns",
+      "Stripped stores — her plunder was landed before the fight",
+      "Charred hull timbers"
+    ],
+    "souls": { "aboard": null, "lost": null, "survived": null }
+  }
+}

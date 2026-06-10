@@ -1,0 +1,1906 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "id": "cartagena",
+  "title": "Plan of the City and Harbour of Cartagena de las Indias",
+  "survey_basis": "The walled city's street grid survives and is anchored to modern positions. Walls after the de Murga/Herrera y Sotomayor surveys (rebuilt after Pointis' sack of 1697); San Felipe de Barajas shown as the small castle of 1657, BEFORE the great 1762 expansion. Cf. Herman Moll and the plans engraved for the Vernon expedition.",
+  "center": [
+   -75.551,
+   10.422
+  ],
+  "suggested_zoom": 14
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Cartagena (the walled city)",
+    "note": "Calamar\u00ed island: the city within its full circuit of ramparts"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5556,
+       10.4233
+      ],
+      [
+       -75.5552,
+       10.4248
+      ],
+      [
+       -75.5543,
+       10.4262
+      ],
+      [
+       -75.5532,
+       10.4274
+      ],
+      [
+       -75.5518,
+       10.4285
+      ],
+      [
+       -75.5502,
+       10.4293
+      ],
+      [
+       -75.5485,
+       10.4296
+      ],
+      [
+       -75.5468,
+       10.4293
+      ],
+      [
+       -75.5455,
+       10.4285
+      ],
+      [
+       -75.5447,
+       10.4273
+      ],
+      [
+       -75.5443,
+       10.426
+      ],
+      [
+       -75.544,
+       10.4247
+      ],
+      [
+       -75.5444,
+       10.4233
+      ],
+      [
+       -75.5453,
+       10.4223
+      ],
+      [
+       -75.5468,
+       10.4216
+      ],
+      [
+       -75.5484,
+       10.4212
+      ],
+      [
+       -75.5496,
+       10.4206
+      ],
+      [
+       -75.5506,
+       10.4198
+      ],
+      [
+       -75.5518,
+       10.4194
+      ],
+      [
+       -75.5532,
+       10.4196
+      ],
+      [
+       -75.5544,
+       10.4203
+      ],
+      [
+       -75.5552,
+       10.4213
+      ],
+      [
+       -75.5556,
+       10.4223
+      ],
+      [
+       -75.5556,
+       10.4233
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Getseman\u00ed",
+    "note": "The artisans' suburb on its own island, walled after 1697; joined to the city by the boom bridge"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5496,
+       10.4201
+      ],
+      [
+       -75.5482,
+       10.4196
+      ],
+      [
+       -75.547,
+       10.4188
+      ],
+      [
+       -75.5458,
+       10.4183
+      ],
+      [
+       -75.5443,
+       10.4181
+      ],
+      [
+       -75.5428,
+       10.4177
+      ],
+      [
+       -75.5418,
+       10.4168
+      ],
+      [
+       -75.542,
+       10.4156
+      ],
+      [
+       -75.5433,
+       10.4147
+      ],
+      [
+       -75.545,
+       10.4144
+      ],
+      [
+       -75.547,
+       10.4146
+      ],
+      [
+       -75.5488,
+       10.4153
+      ],
+      [
+       -75.5501,
+       10.4164
+      ],
+      [
+       -75.5507,
+       10.4178
+      ],
+      [
+       -75.5504,
+       10.4192
+      ],
+      [
+       -75.5496,
+       10.4201
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Tierra firme: San L\u00e1zaro hill",
+    "note": "The hill of San L\u00e1zaro with the castle of San Felipe; La Popa convent on the height beyond"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5415,
+       10.427
+      ],
+      [
+       -75.537,
+       10.4275
+      ],
+      [
+       -75.532,
+       10.427
+      ],
+      [
+       -75.527,
+       10.426
+      ],
+      [
+       -75.524,
+       10.424
+      ],
+      [
+       -75.526,
+       10.42
+      ],
+      [
+       -75.53,
+       10.417
+      ],
+      [
+       -75.535,
+       10.415
+      ],
+      [
+       -75.539,
+       10.414
+      ],
+      [
+       -75.541,
+       10.416
+      ],
+      [
+       -75.5405,
+       10.42
+      ],
+      [
+       -75.541,
+       10.424
+      ],
+      [
+       -75.5415,
+       10.427
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Bocagrande spit",
+    "note": "The old sand tongue toward Castillo Grande, breached by the sea in the last century \u2014 the Boca Grande passage runs through the gap, foul and shoal"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.554,
+       10.419
+      ],
+      [
+       -75.5552,
+       10.417
+      ],
+      [
+       -75.5564,
+       10.414
+      ],
+      [
+       -75.5576,
+       10.411
+      ],
+      [
+       -75.5588,
+       10.408
+      ],
+      [
+       -75.5598,
+       10.405
+      ],
+      [
+       -75.5606,
+       10.402
+      ],
+      [
+       -75.5594,
+       10.4015
+      ],
+      [
+       -75.5584,
+       10.4045
+      ],
+      [
+       -75.5574,
+       10.4075
+      ],
+      [
+       -75.5562,
+       10.4105
+      ],
+      [
+       -75.555,
+       10.4135
+      ],
+      [
+       -75.5538,
+       10.4165
+      ],
+      [
+       -75.5528,
+       10.4185
+      ],
+      [
+       -75.554,
+       10.419
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Castillo Grande point",
+    "note": "Ruins of the old Santa Cruz fort on the point (slighted by Pointis, 1697)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5638,
+       10.3975
+      ],
+      [
+       -75.562,
+       10.3982
+      ],
+      [
+       -75.56,
+       10.3978
+      ],
+      [
+       -75.559,
+       10.3965
+      ],
+      [
+       -75.5605,
+       10.3952
+      ],
+      [
+       -75.563,
+       10.3955
+      ],
+      [
+       -75.5638,
+       10.3975
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Tierra Bomba",
+    "note": "The island that walls the outer harbour; the only deep entrance is at Boca Chica, two leagues south"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.567,
+       10.391
+      ],
+      [
+       -75.563,
+       10.392
+      ],
+      [
+       -75.559,
+       10.3915
+      ],
+      [
+       -75.555,
+       10.39
+      ],
+      [
+       -75.552,
+       10.388
+      ],
+      [
+       -75.55,
+       10.385
+      ],
+      [
+       -75.5495,
+       10.381
+      ],
+      [
+       -75.551,
+       10.376
+      ],
+      [
+       -75.555,
+       10.371
+      ],
+      [
+       -75.562,
+       10.368
+      ],
+      [
+       -75.57,
+       10.367
+      ],
+      [
+       -75.578,
+       10.369
+      ],
+      [
+       -75.583,
+       10.374
+      ],
+      [
+       -75.585,
+       10.38
+      ],
+      [
+       -75.583,
+       10.386
+      ],
+      [
+       -75.578,
+       10.39
+      ],
+      [
+       -75.572,
+       10.3915
+      ],
+      [
+       -75.567,
+       10.391
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "Boca Grande (shoaled passage)",
+    "note": "Half-blocked by sand and the old sunken hulks; pirogues pass, ships do not \u2014 later sunk wholly with stone"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5606,
+       10.402
+      ],
+      [
+       -75.5625,
+       10.3985
+      ],
+      [
+       -75.5638,
+       10.3975
+      ],
+      [
+       -75.562,
+       10.396
+      ],
+      [
+       -75.5595,
+       10.3985
+      ],
+      [
+       -75.5584,
+       10.4015
+      ],
+      [
+       -75.5606,
+       10.402
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "Las \u00c1nimas flats",
+    "note": "Mud before the city quay; great ships lie off and lighter their lading"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5535,
+       10.4205
+      ],
+      [
+       -75.5525,
+       10.42
+      ],
+      [
+       -75.5515,
+       10.4196
+      ],
+      [
+       -75.5518,
+       10.4188
+      ],
+      [
+       -75.5533,
+       10.419
+      ],
+      [
+       -75.5542,
+       10.4197
+      ],
+      [
+       -75.5535,
+       10.4205
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Las Murallas",
+    "year_built": 1631,
+    "note": "The full circuit, rebuilt after the 1697 sack: Santo Domingo, Santa Catalina, San Lucas and the rest; Las B\u00f3vedas vaults beneath the north curtain serve as magazines"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5556,
+       10.4233
+      ],
+      [
+       -75.5552,
+       10.4248
+      ],
+      [
+       -75.5543,
+       10.4262
+      ],
+      [
+       -75.5532,
+       10.4274
+      ],
+      [
+       -75.5518,
+       10.4285
+      ],
+      [
+       -75.5502,
+       10.4293
+      ],
+      [
+       -75.5485,
+       10.4296
+      ],
+      [
+       -75.5468,
+       10.4293
+      ],
+      [
+       -75.5455,
+       10.4285
+      ],
+      [
+       -75.5447,
+       10.4273
+      ],
+      [
+       -75.5443,
+       10.426
+      ],
+      [
+       -75.544,
+       10.4247
+      ],
+      [
+       -75.5444,
+       10.4233
+      ],
+      [
+       -75.5453,
+       10.4223
+      ],
+      [
+       -75.5468,
+       10.4216
+      ],
+      [
+       -75.5484,
+       10.4212
+      ],
+      [
+       -75.5496,
+       10.4206
+      ],
+      [
+       -75.5506,
+       10.4198
+      ],
+      [
+       -75.5518,
+       10.4194
+      ],
+      [
+       -75.5532,
+       10.4196
+      ],
+      [
+       -75.5544,
+       10.4203
+      ],
+      [
+       -75.5552,
+       10.4213
+      ],
+      [
+       -75.5556,
+       10.4233
+      ]
+     ],
+     [
+      [
+       -75.555,
+       10.4233
+      ],
+      [
+       -75.5546,
+       10.4246
+      ],
+      [
+       -75.5538,
+       10.4259
+      ],
+      [
+       -75.5528,
+       10.427
+      ],
+      [
+       -75.5515,
+       10.4279
+      ],
+      [
+       -75.5501,
+       10.4287
+      ],
+      [
+       -75.5486,
+       10.429
+      ],
+      [
+       -75.5471,
+       10.4287
+      ],
+      [
+       -75.546,
+       10.428
+      ],
+      [
+       -75.5453,
+       10.427
+      ],
+      [
+       -75.5449,
+       10.4259
+      ],
+      [
+       -75.5446,
+       10.4247
+      ],
+      [
+       -75.545,
+       10.4235
+      ],
+      [
+       -75.5458,
+       10.4227
+      ],
+      [
+       -75.5471,
+       10.4221
+      ],
+      [
+       -75.5486,
+       10.4217
+      ],
+      [
+       -75.5498,
+       10.4211
+      ],
+      [
+       -75.5508,
+       10.4204
+      ],
+      [
+       -75.5519,
+       10.42
+      ],
+      [
+       -75.5531,
+       10.4202
+      ],
+      [
+       -75.5541,
+       10.4208
+      ],
+      [
+       -75.5547,
+       10.4217
+      ],
+      [
+       -75.555,
+       10.4233
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Castillo de San Felipe de Barajas",
+    "year_built": 1657,
+    "note": "The small hill-castle of 1657 on San L\u00e1zaro: a triangular bonnet of eight guns. The vast batteries that swallow the hill come only after 1762 \u2014 Vernon will storm at this older work in 1741 and fail"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5398,
+       10.4233
+      ],
+      [
+       -75.5389,
+       10.4238
+      ],
+      [
+       -75.538,
+       10.4234
+      ],
+      [
+       -75.5379,
+       10.4223
+      ],
+      [
+       -75.5387,
+       10.4217
+      ],
+      [
+       -75.5398,
+       10.422
+      ],
+      [
+       -75.5398,
+       10.4233
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Reducto de San Francisco (Getseman\u00ed)",
+    "year_built": 1700,
+    "note": "Half-moon covering the bridge from the mainland"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5494,
+       10.4156
+      ],
+      [
+       -75.5485,
+       10.416
+      ],
+      [
+       -75.5477,
+       10.4156
+      ],
+      [
+       -75.5479,
+       10.4147
+      ],
+      [
+       -75.5489,
+       10.4144
+      ],
+      [
+       -75.5496,
+       10.4148
+      ],
+      [
+       -75.5494,
+       10.4156
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Bater\u00eda del Muelle",
+    "guns": 8,
+    "note": "Guns along the bay front by the Contadur\u00eda (plausible siting)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5544,
+     10.4206
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "Santa Cruz ruins battery",
+    "guns": 4,
+    "note": "A few guns kept among the old fort's rubble on Castillo Grande point"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.563,
+     10.396
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de las Damas"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5505,
+      10.4219
+     ],
+     [
+      -75.5512,
+      10.4225
+     ],
+     [
+      -75.5519,
+      10.4232
+     ],
+     [
+      -75.5524,
+      10.424
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle Santo Domingo",
+    "note": "From the bastion to the Plaza Mayor"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5538,
+      10.4242
+     ],
+     [
+      -75.5524,
+      10.424
+     ],
+     [
+      -75.5509,
+      10.4237
+     ],
+     [
+      -75.5496,
+      10.4233
+     ],
+     [
+      -75.5485,
+      10.4229
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Factor\u00eda",
+    "note": "The tobacco factors' street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5536,
+      10.4249
+     ],
+     [
+      -75.552,
+      10.4247
+     ],
+     [
+      -75.5504,
+      10.4244
+     ],
+     [
+      -75.549,
+      10.424
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle del Sargento Mayor"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5529,
+      10.4256
+     ],
+     [
+      -75.5513,
+      10.4254
+     ],
+     [
+      -75.5497,
+      10.425
+     ],
+     [
+      -75.5483,
+      10.4246
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de Don Sancho"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.552,
+      10.4264
+     ],
+     [
+      -75.5504,
+      10.4261
+     ],
+     [
+      -75.5488,
+      10.4256
+     ],
+     [
+      -75.5474,
+      10.4252
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Moneda"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5509,
+      10.4272
+     ],
+     [
+      -75.5493,
+      10.4268
+     ],
+     [
+      -75.5478,
+      10.4263
+     ],
+     [
+      -75.5465,
+      10.4258
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Tablada"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5496,
+      10.428
+     ],
+     [
+      -75.5481,
+      10.4275
+     ],
+     [
+      -75.5467,
+      10.4269
+     ],
+     [
+      -75.5456,
+      10.4263
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle del Torno de Santa Clara",
+    "note": "Under the north wall by Las B\u00f3vedas"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5485,
+      10.4288
+     ],
+     [
+      -75.5472,
+      10.4281
+     ],
+     [
+      -75.5459,
+      10.4273
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Iglesia / del Coliseo",
+    "note": "Cross street through the Plaza Mayor"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5524,
+      10.424
+     ],
+     [
+      -75.551,
+      10.4246
+     ],
+     [
+      -75.5497,
+      10.425
+     ],
+     [
+      -75.5482,
+      10.4255
+     ],
+     [
+      -75.5468,
+      10.426
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de los Santos de Piedra"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5509,
+      10.4237
+     ],
+     [
+      -75.5495,
+      10.4242
+     ],
+     [
+      -75.548,
+      10.4247
+     ],
+     [
+      -75.5466,
+      10.4252
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle del Curato"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5496,
+      10.4233
+     ],
+     [
+      -75.5483,
+      10.4238
+     ],
+     [
+      -75.547,
+      10.4243
+     ],
+     [
+      -75.5458,
+      10.4247
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Amargura",
+    "note": "To the half-moon gate"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5505,
+      10.4219
+     ],
+     [
+      -75.5492,
+      10.4223
+     ],
+     [
+      -75.5478,
+      10.4227
+     ],
+     [
+      -75.5464,
+      10.423
+     ],
+     [
+      -75.5452,
+      10.4228
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "The Boom Bridge causeway",
+    "note": "Over the channel to Getseman\u00ed"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5485,
+      10.4205
+     ],
+     [
+      -75.5474,
+      10.4196
+     ],
+     [
+      -75.5462,
+      10.4187
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle de la Media Luna",
+    "note": "Getseman\u00ed's spine, gate to the mainland"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5488,
+      10.418
+     ],
+     [
+      -75.5476,
+      10.417
+     ],
+     [
+      -75.5462,
+      10.416
+     ],
+     [
+      -75.5448,
+      10.4152
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle Larga"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5495,
+      10.417
+     ],
+     [
+      -75.548,
+      10.4162
+     ],
+     [
+      -75.5465,
+      10.4154
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Calle del Arsenal",
+    "note": "Along Getseman\u00ed's careenage shore"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5462,
+      10.4187
+     ],
+     [
+      -75.545,
+      10.4178
+     ],
+     [
+      -75.5438,
+      10.417
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza Mayor (de la Catedral)",
+    "note": "The Inquisition's autos held here; later Plaza de Bol\u00edvar"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5523,
+       10.4233
+      ],
+      [
+       -75.5512,
+       10.4233
+      ],
+      [
+       -75.5512,
+       10.4243
+      ],
+      [
+       -75.5523,
+       10.4243
+      ],
+      [
+       -75.5523,
+       10.4233
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza de la Aduana",
+    "note": "The customs square where the asiento factors land their slaves under the arches"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5518,
+       10.4215
+      ],
+      [
+       -75.5506,
+       10.4215
+      ],
+      [
+       -75.5506,
+       10.4225
+      ],
+      [
+       -75.5518,
+       10.4225
+      ],
+      [
+       -75.5518,
+       10.4215
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza de los Coches (de la Yerba)",
+    "note": "Within the Boca del Puente gate; the slave auctions of older days"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5507,
+       10.4218
+      ],
+      [
+       -75.55,
+       10.4218
+      ],
+      [
+       -75.55,
+       10.4212
+      ],
+      [
+       -75.5507,
+       10.4212
+      ],
+      [
+       -75.5507,
+       10.4218
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza de Santo Domingo"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.5542,
+       10.4238
+      ],
+      [
+       -75.5533,
+       10.4238
+      ],
+      [
+       -75.5533,
+       10.4247
+      ],
+      [
+       -75.5542,
+       10.4247
+      ],
+      [
+       -75.5542,
+       10.4238
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "Plaza de la Trinidad (Getseman\u00ed)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -75.547,
+       10.4158
+      ],
+      [
+       -75.546,
+       10.4158
+      ],
+      [
+       -75.546,
+       10.4167
+      ],
+      [
+       -75.547,
+       10.4167
+      ],
+      [
+       -75.547,
+       10.4158
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "La Catedral (Santa Catalina de Alejandr\u00eda)",
+    "year_built": 1612,
+    "note": "Drake held the old church to ransom; this fabric finished 1612"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5511,
+     10.4238
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Iglesia y Convento de Santo Domingo",
+    "year_built": 1579,
+    "note": "The oldest church standing; its crooked tower a sailors' mark"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5537,
+     10.4244
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "San Ignacio (Jesuits; San Pedro Claver)",
+    "year_built": 1654,
+    "note": "Where Pedro Claver, apostle of the slaves, lies buried"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5508,
+     10.4213
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Iglesia de la Sant\u00edsima Trinidad",
+    "year_built": 1643
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5465,
+     10.4162
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Santo Toribio de Mogrovejo",
+    "year_built": 1732,
+    "note": "Begun 1729, roofing in 1730 \u2014 the last church raised within the walls"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5489,
+     10.426
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Convento de la Popa",
+    "year_built": 1607,
+    "note": "On the high hill landward: Nuestra Se\u00f1ora de la Candelaria, the seamark of Cartagena"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.529,
+     10.4225
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Palacio de la Inquisici\u00f3n",
+    "note": "The Holy Office's tribunal, seated here since 1610; the great portal is yet to come"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5524,
+     10.4236
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Casa de la Aduana",
+    "note": "The English asiento's factors land their human cargo here under the customs house arches"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5515,
+     10.422
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Casa del Cabildo"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5519,
+     10.4228
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Muelle de la Contadur\u00eda",
+    "note": "The city quay on the Bah\u00eda de las \u00c1nimas"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.554,
+      10.421
+     ],
+     [
+      -75.5532,
+      10.4203
+     ],
+     [
+      -75.5522,
+      10.4198
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Getseman\u00ed careenage",
+    "note": "Galleys and coasters hove down here"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -75.5448,
+      10.416
+     ],
+     [
+      -75.544,
+      10.4168
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 30,
+    "name": "Capitana de Galeones",
+    "note": "The treasure fleet lies here for months while the Portobelo fair turns Peru's silver into Europe's goods"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.537,
+     10.407
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 25,
+    "name": "Almiranta de Galeones"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.535,
+     10.404
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 35,
+    "note": "Register ship of the galeones"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.538,
+     10.402
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 30
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.541,
+     10.405
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 20,
+    "note": "South Sea Company annual ship, by treaty"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.546,
+     10.411
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 350,
+    "note": "Guarda-costa \u2014 Jenkins lost his ear to such a one in '31"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5515,
+     10.4185
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 340
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.549,
+     10.419
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "canoe",
+    "heading": 80,
+    "note": "Lighter off the mole"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.553,
+     10.4195
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Surgidero de los Galeones"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.542,
+     10.403
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Bah\u00eda de las \u00c1nimas"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.5525,
+     10.4192
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Boca Grande"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.561,
+     10.399
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Tierra Bomba"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.57,
+     10.378
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Cerro de San L\u00e1zaro"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.529,
+     10.424
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Getseman\u00ed road"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.546,
+     10.4125
+    ]
+   }
+  }
+ ]
+}

@@ -807,7 +807,7 @@ async function selectOrigin(origin) {
   isoAbort = new AbortController();
   $('loading').classList.remove('hidden');
   try {
-    const res = await fetch(url, { signal: isoAbort.signal });
+    const res = await engineFetch(url, { signal: isoAbort.signal });
     if (!res.ok) {
       let msg = 'No isochrones could be charted from that point.';
       try {
@@ -968,7 +968,7 @@ function wireAbout() {
     const tbody = document.querySelector('#cal-table tbody');
     if (tbody.children.length) return;
     try {
-      const rows = await (await fetch('/api/calibration')).json();
+      const rows = await (await fetch('/calibration.json')).json();
       const nameOf = (id) => (meta.ports.find((p) => p.id === id) || { name: id }).name;
       for (const r of rows) {
         const tr = document.createElement('tr');
@@ -989,7 +989,7 @@ function wireAbout() {
 async function boot() {
   let imageList;
   [meta, routes, wrecks, portDetails, wreckExtra, imageList] = await Promise.all([
-    fetch('/api/meta').then((r) => r.json()),
+    fetch('/meta.json').then((r) => r.json()),
     fetch('/data/routes.json').then((r) => r.json()),
     fetch('/data/wrecks.json').then((r) => r.json()),
     fetch('/data/port_details.json').then((r) => r.json()),

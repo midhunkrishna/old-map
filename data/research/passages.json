@@ -1,0 +1,194 @@
+[
+  {
+    "from": "London/English Channel",
+    "to": "Barbados (Bridgetown)",
+    "days_typical": 42,
+    "days_low": 30,
+    "days_high": 63,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740 (OUP 1986), passage-time tables: ~5-7 weeks via Madeira and the NE trades. NOT LIVE-VERIFIED in this session."
+  },
+  {
+    "from": "Falmouth (packet)",
+    "to": "Barbados",
+    "days_typical": 37,
+    "days_low": 28,
+    "days_high": 50,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740: post-1702 West India packet boats averaged about five weeks outward."
+  },
+  {
+    "from": "England (London/Bristol)",
+    "to": "Boston",
+    "days_typical": 56,
+    "days_low": 40,
+    "days_high": 90,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740: westbound northern crossings averaged ~7-9 weeks against the westerlies."
+  },
+  {
+    "from": "England (London)",
+    "to": "New York",
+    "days_typical": 58,
+    "days_low": 42,
+    "days_high": 90,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740; westbound times comparable to Boston, slightly longer on average."
+  },
+  {
+    "from": "Boston",
+    "to": "England",
+    "days_typical": 32,
+    "days_low": 21,
+    "days_high": 50,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740: eastbound with the westerlies and Gulf Stream, ~4-5 weeks; fast passages under 3 weeks recorded."
+  },
+  {
+    "from": "England",
+    "to": "Jamaica (Port Royal/Kingston)",
+    "days_typical": 63,
+    "days_low": 49,
+    "days_high": 90,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740: outward via Barbados and the Windward Passage, ~8-10 weeks."
+  },
+  {
+    "from": "Jamaica",
+    "to": "England",
+    "days_typical": 75,
+    "days_low": 56,
+    "days_high": 105,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740: homeward beat through the Florida Strait, past Bermuda toward the Azores; ~10-11 weeks typical."
+  },
+  {
+    "from": "Boston",
+    "to": "Barbados",
+    "days_typical": 26,
+    "days_low": 18,
+    "days_high": 40,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740: North American provisioning trade to the West Indies, ~3-4 weeks southbound."
+  },
+  {
+    "from": "New York",
+    "to": "Jamaica",
+    "days_typical": 28,
+    "days_low": 20,
+    "days_high": 45,
+    "source": "Ian K. Steele, The English Atlantic 1675-1740, intercolonial passage data."
+  },
+  {
+    "from": "Cadiz",
+    "to": "Veracruz (flota de Nueva Espana)",
+    "days_typical": 80,
+    "days_low": 60,
+    "days_high": 105,
+    "source": "Pierre & Huguette Chaunu, Seville et l'Atlantique (1955-59); A. Garcia-Baquero, Cadiz y el Atlantico 1717-1778: outward flota ~2.5-3.5 months via Canaries, Dominica passage, and Gulf of Mexico."
+  },
+  {
+    "from": "Cadiz",
+    "to": "Cartagena de Indias (galeones)",
+    "days_typical": 65,
+    "days_low": 50,
+    "days_high": 85,
+    "source": "Chaunu, Seville et l'Atlantique; Carla Rahn Phillips, Six Galleons for the King of Spain: Tierra Firme galeones track via Canaries and the Antilles."
+  },
+  {
+    "from": "Havana",
+    "to": "Cadiz",
+    "days_typical": 70,
+    "days_low": 55,
+    "days_high": 100,
+    "source": "Chaunu, Seville et l'Atlantique; Garcia-Baquero: homeward via the Bahama Channel, Bermuda latitude, and the Azores."
+  },
+  {
+    "from": "Lisbon",
+    "to": "Salvador da Bahia (frota)",
+    "days_typical": 70,
+    "days_low": 50,
+    "days_high": 95,
+    "source": "C.R. Boxer, The Golden Age of Brazil 1695-1750 (1962): Brazil fleets typically ~2-3 months outward via Madeira/Cape Verde."
+  },
+  {
+    "from": "Lisbon",
+    "to": "Rio de Janeiro (frota)",
+    "days_typical": 80,
+    "days_low": 60,
+    "days_high": 105,
+    "source": "C.R. Boxer, The Golden Age of Brazil 1695-1750: Rio passage somewhat longer than Bahia, crossing the doldrums and SE trades."
+  },
+  {
+    "from": "Bristol",
+    "to": "Gold Coast (Cape Coast / Anomabu)",
+    "days_typical": 49,
+    "days_low": 35,
+    "days_high": 70,
+    "source": "David Richardson, Bristol, Africa and the Eighteenth-Century Slave Trade; Trans-Atlantic Slave Trade Database (slavevoyages.org): first leg ~6-8 weeks."
+  },
+  {
+    "from": "Gold Coast",
+    "to": "Barbados (Middle Passage)",
+    "days_typical": 65,
+    "days_low": 45,
+    "days_high": 100,
+    "source": "Trans-Atlantic Slave Trade Database, slavevoyages.org: early-18th-century Middle Passage means ~2 months from the Gold Coast; Barbados the shortest Caribbean landfall."
+  },
+  {
+    "from": "Ouidah (Bight of Benin)",
+    "to": "Jamaica (Middle Passage)",
+    "days_typical": 75,
+    "days_low": 55,
+    "days_high": 110,
+    "source": "Trans-Atlantic Slave Trade Database, slavevoyages.org: Bight of Benin departures took longer (working off the Guinea coast), Jamaica deeper into the Caribbean than Barbados."
+  },
+  {
+    "from": "Texel (Netherlands)",
+    "to": "Cape Town (Table Bay)",
+    "days_typical": 115,
+    "days_low": 90,
+    "days_high": 150,
+    "source": "J.R. Bruijn, F.S. Gaastra & I. Schoffer, Dutch-Asiatic Shipping in the 17th and 18th Centuries (1987): VOC outward leg to the Cape averaged ~4 months in this period."
+  },
+  {
+    "from": "Cape Town",
+    "to": "Batavia (via Brouwer route, roaring forties and Sunda Strait)",
+    "days_typical": 60,
+    "days_low": 45,
+    "days_high": 90,
+    "source": "Bruijn, Gaastra & Schoffer, Dutch-Asiatic Shipping: post-1617 mandated Brouwer route, running east in ~36-42 S before turning north to Sunda Strait."
+  },
+  {
+    "from": "Texel (Netherlands)",
+    "to": "Batavia (total, incl. Cape call)",
+    "days_typical": 240,
+    "days_low": 180,
+    "days_high": 300,
+    "source": "Bruijn, Gaastra & Schoffer, Dutch-Asiatic Shipping: full outward voyage averaged ~8 months in the early 18th century including the Cape refreshment stop."
+  },
+  {
+    "from": "England (Downs)",
+    "to": "Bombay",
+    "days_typical": 170,
+    "days_low": 130,
+    "days_high": 220,
+    "source": "K.N. Chaudhuri, The Trading World of Asia and the English East India Company 1660-1760 (1978); Anthony Farrington, Catalogue of East India Company Ships' Journals: ~5-6 months, timed to the SW monsoon."
+  },
+  {
+    "from": "England (Downs)",
+    "to": "Madras (Fort St George)",
+    "days_typical": 180,
+    "days_low": 140,
+    "days_high": 230,
+    "source": "K.N. Chaudhuri, The Trading World of Asia and the English East India Company 1660-1760; Farrington EIC journals."
+  },
+  {
+    "from": "Acapulco",
+    "to": "Manila (westbound galleon, ~13 N trade-wind track)",
+    "days_typical": 90,
+    "days_low": 75,
+    "days_high": 120,
+    "source": "William Lytle Schurz, The Manila Galleon (1939): downwind run of ~8-12 weeks via the Marianas."
+  },
+  {
+    "from": "Manila",
+    "to": "Acapulco (eastbound galleon via Kuroshio and ~35-40 N)",
+    "days_typical": 180,
+    "days_low": 130,
+    "days_high": 240,
+    "source": "William Lytle Schurz, The Manila Galleon: the dreaded return averaged ~6 months, sometimes 7-8; the longest regular non-stop passage in the age of sail."
+  }
+]

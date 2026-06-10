@@ -1,0 +1,1875 @@
+{
+ "type": "FeatureCollection",
+ "properties": {
+  "id": "charleston",
+  "title": "Ichnography of Charles-Town at High Water",
+  "survey_basis": "After Edward Crisp's plan of 1704 (the walled town) and the Roberts & Toms 'Ichnography of Charles-Town' of 1739; the grid south of Broad Street survives and is anchored to modern positions. The brick wall was being dismantled through the 1720s \u2014 bastions shown part-ruinous.",
+  "center": [
+   -79.928,
+   32.777
+  ],
+  "suggested_zoom": 14
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Charles-Town neck",
+    "note": "The town between Ashley and Cooper; marsh to landward of the western streets"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9306,
+       32.7695
+      ],
+      [
+       -79.9292,
+       32.7699
+      ],
+      [
+       -79.9279,
+       32.7704
+      ],
+      [
+       -79.9272,
+       32.7711
+      ],
+      [
+       -79.927,
+       32.772
+      ],
+      [
+       -79.9269,
+       32.7727
+      ],
+      [
+       -79.9276,
+       32.7728
+      ],
+      [
+       -79.9274,
+       32.7731
+      ],
+      [
+       -79.9268,
+       32.773
+      ],
+      [
+       -79.9267,
+       32.7738
+      ],
+      [
+       -79.9266,
+       32.7746
+      ],
+      [
+       -79.9266,
+       32.7755
+      ],
+      [
+       -79.9267,
+       32.7764
+      ],
+      [
+       -79.9265,
+       32.7772
+      ],
+      [
+       -79.9263,
+       32.778
+      ],
+      [
+       -79.926,
+       32.779
+      ],
+      [
+       -79.9257,
+       32.78
+      ],
+      [
+       -79.9255,
+       32.781
+      ],
+      [
+       -79.9253,
+       32.782
+      ],
+      [
+       -79.9251,
+       32.7832
+      ],
+      [
+       -79.925,
+       32.7845
+      ],
+      [
+       -79.9252,
+       32.786
+      ],
+      [
+       -79.9256,
+       32.787
+      ],
+      [
+       -79.93,
+       32.787
+      ],
+      [
+       -79.935,
+       32.787
+      ],
+      [
+       -79.94,
+       32.787
+      ],
+      [
+       -79.941,
+       32.785
+      ],
+      [
+       -79.9415,
+       32.783
+      ],
+      [
+       -79.941,
+       32.781
+      ],
+      [
+       -79.9405,
+       32.779
+      ],
+      [
+       -79.941,
+       32.777
+      ],
+      [
+       -79.9415,
+       32.775
+      ],
+      [
+       -79.941,
+       32.7735
+      ],
+      [
+       -79.9395,
+       32.772
+      ],
+      [
+       -79.9375,
+       32.771
+      ],
+      [
+       -79.935,
+       32.7702
+      ],
+      [
+       -79.9325,
+       32.7697
+      ],
+      [
+       -79.9306,
+       32.7695
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "Shute's Folly",
+    "note": "Marsh island in the Cooper; oyster banks and a watch-house"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9125,
+       32.7725
+      ],
+      [
+       -79.9105,
+       32.7732
+      ],
+      [
+       -79.9085,
+       32.7728
+      ],
+      [
+       -79.909,
+       32.7715
+      ],
+      [
+       -79.9115,
+       32.7713
+      ],
+      [
+       -79.9125,
+       32.7725
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "land",
+    "name": "James Island (Windmill Point)",
+    "note": "Fort Johnson commands the inner road"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.905,
+       32.755
+      ],
+      [
+       -79.898,
+       32.7545
+      ],
+      [
+       -79.895,
+       32.752
+      ],
+      [
+       -79.897,
+       32.749
+      ],
+      [
+       -79.904,
+       32.7485
+      ],
+      [
+       -79.909,
+       32.751
+      ],
+      [
+       -79.908,
+       32.754
+      ],
+      [
+       -79.905,
+       32.755
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "The Bar",
+    "note": "Ships cross with the tide and a pilot; here Blackbeard's squadron lay in May 1718, taking every ship that tried"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.885,
+       32.752
+      ],
+      [
+       -79.875,
+       32.749
+      ],
+      [
+       -79.865,
+       32.744
+      ],
+      [
+       -79.862,
+       32.738
+      ],
+      [
+       -79.87,
+       32.736
+      ],
+      [
+       -79.88,
+       32.741
+      ],
+      [
+       -79.888,
+       32.747
+      ],
+      [
+       -79.885,
+       32.752
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shoal",
+    "name": "White Point shoal",
+    "note": "Oyster bank off the point, dry at low water"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9265,
+       32.77
+      ],
+      [
+       -79.9235,
+       32.7685
+      ],
+      [
+       -79.921,
+       32.766
+      ],
+      [
+       -79.923,
+       32.7645
+      ],
+      [
+       -79.9265,
+       32.767
+      ],
+      [
+       -79.929,
+       32.7688
+      ],
+      [
+       -79.9265,
+       32.77
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Granville Bastion",
+    "year_built": 1704,
+    "note": "Southeast bastion of the old wall, guns over the Cooper; kept in repair after the rest was slighted"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9274,
+       32.7756
+      ],
+      [
+       -79.9266,
+       32.776
+      ],
+      [
+       -79.9259,
+       32.7757
+      ],
+      [
+       -79.9261,
+       32.775
+      ],
+      [
+       -79.927,
+       32.7748
+      ],
+      [
+       -79.9276,
+       32.7751
+      ],
+      [
+       -79.9274,
+       32.7756
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Craven Bastion",
+    "year_built": 1704,
+    "note": "Northeast bastion of the old enceinte, part ruinous since the wall came down in the 1720s"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.926,
+       32.7806
+      ],
+      [
+       -79.9252,
+       32.7811
+      ],
+      [
+       -79.9244,
+       32.7808
+      ],
+      [
+       -79.9246,
+       32.78
+      ],
+      [
+       -79.9255,
+       32.7798
+      ],
+      [
+       -79.9262,
+       32.7801
+      ],
+      [
+       -79.926,
+       32.7806
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Half-Moon Battery",
+    "year_built": 1700,
+    "note": "The half-moon at the foot of Broad Street; the Court of Guard and Council Chamber stand upon it"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9266,
+       32.7777
+      ],
+      [
+       -79.9259,
+       32.7782
+      ],
+      [
+       -79.9252,
+       32.7779
+      ],
+      [
+       -79.9254,
+       32.7772
+      ],
+      [
+       -79.9263,
+       32.7771
+      ],
+      [
+       -79.9266,
+       32.7777
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "fort",
+    "name": "Fort Johnson",
+    "year_built": 1708,
+    "note": "Johnson's Fort on Windmill Point: the bar battery, mounting about 20 guns"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9035,
+       32.7528
+      ],
+      [
+       -79.9023,
+       32.7534
+      ],
+      [
+       -79.901,
+       32.753
+      ],
+      [
+       -79.9012,
+       32.7518
+      ],
+      [
+       -79.9026,
+       32.7514
+      ],
+      [
+       -79.9037,
+       32.7519
+      ],
+      [
+       -79.9035,
+       32.7528
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "battery",
+    "name": "White Point battery",
+    "guns": 6,
+    "note": "Small work at the point (plausible; a battery is shown here on the 1739 Ichnography)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9305,
+     32.7702
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "East Bay Street",
+    "note": "The Bay: the merchants' walk, with the bridges (wharves) before it"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9271,
+      32.7712
+     ],
+     [
+      -79.927,
+      32.7725
+     ],
+     [
+      -79.9267,
+      32.7745
+     ],
+     [
+      -79.9266,
+      32.776
+     ],
+     [
+      -79.9264,
+      32.7775
+     ],
+     [
+      -79.926,
+      32.7795
+     ],
+     [
+      -79.9256,
+      32.7815
+     ],
+     [
+      -79.9252,
+      32.7835
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Broad Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9266,
+      32.7766
+     ],
+     [
+      -79.9311,
+      32.7768
+     ],
+     [
+      -79.9335,
+      32.77692
+     ],
+     [
+      -79.937,
+      32.77705
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Tradd Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.927,
+      32.7743
+     ],
+     [
+      -79.9311,
+      32.7746
+     ],
+     [
+      -79.934,
+      32.7748
+     ],
+     [
+      -79.9375,
+      32.775
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Elliott Street",
+    "note": "Shopkeepers and victuallers"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9268,
+      32.7755
+     ],
+     [
+      -79.93,
+      32.7756
+     ],
+     [
+      -79.9311,
+      32.77565
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Queen Street",
+    "note": "Until lately called Dock Street; the playhouse of 1736 will stand here"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9264,
+      32.7784
+     ],
+     [
+      -79.93,
+      32.77855
+     ],
+     [
+      -79.9311,
+      32.7786
+     ],
+     [
+      -79.9345,
+      32.7788
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Meeting Street",
+    "note": "Named for the dissenters' White Meeting-house"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9311,
+      32.7705
+     ],
+     [
+      -79.9311,
+      32.773
+     ],
+     [
+      -79.9311,
+      32.7768
+     ],
+     [
+      -79.9311,
+      32.779
+     ],
+     [
+      -79.9309,
+      32.782
+     ],
+     [
+      -79.9307,
+      32.785
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Church Street"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9288,
+      32.7718
+     ],
+     [
+      -79.9288,
+      32.7744
+     ],
+     [
+      -79.9287,
+      32.7766
+     ],
+     [
+      -79.9286,
+      32.779
+     ],
+     [
+      -79.9285,
+      32.781
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "King Street",
+    "note": "The Broad Path: the high road out of town"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9335,
+      32.7715
+     ],
+     [
+      -79.9335,
+      32.7744
+     ],
+     [
+      -79.9335,
+      32.77692
+     ],
+     [
+      -79.9333,
+      32.7795
+     ],
+     [
+      -79.9331,
+      32.783
+     ],
+     [
+      -79.9329,
+      32.786
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Longitude Lane"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.927,
+      32.773
+     ],
+     [
+      -79.93,
+      32.7732
+     ],
+     [
+      -79.9311,
+      32.7733
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Chalmers Alley"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9287,
+      32.7775
+     ],
+     [
+      -79.9264,
+      32.7774
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Water Street (Vanderhorst's Creek)",
+    "note": "A tidal creek with a bridge at Meeting Street; filled a century later"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9269,
+      32.7727
+     ],
+     [
+      -79.9285,
+      32.7728
+     ],
+     [
+      -79.93,
+      32.7729
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "The Market wharf lane",
+    "note": "Lane to the new market on the creek (plausible infill)"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9285,
+      32.781
+     ],
+     [
+      -79.9284,
+      32.7825
+     ],
+     [
+      -79.927,
+      32.784
+     ],
+     [
+      -79.926,
+      32.7845
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "street",
+    "name": "Boundary lane",
+    "note": "Northern edge of the built town in 1730 (plausible infill)"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9307,
+      32.785
+     ],
+     [
+      -79.929,
+      32.7852
+     ],
+     [
+      -79.9256,
+      32.7855
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "canal",
+    "name": "Vanderhorst's Creek",
+    "note": "Tidal creek into the town marsh; St Michael's Alley ground beyond"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9269,
+      32.7727
+     ],
+     [
+      -79.929,
+      32.7727
+     ],
+     [
+      -79.9311,
+      32.7728
+     ],
+     [
+      -79.933,
+      32.7726
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9309,
+       32.7748
+      ],
+      [
+       -79.929,
+       32.7748
+      ],
+      [
+       -79.929,
+       32.7765
+      ],
+      [
+       -79.9309,
+       32.7765
+      ],
+      [
+       -79.9309,
+       32.7748
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9286,
+       32.7748
+      ],
+      [
+       -79.927,
+       32.7748
+      ],
+      [
+       -79.927,
+       32.7764
+      ],
+      [
+       -79.9286,
+       32.7764
+      ],
+      [
+       -79.9286,
+       32.7748
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9309,
+       32.7731
+      ],
+      [
+       -79.929,
+       32.7731
+      ],
+      [
+       -79.929,
+       32.7744
+      ],
+      [
+       -79.9309,
+       32.7744
+      ],
+      [
+       -79.9309,
+       32.7731
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9286,
+       32.7731
+      ],
+      [
+       -79.9271,
+       32.7731
+      ],
+      [
+       -79.9271,
+       32.7742
+      ],
+      [
+       -79.9286,
+       32.7742
+      ],
+      [
+       -79.9286,
+       32.7731
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9333,
+       32.7748
+      ],
+      [
+       -79.9313,
+       32.7748
+      ],
+      [
+       -79.9313,
+       32.7766
+      ],
+      [
+       -79.9333,
+       32.7766
+      ],
+      [
+       -79.9333,
+       32.7748
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9333,
+       32.7717
+      ],
+      [
+       -79.9313,
+       32.7717
+      ],
+      [
+       -79.9313,
+       32.7744
+      ],
+      [
+       -79.9333,
+       32.7744
+      ],
+      [
+       -79.9333,
+       32.7717
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9309,
+       32.7708
+      ],
+      [
+       -79.9288,
+       32.7708
+      ],
+      [
+       -79.9288,
+       32.7728
+      ],
+      [
+       -79.9309,
+       32.7728
+      ],
+      [
+       -79.9309,
+       32.7708
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block",
+    "name": "St Philip's block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9309,
+       32.7771
+      ],
+      [
+       -79.9289,
+       32.7771
+      ],
+      [
+       -79.9289,
+       32.7783
+      ],
+      [
+       -79.9309,
+       32.7783
+      ],
+      [
+       -79.9309,
+       32.7771
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9286,
+       32.777
+      ],
+      [
+       -79.9267,
+       32.777
+      ],
+      [
+       -79.9267,
+       32.7782
+      ],
+      [
+       -79.9286,
+       32.7782
+      ],
+      [
+       -79.9286,
+       32.777
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9308,
+       32.7788
+      ],
+      [
+       -79.9288,
+       32.7788
+      ],
+      [
+       -79.9288,
+       32.7805
+      ],
+      [
+       -79.9308,
+       32.7805
+      ],
+      [
+       -79.9308,
+       32.7788
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9285,
+       32.7788
+      ],
+      [
+       -79.9264,
+       32.7788
+      ],
+      [
+       -79.9264,
+       32.7803
+      ],
+      [
+       -79.9285,
+       32.7803
+      ],
+      [
+       -79.9285,
+       32.7788
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9306,
+       32.781
+      ],
+      [
+       -79.9286,
+       32.781
+      ],
+      [
+       -79.9286,
+       32.783
+      ],
+      [
+       -79.9306,
+       32.783
+      ],
+      [
+       -79.9306,
+       32.781
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9283,
+       32.781
+      ],
+      [
+       -79.9259,
+       32.781
+      ],
+      [
+       -79.9259,
+       32.7828
+      ],
+      [
+       -79.9283,
+       32.7828
+      ],
+      [
+       -79.9283,
+       32.781
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "block"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.9331,
+       32.7774
+      ],
+      [
+       -79.9313,
+       32.7774
+      ],
+      [
+       -79.9313,
+       32.7795
+      ],
+      [
+       -79.9331,
+       32.7795
+      ],
+      [
+       -79.9331,
+       32.7774
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "St Philip's Church",
+    "year_built": 1723,
+    "note": "The new brick St Philip's on Church Street, finished 1723; its three porticoes the admiration of the province"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9292,
+     32.7784
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "White Meeting House",
+    "year_built": 1681,
+    "note": "The dissenters' meeting that names Meeting Street"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9303,
+     32.7788
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "French Huguenot Church",
+    "year_built": 1687,
+    "note": "The refugees' church; services timed to the ebb for the Santee planters' boats"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9318,
+     32.7781
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "church",
+    "name": "Quaker Meeting",
+    "year_built": 1696,
+    "note": "On King Street lot (modest wooden meeting)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.934,
+     32.7756
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Council Chamber & Court of Guard",
+    "year_built": 1700,
+    "note": "Upon the Half-Moon at the foot of Broad Street; the pirates of 1718 were tried hereabouts"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9259,
+     32.7776
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "The Watch House",
+    "note": "Corner of Broad and the Bay"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9274,
+     32.7767
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "building",
+    "name": "Shepheard's Tavern",
+    "year_built": 1720,
+    "note": "Broad and Church corner; courts, lodges and the post all meet over its punch"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.928,
+     32.7756
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Rhett's Bridge",
+    "note": "Colonel Rhett, who took Stede Bonnet, owns the great wharf"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.927,
+      32.775
+     ],
+     [
+      -79.9256,
+      32.7749
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Middle Bridge"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9269,
+      32.7738
+     ],
+     [
+      -79.9255,
+      32.7737
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Lloyd's Bridge"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9266,
+      32.777
+     ],
+     [
+      -79.9252,
+      32.7769
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "wharf",
+    "name": "Pinckney's Bridge"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.926,
+      32.7793
+     ],
+     [
+      -79.9247,
+      32.7792
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "gallows",
+    "name": "White Point gallows",
+    "note": "Stede Bonnet and 29 of his men hanged below high-water mark, Nov-Dec 1718, and buried in the marsh"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.93,
+     32.77
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "green",
+    "name": "White Point",
+    "note": "The open point: oyster shells, gibbets and a battery"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -79.931,
+       32.7698
+      ],
+      [
+       -79.9288,
+       32.7698
+      ],
+      [
+       -79.9288,
+       32.771
+      ],
+      [
+       -79.931,
+       32.771
+      ],
+      [
+       -79.931,
+       32.7698
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 200,
+    "note": "Rice ship loading at Rhett's Bridge road"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9235,
+     32.7755
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 195
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.923,
+     32.7775
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 190,
+    "note": "Coasting sloop from the Sea Islands"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9225,
+     32.7735
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "brigantine",
+    "heading": 205
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.924,
+     32.779
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "man-of-war",
+    "heading": 180,
+    "name": "HMS station ship",
+    "note": "The guard ship in Asley-Cooper road"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.921,
+     32.771
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "merchantman",
+    "heading": 150,
+    "note": "Waiting the tide on the Bar, pilot aboard"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.888,
+     32.745
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "sloop",
+    "heading": 145,
+    "note": "In Rebellion Road"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.878,
+     32.743
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "ship",
+    "type": "canoe",
+    "heading": 90,
+    "note": "Plantation periagua"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.925,
+     32.772
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Cooper River"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.92,
+     32.776
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Ashley River"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.943,
+     32.774
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Shute's Folly"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9105,
+     32.774
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "Rebellion Road"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.875,
+     32.746
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "James Island"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.902,
+     32.756
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "label",
+    "name": "White Point"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.93,
+     32.769
+    ]
+   }
+  }
+ ]
+}

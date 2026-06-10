@@ -1,0 +1,178 @@
+[
+ {
+  "from": "london",
+  "to": "bridgetown",
+  "days_typical": 49,
+  "days_low": 40,
+  "days_high": 70,
+  "source": "Steele, The English Atlantic 1675–1740 (outward West India passages)"
+ },
+ {
+  "from": "london",
+  "to": "boston",
+  "days_typical": 52,
+  "days_low": 42,
+  "days_high": 78,
+  "source": "Steele, The English Atlantic (westbound N. Atlantic, against the westerlies)"
+ },
+ {
+  "from": "boston",
+  "to": "london",
+  "days_typical": 33,
+  "days_low": 25,
+  "days_high": 45,
+  "source": "Steele, The English Atlantic (eastbound with Gulf Stream and westerlies)"
+ },
+ {
+  "from": "london",
+  "to": "port-royal",
+  "days_typical": 63,
+  "days_low": 49,
+  "days_high": 91,
+  "source": "Steele; Admiralty packet records, London–Jamaica"
+ },
+ {
+  "from": "port-royal",
+  "to": "london",
+  "days_typical": 62,
+  "days_low": 49,
+  "days_high": 85,
+  "source": "Steele; homeward via Florida Strait and Azores"
+ },
+ {
+  "from": "cadiz",
+  "to": "veracruz",
+  "days_typical": 75,
+  "days_low": 60,
+  "days_high": 95,
+  "source": "Chaunu, Séville et l'Atlantique; García-Baquero (Carrera de Indias outward)"
+ },
+ {
+  "from": "havana",
+  "to": "cadiz",
+  "days_typical": 65,
+  "days_low": 50,
+  "days_high": 85,
+  "source": "Chaunu; homeward Carrera average, Havana–Cádiz"
+ },
+ {
+  "from": "cadiz",
+  "to": "cartagena",
+  "days_typical": 56,
+  "days_low": 45,
+  "days_high": 70,
+  "source": "Carrera de Indias, galeones outward to Tierra Firme"
+ },
+ {
+  "from": "lisbon",
+  "to": "salvador",
+  "days_typical": 63,
+  "days_low": 50,
+  "days_high": 80,
+  "source": "Boxer, The Golden Age of Brazil (Lisbon–Bahia fleet passages)"
+ },
+ {
+  "from": "bristol",
+  "to": "cape-coast",
+  "days_typical": 50,
+  "days_low": 38,
+  "days_high": 70,
+  "source": "slavevoyages.org; Richardson, Bristol slave traders (outward Guinea leg)"
+ },
+ {
+  "from": "ouidah",
+  "to": "bridgetown",
+  "days_typical": 65,
+  "days_low": 50,
+  "days_high": 90,
+  "source": "slavevoyages.org Middle Passage means, Bight of Benin–Barbados"
+ },
+ {
+  "from": "amsterdam",
+  "to": "cape-town",
+  "days_typical": 115,
+  "days_low": 90,
+  "days_high": 150,
+  "source": "Bruijn, Dutch-Asiatic Shipping (VOC outward to Cape, early 18th c.)"
+ },
+ {
+  "from": "cape-town",
+  "to": "batavia",
+  "days_typical": 58,
+  "days_low": 42,
+  "days_high": 80,
+  "source": "Bruijn, Dutch-Asiatic Shipping (Brouwer route, Cape–Batavia)"
+ },
+ {
+  "from": "amsterdam",
+  "to": "batavia",
+  "days_typical": 238,
+  "days_low": 180,
+  "days_high": 300,
+  "source": "Bruijn, Dutch-Asiatic Shipping (total outward incl. Cape call)"
+ },
+ {
+  "from": "london",
+  "to": "bombay",
+  "days_typical": 175,
+  "days_low": 140,
+  "days_high": 230,
+  "source": "EIC voyage records (outward to Bombay, incl. stops)"
+ },
+ {
+  "from": "acapulco",
+  "to": "manila",
+  "days_typical": 95,
+  "days_low": 75,
+  "days_high": 120,
+  "source": "Schurz, The Manila Galleon (westbound on the trades)"
+ },
+ {
+  "from": "manila",
+  "to": "acapulco",
+  "days_typical": 180,
+  "days_low": 150,
+  "days_high": 240,
+  "source": "Schurz, The Manila Galleon (eastbound via 38°N, Urdaneta route)"
+ },
+ {
+  "from": "newport",
+  "to": "ile-sainte-marie",
+  "days_typical": 110,
+  "days_low": 90,
+  "days_high": 150,
+  "source": "Pirate Round voyage accounts (Tew 1692, Kidd 1696 — American ports to Madagascar)"
+ },
+ {
+  "from": "boston",
+  "to": "bridgetown",
+  "days_typical": 26,
+  "days_low": 18,
+  "days_high": 40,
+  "source": "Ian K. Steele, The English Atlantic 1675-1740: North American provisioning trade to the West Indies, ~3-4 weeks southbound."
+ },
+ {
+  "from": "new-york",
+  "to": "port-royal",
+  "days_typical": 28,
+  "days_low": 20,
+  "days_high": 45,
+  "source": "Ian K. Steele, The English Atlantic 1675-1740, intercolonial passage data."
+ },
+ {
+  "from": "lisbon",
+  "to": "rio",
+  "days_typical": 80,
+  "days_low": 60,
+  "days_high": 105,
+  "source": "C.R. Boxer, The Golden Age of Brazil 1695-1750: Rio passage somewhat longer than Bahia, crossing the doldrums and SE trades."
+ },
+ {
+  "from": "london",
+  "to": "madras",
+  "days_typical": 180,
+  "days_low": 140,
+  "days_high": 230,
+  "source": "K.N. Chaudhuri, The Trading World of Asia and the English East India Company 1660-1760; Farrington EIC journals."
+ }
+]
