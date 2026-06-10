@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carta Temporum · A Mariner's Chart of Sailing Times, 1730</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='7' r='5' fill='%236e1f14'/%3E%3Ccircle cx='6.2' cy='6.2' r='1.2' fill='%23f0e4c8'/%3E%3Ccircle cx='9.8' cy='6.2' r='1.2' fill='%23f0e4c8'/%3E%3Crect x='6.4' y='9' width='3.2' height='1.8' rx='.5' fill='%23f0e4c8'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/vendor/maplibre-gl.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=IM+Fell+DW+Pica:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="map"></div>
+
+<div class="paper-texture"></div>
+<div class="vignette"></div>
+<div class="neatline neatline-h neatline-top"></div>
+<div class="neatline neatline-h neatline-bottom"></div>
+<div class="neatline neatline-v neatline-left"></div>
+<div class="neatline neatline-v neatline-right"></div>
+
+<aside id="cartouche">
+  <div class="cartouche-inner">
+    <div class="flourish">❦</div>
+    <h1>Carta Temporum</h1>
+    <p class="subtitle">being a true Chart of <em>Sailing Times</em> upon all the Oceans,<br>
+    with the Haunts of <em>Pyrates</em>, the Treasure Roads, &amp; the Bones of Ships<br>
+    <span class="anno">Anno Domini 1730</span></p>
+
+    <label class="field-label" for="port-select">Chart the seas outward from —</label>
+    <select id="port-select"></select>
+    <div class="chips" id="chips"></div>
+
+    <div id="legend" class="hidden">
+      <div class="legend-title">Days under sail</div>
+      <div class="legend-bands" id="legend-bands"></div>
+    </div>
+
+    <div class="toggles">
+      <label><input type="checkbox" id="t-routes" checked> Shipping roads</label>
+      <label><input type="checkbox" id="t-wrecks" checked> Wrecks <span class="wreck-glyph">✠</span></label>
+      <label><input type="checkbox" id="t-ports" checked> Ports</label>
+      <label><input type="checkbox" id="t-iso" checked> Isochrones</label>
+    </div>
+
+    <div class="cartouche-foot">
+      <a id="about-link" href="#">Concerning this chart ⚓</a>
+    </div>
+  </div>
+</aside>
+
+<div id="info-card" class="hidden"></div>
+<div id="port-panel" class="hidden"></div>
+
+<div id="loading" class="hidden">
+  <div class="compass-spin">✦</div>
+  <div>Taking soundings…</div>
+</div>
+
+<div id="about-modal" class="hidden">
+  <div class="modal-paper">
+    <button class="modal-close" id="about-close">✕</button>
+    <h2>Concerning this Chart</h2>
+    <div class="about-body">
+      <p>This chart shows <strong>isochrones</strong> — lines of equal sailing time — for a
+      well-found square-rigged ship of about 1730, computed from the port of your choosing.</p>
+      <p>The sea is modelled as a fine grid of ocean cells. A ship's speed over each cell follows the
+      <em>annual-mean wind belts</em> of the age of sail (the NE and SE trade winds, the doldrums, the
+      horse latitudes, the mid-latitude westerlies and the roaring forties), the major
+      <em>surface currents</em> (Gulf Stream, Canary, Agulhas, Kuroshio and their kin), and the
+      <em>points of sail</em> of a square-rigger, which made her best speed on a broad reach and could
+      scarcely sail within seventy degrees of the wind. The fastest route between every pair of waters
+      is then found by shortest-path search — so the chart, like a good sailing master, runs down the
+      trades rather than beating straight into the wind. This is why the same crossing is weeks faster
+      east-about than west-about, exactly as the record shows.</p>
+      <p>The model is calibrated against documented passage times of 1690–1740 — Steele's
+      <em>English Atlantic</em>, Bruijn's <em>Dutch-Asiatic Shipping</em>, Chaunu's Seville records,
+      Schurz's <em>Manila Galleon</em>, and the slavevoyages.org database. It represents a single
+      well-handled ship with fair-weather routing: the great convoys (the Spanish flotas, the Manila
+      galleon) ran slower than this chart by a quarter or more, as the table below shows.</p>
+      <h3>The model against the record</h3>
+      <table id="cal-table"><thead><tr><th>Passage</th><th>This chart</th><th>Recorded</th><th>Range</th></tr></thead><tbody></tbody></table>
+      <p class="fine">Coastlines from Natural Earth. Ports, routes, wrecks and passage times compiled from
+      historical scholarship; wreck positions are approximate where the record (or Colombian state
+      secrecy) demands. Times are annual means — no hurricanes were modelled in the making of this chart.</p>
+    </div>
+  </div>
+</div>
+
+<script src="/vendor/maplibre-gl.js"></script>
+<script src="/js/icons.js"></script>
+<script src="/js/windmodel.js"></script>
+<script src="/js/overlays.js"></script>
+<script src="/js/timeline.js"></script>
+<script src="/js/harbors.js"></script>
+<script src="/js/flowfx.js"></script>
+<script src="/js/ripple.js"></script>
+<script src="/js/sound.js"></script>
+<script src="/js/voyage.js"></script>
+<script src="/js/dividers.js"></script>
+<script src="/js/events.js"></script>
+<script src="/js/tours.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
