@@ -4,9 +4,7 @@
 
 (window.cartaInits = window.cartaInits || []).push(function initOverlays(carta) {
   const map = carta.map;
-  const INK = '#3d2f1e';
-  const MADDER = '#8a3b2e';
-  const DANGER_C = '#6e1f14';
+  const { INK, MADDER, MADDER_D: DANGER_C } = carta.COLORS;
   const WIND_C = 'rgba(82,100,121,0.55)'; // slate ink-blue (matches living wind)
   const CURRENT_C = '#3a6b5a';            // verdigris sea-green (matches living sea)
 
@@ -21,8 +19,7 @@
       saved.on || {}),
     collapsed: !!saved.collapsed,
   };
-  const REDUCED_MOTION = !!(window.matchMedia
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const REDUCED_MOTION = carta.reducedMotion.matches;
   if (REDUCED_MOTION) state.on.living = false; // defaults unchecked under reduced motion
   function persist() { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } }
 
@@ -488,13 +485,7 @@
   // If two stations crowd within 24 px, the larger squadron keeps the water.
   function dedupFleets() {
     if (!fleetMarkers.length) return;
-    const c = map.getCenter().lng;
-    const proj = (lon, lat) => {
-      while (lon - c > 180) lon -= 360;
-      while (lon - c < -180) lon += 360;
-      return map.project([lon, lat]);
-    };
-    const pts = fleetMarkers.map((f) => ({ f, pt: proj(f.s.lon, f.s.lat) }));
+    const pts = fleetMarkers.map((f) => ({ f, pt: carta.projectWrapped([f.s.lon, f.s.lat]) }));
     pts.sort((a, b) => b.f.s.ships - a.f.s.ships);
     const kept = [];
     for (const p of pts) {

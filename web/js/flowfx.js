@@ -9,7 +9,7 @@
   const W = window.cartaWind;
   if (!W) return;
 
-  const D2R = Math.PI / 180;
+  const D2R = carta.geo.D2R;
 
   /* Distinct pigments: wind = slate ink-blue, ocean = verdigris sea-green. */
   const WIND_SLOW = 'rgba(82,100,121,0.28)';
@@ -26,26 +26,7 @@
   const OCEAN_VIS = 0.9;       // knots → visual units
 
   /* ---------- canvas: above the WebGL canvas, below all DOM markers ---------- */
-  const cnv = document.createElement('canvas');
-  cnv.id = 'fx-canvas';
-  cnv.style.position = 'absolute';
-  cnv.style.inset = '0';
-  cnv.style.pointerEvents = 'none';
-  const cc = map.getCanvasContainer();
-  cc.insertBefore(cnv, map.getCanvas().nextSibling);
-  const ctx = cnv.getContext('2d');
-
-  const dprCap = () => Math.min(window.devicePixelRatio || 1, 1.5);
-  function resize() {
-    const c = map.getContainer();
-    const dpr = dprCap();
-    cnv.width = Math.max(1, c.clientWidth * dpr);
-    cnv.height = Math.max(1, c.clientHeight * dpr);
-    cnv.style.width = c.clientWidth + 'px';
-    cnv.style.height = c.clientHeight + 'px';
-  }
-  resize();
-  map.on('resize', resize);
+  const { cnv, ctx, dpr: dprCap } = carta.makeOverlayCanvas('fx-canvas');
 
   /* ---------- particle populations (typed arrays) ---------- */
   function makePop(n) {

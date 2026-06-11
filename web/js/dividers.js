@@ -6,9 +6,10 @@
 
 (window.cartaInits = window.cartaInits || []).push(function init_dividers(carta) {
   const map = carta.map;
-  const INK = '#3d2f1e', INK_SOFT = '#5b4636', MADDER = '#8a3b2e';
-  const PARCH = '#f0e4c8', BRASS = '#a98e4f';
-  const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+  // NB: this module's PARCH has always been the card paper, not the sea.
+  const { INK, INK_SOFT, MADDER, PAPER: PARCH } = carta.COLORS;
+  const BRASS = '#a98e4f';
+  const D2R = carta.geo.D2R, R2D = 180 / Math.PI;
   const NM_R = 3440.065; // earth radius in nautical miles
 
   const EMPTY = { type: 'FeatureCollection', features: [] };

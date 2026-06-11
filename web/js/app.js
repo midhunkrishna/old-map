@@ -4,6 +4,9 @@
 const SEA = '#e7d8ba';
 const INK = '#3d2f1e';
 const INK_SOFT = '#5b4636';
+const PAPER = '#f0e4c8';
+const MADDER = '#8a3b2e';
+const MADDER_D = '#6e1f14';
 
 // Aged homage to Bartholomew's isochronic palette: madder near home,
 // ochre and verdigris in the middle distance, indigo wash at the rim of the world.
@@ -123,6 +126,28 @@ const cartaHash = {
 function fmtLL(lon, lat) {
   const L = ((lon + 540) % 360) - 180; // normalize for display
   return `${Math.abs(lat).toFixed(0)}°${lat >= 0 ? 'N' : 'S'} ${Math.abs(L).toFixed(0)}°${L >= 0 ? 'E' : 'W'}`;
+}
+
+/* ---------- shared geometry (carta.geo) ---------- */
+
+const D2R = Math.PI / 180;
+const normLon = (l) => ((l + 540) % 360) - 180;
+const shortName = (n) => String(n).split(' (')[0].split(',')[0];
+
+function bearingOf(a, b) {
+  const dy = b[1] - a[1];
+  let dx = b[0] - a[0];
+  if (dx > 180) dx -= 360; else if (dx < -180) dx += 360;
+  dx *= Math.cos(((a[1] + b[1]) / 2) * D2R);
+  return (Math.atan2(dx, dy) / D2R + 360) % 360;
+}
+
+function segNm(a, b) {
+  const dy = b[1] - a[1];
+  let dx = b[0] - a[0];
+  if (dx > 180) dx -= 360; else if (dx < -180) dx += 360;
+  dx *= Math.cos(((a[1] + b[1]) / 2) * D2R);
+  return 60 * Math.hypot(dx, dy);
 }
 
 /* ---------- decorative geometry ---------- */
@@ -424,7 +449,7 @@ function addPortMarkers() {
     el.addEventListener('mouseenter', () => showCard(portCardHTML(p)));
     el.addEventListener('mouseleave', hideCard);
     const m = new maplibregl.Marker({ element: el, anchor: 'top' }).setLngLat([p.lon, p.lat]).addTo(map);
-    portMarkers.push({ m, el, p });
+    portMarkers.push({ m, el, lbl: el.querySelector('.pm-label'), p });
   }
 }
 
@@ -495,7 +520,10 @@ function addDetailMarkers() {
       el.addEventListener('mouseenter', () => showCard(
         `<h3>${d.name}</h3><div class="meta">${DETAIL_TYPE_NAMES[d.type] || 'Place'} · ${portName}</div><p>${d.note}</p>`));
       el.addEventListener('mouseleave', hideCard);
-      detailMarkers.push({ m: new maplibregl.Marker({ element: el }).setLngLat([d.lon, d.lat]).addTo(map), el, d });
+      detailMarkers.push({
+        m: new maplibregl.Marker({ element: el }).setLngLat([d.lon, d.lat]).addTo(map),
+        el, nameEl: el.querySelector('.dname'), d,
+      });
     }
   }
 }
@@ -523,39 +551,44 @@ function updateVisibilityLight() {
   requestDeclutter();
 }
 
+// gateMarkers runs on every zoom frame: element refs are cached at marker
+// creation and style.display is written only when it actually changes.
+function setDisp(el, show) {
+  const d = show ? '' : 'none';
+  if (el.style.display !== d) el.style.display = d;
+}
+
 function gateMarkers() {
   const z = map.getZoom();
   // Precision rings and gulls are close-zoom furniture; at chart scale they
   // read as stray ellipses around the wreck marks.
   document.body.classList.toggle('lowzoom', z < 6);
   const portsOn = $('t-ports').checked;
-  for (const { el, p } of portMarkers) {
+  for (const { el, lbl, p } of portMarkers) {
     const minZ = p.tier === 1 ? 0 : p.tier === 2 ? 3.0 : 4.2;
-    el.style.display = portsOn && z >= minZ ? '' : 'none';
+    setDisp(el, portsOn && z >= minZ);
     // Names lag icons by a little zoom, so the chart fills in stages.
     const labelMinZ = p.tier === 1 ? 1.8 : p.tier === 2 ? 3.4 : 4.6;
-    const lbl = el.querySelector('.pm-label');
-    if (lbl) lbl.style.display = z >= labelMinZ ? '' : 'none';
+    if (lbl) setDisp(lbl, z >= labelMinZ);
   }
   for (const { el, kind } of decoMarkers) {
     const show = kind === 'sea' ? z <= 5.2
       : kind === 'art' ? z <= 4.5
       : kind === 'region' ? z >= 2.4 && z <= 6.8
       : z <= 4.8;
-    el.style.display = show ? '' : 'none';
+    setDisp(el, show);
   }
   // Icons appear first; names only when there's room to read them. Entries
   // with a year (the Sunken City, Kingston) only exist from that year on.
   const yr = window.cartaTime ? window.cartaTime.year : 1730;
-  for (const { el, d } of detailMarkers) {
+  for (const { el, nameEl, d } of detailMarkers) {
     const born = !d.year || d.year <= yr;
-    el.style.display = born && z >= 8.2 ? '' : 'none';
-    const name = el.querySelector('.dname');
-    if (name) name.style.display = z >= 9.8 ? '' : 'none';
+    setDisp(el, born && z >= 8.2);
+    if (nameEl) setDisp(nameEl, z >= 9.8);
   }
   // Day-count labels retire with the bands at harbor zoom.
   const isoOn = $('t-iso').checked && z <= 11.5;
-  for (const m of isoLabelMarkers) m.getElement().style.display = isoOn ? '' : 'none';
+  for (const m of isoLabelMarkers) setDisp(m.getElement(), isoOn);
 }
 
 /* ---------- wreck clustering ----------
@@ -646,8 +679,7 @@ function labelSize(el, fallbackText, fallbackPx) {
 
 function declutterItems() {
   const items = [];
-  for (const { el, p } of portMarkers) {
-    const lbl = el.querySelector('.pm-label');
+  for (const { el, lbl, p } of portMarkers) {
     if (!lbl || el.style.display === 'none' || lbl.style.display === 'none') continue;
     items.push({
       el: lbl, lngLat: [p.lon, p.lat], dy: 16,
@@ -668,10 +700,9 @@ function declutterItems() {
     const ll = el._lngLat;
     items.push({ el, lngLat: ll, dy: 0, pr: kind === 'sea' ? 40 : 25 });
   }
-  for (const { el, d } of detailMarkers) {
-    const name = el.querySelector('.dname');
-    if (el.style.display === 'none' || !name || name.style.display === 'none') continue;
-    items.push({ el: name, lngLat: [d.lon, d.lat], dy: 8, pr: 55 });
+  for (const { el, nameEl, d } of detailMarkers) {
+    if (el.style.display === 'none' || !nameEl || nameEl.style.display === 'none') continue;
+    items.push({ el: nameEl, lngLat: [d.lon, d.lat], dy: 8, pr: 55 });
   }
   // Modules (overlays, timeline, harbors) may contribute their own labels.
   for (const provider of (window.carta && window.carta.declutterProviders) || []) {
@@ -984,6 +1015,59 @@ function wireAbout() {
   });
 }
 
+/* ---------- graphics capability probe ----------
+   One probe at boot decides the tier; features demote, never re-probe.
+   0: no WebGL (fallback page) · 1: software/weak GL or reduced motion caps
+   apply (2D chart only) · 2: healthy WebGL1 (harbor diorama) · 3: WebGL2. */
+
+function probeGfx() {
+  const reasons = [];
+  const c = document.createElement('canvas');
+  const get = (kind) => { try { return c.getContext(kind); } catch (e) { return null; } };
+  const gl2 = get('webgl2');
+  const gl = gl2 || get('webgl') || get('experimental-webgl');
+  if (!gl) return { tier: 0, reasons: ['WebGL unavailable'] };
+  let tier = gl2 ? 3 : 2;
+  if (!gl2) reasons.push('WebGL1 only');
+  try {
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+    if (/swiftshader|llvmpipe|softpipe|software/i.test(renderer)) {
+      tier = 1;
+      reasons.push('software renderer: ' + renderer);
+    }
+  } catch (e) { /* renderer string withheld: assume hardware */ }
+  if (tier > 2 && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    tier = 2;
+    reasons.push('prefers-reduced-motion caps animated water');
+  }
+  try { // explicit user override (either direction), e.g. localStorage.cartaGfxTier = '1'
+    const o = parseInt(localStorage.getItem('cartaGfxTier'), 10);
+    if (!isNaN(o) && o >= 0 && o <= 3 && o !== tier) { tier = o; reasons.push('user override'); }
+  } catch (e) { /* ignore */ }
+  return { tier, reasons };
+}
+
+// Tier 0: MapLibre cannot start at all — a chart-flavored page, not a blank.
+function renderGfxFallback() {
+  const div = document.createElement('div');
+  div.id = 'gfx-fallback';
+  div.style.cssText = `position:fixed;inset:0;background:${SEA};color:${INK};`
+    + `display:flex;align-items:center;justify-content:center;text-align:center;`
+    + `font-family:'IM Fell English',serif;padding:24px;z-index:99;`;
+  const ports = (meta && meta.ports ? meta.ports : []).filter((p) => p.tier === 1)
+    .map((p) => p.name.split(',')[0]).join(' · ');
+  div.innerHTML = `<div style="max-width:560px;border:2px solid ${INK};outline:1px solid ${INK};outline-offset:4px;padding:26px 30px;background:${PAPER}">
+    <div style="font-size:22px;color:${MADDER_D}">❦</div>
+    <h1 style="font-family:'IM Fell English SC',serif;font-weight:normal;letter-spacing:6px;margin:6px 0 10px">Carta Temporum</h1>
+    <p style="font-style:italic;line-height:1.6">This chart of the sailing world, 1650–1730, is drawn by WebGL —
+    and your browser offers none. Open it in a current browser with
+    hardware acceleration enabled, and the seas will be charted from
+    ${ports || 'sixty-seven ports'}.</p>
+  </div>`;
+  document.body.appendChild(div);
+}
+
 /* ---------- boot ---------- */
 
 async function boot() {
@@ -1010,13 +1094,18 @@ async function boot() {
     })),
   };
 
+  const gfx = probeGfx();
+  window.cartaGfx = gfx;
+  if (gfx.tier === 0) { renderGfxFallback(); return; }
+
   map = new maplibregl.Map({
     container: 'map',
     style: buildStyle(),
     center: [-45, 26],
     zoom: 2.7,
     minZoom: 1.4,
-    maxZoom: 14.5,
+    maxZoom: 18.6, // close enough to walk the miniature streets
+
     dragRotate: false,
     pitchWithRotate: false,
     attributionControl: { compact: true, customAttribution: 'Coastlines: Natural Earth · Carta Temporum' },
@@ -1058,10 +1147,42 @@ async function boot() {
     window.carta = {
       map, meta, routes, wrecks, portDetails,
       showCard, hideCard, requestDeclutter, updateVisibility,
-      selectOrigin, projectWrapped, fmtLL, cartaHash,
+      selectOrigin, projectWrapped, fmtLL, cartaHash, figureHTML, gfx,
       SEA_LABELS, REGION_LABELS,
       declutterProviders: [],
       PALETTE, INK, INK_SOFT, SEA,
+      // The chart's full pigment box — modules take their colors from here
+      // rather than re-declaring hex literals (PARCH is the sea parchment).
+      COLORS: { INK, INK_SOFT, SEA, PARCH: SEA, PAPER, MADDER, MADDER_D },
+      // Shared geometry for the feature modules.
+      geo: { D2R, normLon, shortName, bearingOf, segNm },
+      reducedMotion: window.matchMedia
+        ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false },
+      // A full-container 2D canvas above the WebGL chart (and above any
+      // earlier overlay canvas), below all DOM markers — dpr-capped, with
+      // resize wired. Returns { cnv, ctx, dpr }.
+      makeOverlayCanvas(id) {
+        const cnv = document.createElement('canvas');
+        cnv.id = id;
+        cnv.style.position = 'absolute';
+        cnv.style.inset = '0';
+        cnv.style.pointerEvents = 'none';
+        const cc = map.getCanvasContainer();
+        const canvases = cc.querySelectorAll(':scope > canvas');
+        cc.insertBefore(cnv, canvases[canvases.length - 1].nextSibling);
+        const dpr = () => Math.min(window.devicePixelRatio || 1, 1.5);
+        function resize() {
+          const c = map.getContainer();
+          const d = dpr();
+          cnv.width = Math.max(1, c.clientWidth * d);
+          cnv.height = Math.max(1, c.clientHeight * d);
+          cnv.style.width = c.clientWidth + 'px';
+          cnv.style.height = c.clientHeight + 'px';
+        }
+        resize();
+        map.on('resize', resize);
+        return { cnv, ctx: cnv.getContext('2d'), dpr };
+      },
       // Tool lock: modules that consume map clicks (voyage destination pick,
       // dividers) set this to their name and restore null when done.
       activeTool: null,

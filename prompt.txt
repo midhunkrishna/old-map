@@ -1,0 +1,39 @@
+1.
+Prompt: We need to improve the user experience. Get inspiration from past chrome experiments and create a plan. Ask for user permission after plan and execute
+What to optimize for: Eye-Candy, Oomph factor. "I should be sharing this" factor
+Status: Done
+2.
+Prompt: Refactor front end js codebase and keep in mind the following: a) performance, b) code readability c) code modularity and maintainability
+Status: Done
+3.
+Prompt: The detail view of the harbour is very low fidelity now. It looks very amatuer and not well done. Suggest possible enahncements to improve the look of this.
+Status: Done
+4.
+Prompt: implement harbour enahncements
+Status: Done
+5.
+Prompt: implement harbour enahncements, part B, all rungs
+Status: Done
+6.
+Prompt: Since we have webgl support, plan and implement high fidelity 3d vessels, when zoomed into harbour view
+Status: Done
+7.
+Prompt: Since we have webgl support, plan and implement high fidelity, period accurate 3d buildings, realistic water effects and land topography when zoomed into harbour view
+Status: Done
+8.
+Prompt: After the previous attempts, the buildings just looks the same. We are looking for miniature buildings with enough detail. Research how buildings and churches used to look like during pirate era, plan and implement.
+Also realistic water reference: https://www.destructoid.com/wp-content/uploads/2020/12/252467-h1.jpg, miniature building style reference: https://dl2.myminifactory.com/object-assets/64edd1e0db58b7.36254498/images/720X720-1-prem.jpg
+Status: Done
+9.
+Prompt:
+    Lets rebuild the harbour from scratch.
+    Enhancements: Realistic Water, Realistic Water Vessels, Realistic Building, Realistic Land topology, Realistic Streets (rendered via WebGl)
+    What to optimize for: Size and visual fidelity a) buildings shouldnt  be too small ( more zoom) b) Higher detail required on zoom
+    Visual Fidelity: What to improve: Keep Ships and Vessels same, Water the same, improve streets, buildings, forts and land. Improve landmarks
+Status: Done
+10.
+Prompts: The webgl shows lots of artifacts when zooming in and out. Research, find out why that is the case, and fix.
+Status: Done
+11.
+Prompts: Add one more level of zoom to harbour detail view and also add vegetation (trees, grass etc)
+Status: Done

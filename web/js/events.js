@@ -6,8 +6,7 @@
 
 (window.cartaInits = window.cartaInits || []).push(function init_events(carta) {
   const map = carta.map;
-  const INK = '#3d2f1e', INK_SOFT = '#5b4636', MADDER = '#8a3b2e', MADDER_D = '#6e1f14';
-  const PARCH = '#e7d8ba';
+  const { INK, INK_SOFT, MADDER, MADDER_D, PARCH } = carta.COLORS;
 
   const YEAR_WINDOW = 2;      // marker shown iff |event.year - now| <= 2
   const MIN_ZOOM = 2.6;       // ...and the chart is zoomed in this far

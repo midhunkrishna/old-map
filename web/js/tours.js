@@ -6,7 +6,7 @@
 
 (window.cartaInits = window.cartaInits || []).push(function init_tours(carta) {
   const map = carta.map;
-  const INK = '#3d2f1e', INK_SOFT = '#5b4636', MADDER_D = '#6e1f14', PAPER = '#f0e4c8';
+  const { INK, INK_SOFT, MADDER_D, PAPER } = carta.COLORS;
 
   /* ---------- styles ---------- */
 
@@ -19,10 +19,8 @@
 #tales-btn:hover { text-decoration: underline; }
 #tales-menu {
   position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);
-  width: min(460px, 78vw); z-index: 31; box-sizing: border-box;
-  background: ${PAPER}; border: 1px solid ${INK}; color: ${INK};
-  box-shadow: inset 0 0 0 2.5px ${PAPER}, inset 0 0 0 3.5px rgba(61,47,30,0.55), 2px 4px 10px rgba(61,47,30,0.35);
-  padding: 8px 10px 9px; font-family: 'IM Fell English', serif;
+  width: min(460px, 78vw); z-index: 31;
+  padding: 8px 10px 9px;
 }
 #tales-menu .tm-head {
   font-family: 'IM Fell English SC', serif; font-size: 12px; letter-spacing: 2.5px;
@@ -35,10 +33,8 @@
 #tales-menu .ti-blurb { font-size: 11px; font-style: italic; color: ${INK_SOFT}; line-height: 1.35; margin-top: 1px; }
 #tour-caption {
   position: fixed; left: 50%; bottom: 132px; transform: translateX(-50%);
-  width: min(580px, 72vw); z-index: 31; box-sizing: border-box;
-  background: ${PAPER}; border: 1px solid ${INK}; color: ${INK};
-  box-shadow: inset 0 0 0 2.5px ${PAPER}, inset 0 0 0 3.5px rgba(61,47,30,0.55), 2px 4px 10px rgba(61,47,30,0.35);
-  padding: 8px 34px 8px 14px; font-family: 'IM Fell English', serif;
+  width: min(580px, 72vw); z-index: 31;
+  padding: 8px 34px 8px 14px;
 }
 #tour-caption .tc-title {
   font-family: 'IM Fell English SC', serif; font-size: 14px; letter-spacing: 1.5px; color: ${INK};
@@ -65,6 +61,7 @@
     if (!captionEl) {
       captionEl = document.createElement('div');
       captionEl.id = 'tour-caption';
+      captionEl.className = 'carta-panel';
       document.body.appendChild(captionEl);
     }
     captionEl.innerHTML = `<button class="tc-x" title="end the tale">✕</button>
@@ -179,6 +176,7 @@
   function openMenu(bar) {
     menuEl = document.createElement('div');
     menuEl.id = 'tales-menu';
+    menuEl.className = 'carta-panel';
     menuEl.innerHTML = '<div class="tm-head">Tales of These Waters</div>' +
       tours.map((t, i) =>
         `<div class="tour-item" data-i="${i}">

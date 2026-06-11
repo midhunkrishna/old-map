@@ -6,7 +6,7 @@
 (window.cartaInits = window.cartaInits || []).push(function initTimeline(carta) {
   const map = carta.map;
   const YR_MIN = 1650, YR_MAX = 1730, YR_SPAN = YR_MAX - YR_MIN;
-  const INK = '#3d2f1e', INK_SOFT = '#5b4636', MADDER = '#8a3b2e', PAPER = '#f0e4c8', PARCH = '#e7d8ba';
+  const { INK, INK_SOFT, MADDER, PAPER, PARCH } = carta.COLORS;
 
   const ERAS = [
     [1650, 1670, 'The Buccaneers'],
@@ -29,12 +29,8 @@
   css.textContent = `
 #tl-bar {
   position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
-  width: min(720px, 60vw); z-index: 30; box-sizing: border-box;
-  background: ${PAPER};
-  border: 1px solid ${INK};
-  box-shadow: inset 0 0 0 2.5px ${PAPER}, inset 0 0 0 3.5px rgba(61,47,30,0.55), 2px 4px 10px rgba(61,47,30,0.35);
-  padding: 6px 16px 8px; color: ${INK};
-  font-family: 'IM Fell English', serif; user-select: none;
+  width: min(720px, 60vw); z-index: 30;
+  padding: 6px 16px 8px; user-select: none;
 }
 #tl-bar .tl-head { display: flex; justify-content: space-between; align-items: baseline; padding: 0 2px; }
 #tl-bar .tl-title { font-family: 'IM Fell English SC', serif; font-size: 12px; letter-spacing: 2.5px; color: ${INK_SOFT}; }
@@ -101,6 +97,7 @@
 
   const bar = document.createElement('div');
   bar.id = 'tl-bar';
+  bar.className = 'carta-panel';
   let ticksHTML = '', segsHTML = '';
   for (let y = YR_MIN; y <= YR_MAX; y += 10) {
     ticksHTML += `<span class="tl-tick" style="left:${((y - YR_MIN) / YR_SPAN) * 100}%">${y}</span>`;
@@ -266,15 +263,7 @@
     </svg>`;
   }
 
-  function figureHTML(im) {
-    if (!im) return '';
-    const f = encodeURIComponent(im.commons_file.replace(/^File:/, ''));
-    return `<figure class="chart-fig">
-      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/${f}?width=300"
-           alt="${im.title}" loading="lazy" onerror="this.parentElement.style.display='none'">
-      <figcaption>${im.title}${im.creator ? ' — ' + im.creator : ''}, ${im.year}</figcaption>
-    </figure>`;
-  }
+  const figureHTML = (im) => carta.figureHTML(im, 300);
 
   const trackTime = (pt) => pt.year + (SEASON_Q[pt.season] != null ? SEASON_Q[pt.season] : 0.5);
 

@@ -8,7 +8,7 @@
   const BANDS = Object.keys(carta.PALETTE).map(Number).sort((a, b) => a - b);
   const DELAY_MS = 80;   // per-band stagger
   const DUR_MS = 350;    // per-band fade duration
-  const prm = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  const prm = carta.reducedMotion;
 
   // The original fill-opacity zoom-fade envelope, captured once and restored
   // verbatim when each band's bloom completes — the harbor-plan crossfade

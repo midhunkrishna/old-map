@@ -257,6 +257,18 @@ body.lowzoom .wm .gulls { display: none; }
 
 .hidden { display: none !important; }
 
+/* The standard parchment panel: every floating scrap of paper on the chart
+   (voyage HUD, captain's log, tales menu, tour caption, timeline bar, share
+   modal) wears this; modules add only position and size. */
+.carta-panel {
+  box-sizing: border-box;
+  background: var(--paper-card);
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2.5px var(--paper-card), inset 0 0 0 3.5px rgba(61,47,30,0.55), 2px 4px 10px rgba(61,47,30,0.35);
+  font-family: 'IM Fell English', serif;
+}
+
 /* maplibre chrome restyle */
 .maplibregl-ctrl-attrib { font-family: Georgia, serif; background: rgba(240,228,200,0.7) !important; font-size: 10px; }
 .maplibregl-popup-content { background: var(--paper-card); border: 1px solid var(--ink); border-radius: 0; font-family: 'IM Fell English', serif; }

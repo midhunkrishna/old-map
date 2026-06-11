@@ -8,12 +8,10 @@
 
 (window.cartaInits = window.cartaInits || []).push(function initVoyage(carta) {
   const map = carta.map;
-  const INK = carta.INK || '#3d2f1e';
-  const INK_SOFT = carta.INK_SOFT || '#5b4636';
-  const MADDER = '#8a3b2e', DEEP = '#6e1f14', PAPER = '#f0e4c8', PARCH = '#e7d8ba';
+  const { INK, INK_SOFT, MADDER, MADDER_D: DEEP, PAPER, PARCH } = carta.COLORS;
+  const { D2R, normLon, shortName, bearingOf, segNm } = carta.geo;
   const SPEEDS = [5, 10, 20, 40];          // model-days per second
   const TROPIC = 23.44;
-  const D2R = Math.PI / 180;
   const EMPTY = { type: 'FeatureCollection', features: [] };
 
   /* ---------- styles ---------- */
@@ -22,11 +20,9 @@
   css.textContent = `
 #vg-hud {
   position: fixed; left: 50%; bottom: 118px; transform: translateX(-50%);
-  z-index: 29; box-sizing: border-box; max-width: min(640px, 78vw);
+  z-index: 29; max-width: min(640px, 78vw);
   display: flex; align-items: center; gap: 10px;
-  background: ${PAPER}; border: 1px solid ${INK}; color: ${INK};
-  box-shadow: inset 0 0 0 2.5px ${PAPER}, inset 0 0 0 3.5px rgba(61,47,30,0.55), 2px 4px 10px rgba(61,47,30,0.35);
-  padding: 6px 14px 7px; font-family: 'IM Fell English', serif; font-size: 13px;
+  padding: 6px 14px 7px; font-size: 13px;
   user-select: none;
 }
 #vg-hud .vg-day {
@@ -45,10 +41,7 @@
 #vg-hud button.vg-x:hover { background: rgba(61,47,30,0.1); color: ${DEEP}; }
 #vg-log {
   position: fixed; left: 16px; bottom: 34px; z-index: 28; width: 252px;
-  box-sizing: border-box; padding: 6px 10px 7px;
-  background: ${PAPER}; border: 1px solid ${INK}; color: ${INK};
-  box-shadow: inset 0 0 0 2.5px ${PAPER}, inset 0 0 0 3.5px rgba(61,47,30,0.55), 2px 4px 10px rgba(61,47,30,0.35);
-  font-family: 'IM Fell English', serif; font-size: 11.5px;
+  padding: 6px 10px 7px; font-size: 11.5px;
 }
 #vg-log .vg-lt {
   font-family: 'IM Fell English SC', serif; font-size: 11px; letter-spacing: 2px;
@@ -116,8 +109,6 @@
   /* ---------- helpers ---------- */
 
   const portById = (id) => carta.meta.ports.find((p) => p.id === id);
-  const shortName = (n) => String(n).split(' (')[0].split(',')[0];
-  const normLon = (l) => ((l + 540) % 360) - 180;
 
   function resolveEnd(x) {
     if (typeof x === 'string') {
@@ -136,22 +127,7 @@
   }
   const enc = (e) => (e.id ? 'p.' + e.id : `${e.lon.toFixed(2)},${e.lat.toFixed(2)}`);
 
-  function bearingOf(a, b) {
-    const dy = b[1] - a[1];
-    let dx = b[0] - a[0];
-    if (dx > 180) dx -= 360; else if (dx < -180) dx += 360;
-    dx *= Math.cos(((a[1] + b[1]) / 2) * D2R);
-    return (Math.atan2(dx, dy) / D2R + 360) % 360;
-  }
   const angDiff = (to, from) => ((to - from + 540) % 360) - 180;
-
-  function segNm(a, b) {
-    const dy = b[1] - a[1];
-    let dx = b[0] - a[0];
-    if (dx > 180) dx -= 360; else if (dx < -180) dx += 360;
-    dx *= Math.cos(((a[1] + b[1]) / 2) * D2R);
-    return 60 * Math.hypot(dx, dy);
-  }
 
   function calmAt(lon, lat) {
     if (window.cartaWind && window.cartaWind.flowAt) {
@@ -168,6 +144,7 @@
     if (!hud) {
       hud = document.createElement('div');
       hud.id = 'vg-hud';
+      hud.className = 'carta-panel';
       document.body.appendChild(hud);
     }
     hud.innerHTML = html;
@@ -179,6 +156,7 @@
     removeLog();
     logPanel = document.createElement('div');
     logPanel.id = 'vg-log';
+    logPanel.className = 'carta-panel';
     logPanel.innerHTML = `<div class="vg-lt">Captain’s Log</div><div class="vg-scroll"></div>`;
     document.body.appendChild(logPanel);
     logScroll = logPanel.querySelector('.vg-scroll');
@@ -428,6 +406,10 @@
       v.arrived = true;
       logEntry(`Came to anchor at <b>${shortName(v.B.name)}</b> after ${Math.round(v.days)} days.`);
       pause();
+      carta.bus.emit('voyage-arrived', {
+        A: v.A, B: v.B, days: Math.round(v.days),
+        link: location.href,
+      });
     }
     v.prev = pos;
   }
@@ -494,6 +476,7 @@
     removeHUD();
     removeLog();
     carta.cartaHash.write({ voyage: null });
+    carta.bus.emit('voyage-ended');
   }
 
   /* ---------- wiring ---------- */
