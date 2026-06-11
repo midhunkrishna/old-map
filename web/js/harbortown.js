@@ -19,14 +19,39 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
      z south, meters. ringMeters flattens a lon/lat ring to local meters
      about its centroid. */
 
+  // The diorama injects a metric frame { project, heightAt }; when present the
+  // whole town is placed in metres at the world origin (x east, y up, z south),
+  // anchored to the terrain. When absent we keep the legacy mercator placement
+  // for the map-embedded Living Harbour (harbor3d.js), until that path retires.
+  let frame = null;
+  // Remap mercator (x east, y south, z alt) → diorama (x east, y up, z south):
+  // a Y/Z swap. Combined with the -Y flip below the determinant is +1, so the
+  // authored geometry keeps its winding (no inside-out faces).
+  const SWAP_YZ = new THREE.Matrix4().set(
+    1, 0, 0, 0,
+    0, 0, 1, 0,
+    0, 1, 0, 0,
+    0, 0, 0, 1);
+
   function groundMatrix(lngLat, angDeg) {
+    const ang = (angDeg || 0) * D2RAD;
+    if (frame) {
+      const p = frame.project(lngLat[0], lngLat[1]);
+      const y = frame.heightAt ? frame.heightAt(p.x, p.z) : 0;
+      return new THREE.Matrix4()
+        .makeTranslation(p.x, y, p.z)
+        .multiply(SWAP_YZ)
+        .multiply(new THREE.Matrix4().makeScale(1, -1, 1))
+        .multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2))
+        .multiply(new THREE.Matrix4().makeRotationY(ang));
+    }
     const mc = maplibregl.MercatorCoordinate.fromLngLat(lngLat, 0);
     const s = mc.meterInMercatorCoordinateUnits();
     return new THREE.Matrix4()
       .makeTranslation(mc.x, mc.y, 0)
       .scale(new THREE.Vector3(s, -s, s))
       .multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2))
-      .multiply(new THREE.Matrix4().makeRotationY((angDeg || 0) * D2RAD));
+      .multiply(new THREE.Matrix4().makeRotationY(ang));
   }
   const localM = (sx, sy, sz, yOff) => new THREE.Matrix4()
     .makeTranslation(0, yOff || 0, 0)
@@ -422,11 +447,29 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
 
   // A ribbon along a polyline: u follows the length (one repeat ≈ uRep m),
   // v spans the width. Lies flat at the given height.
-  function ribbonGeo(pts, width, y, uRep) {
+  // Resample a polyline through a centripetal Catmull-Rom spline so the way
+  // reads as a real curving road, not a chain of long rectangles.
+  function smoothPath(pts) {
+    if (pts.length < 3) return pts;
+    let len = 0;
+    for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    const v = pts.map(([x, y]) => new THREE.Vector3(x, 0, y));
+    const curve = new THREE.CatmullRomCurve3(v, false, 'centripetal', 0.5);
+    const samples = Math.max(pts.length, Math.min(220, Math.round(len / 5)));
+    return curve.getPoints(samples).map((q) => [q.x, q.z]);
+  }
+
+  function ribbonGeo(pts0, width, y, uRep, curvy) {
+    const pts = curvy ? smoothPath(pts0) : pts0;
     const n = pts.length;
     if (n < 2) return null;
-    const pos = [], uv = [], idx = [];
+    const pos = [], uv = [], idx = [], col = [];
     const hw = width / 2;
+    // total run, so we can fade the road in/out from its ends (curvy ways only) —
+    // real streets and trails do not stop at a hard square edge.
+    let total = 0;
+    for (let i = 1; i < n; i++) total += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    const fade = curvy ? Math.min(total * 0.28, 18) : 0;  // metres of taper at each end
     let run = 0;
     for (let i = 0; i < n; i++) {
       const p = pts[i];
@@ -435,10 +478,22 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const dl = Math.hypot(dx, dy) || 1;
       dx /= dl; dy /= dl;
       if (i > 0) run += Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]);
+      // distance from the nearer end → a smooth 0→1 fade factor
+      let f = 1;
+      if (fade > 0) {
+        const dEnd = Math.min(run, total - run);
+        const t = Math.min(1, Math.max(0, dEnd / fade));
+        f = t * t * (3 - 2 * t);                          // smoothstep
+      }
+      // a little width variation gives the lane some character (curvy ways only),
+      // and the ends pinch in as they fade so the road tapers to nothing
+      const wob = curvy ? (0.9 + 0.16 * Math.sin(i * 0.5 + p[0] * 0.03)) : 1;
+      const w = hw * wob * (curvy ? (0.35 + 0.65 * f) : 1);
       // local frame: x = east, z = -north
-      pos.push(p[0] - dy * hw, y, -(p[1] + dx * hw));
-      pos.push(p[0] + dy * hw, y, -(p[1] - dx * hw));
+      pos.push(p[0] - dy * w, y, -(p[1] + dx * w));
+      pos.push(p[0] + dy * w, y, -(p[1] - dx * w));
       uv.push(run / uRep, 0, run / uRep, 1);
+      col.push(1, 1, 1, f, 1, 1, 1, f);                   // RGBA — alpha carries the fade
       if (i < n - 1) {
         const a = i * 2;
         idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
@@ -447,6 +502,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    if (curvy) g.setAttribute('color', new THREE.Float32BufferAttribute(col, 4));
     g.setIndex(idx);
     g.computeVertexNormals();
     return g;
@@ -510,7 +566,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   /* ---------- the builder ---------- */
 
   return {
-    build(S) {
+    build(S, fr) {
+      frame = fr || null;       // metric (diorama) when provided, else legacy mercator
       const m = shipMats;
       const group = new THREE.Group();
       const lod = [];
@@ -594,10 +651,15 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         anchorAt(f.properties.harbor, [clon, clat]);
         // staggered heights: crossings at one shared height z-fight,
         // flickering as depth precision shifts with zoom
-        const geo = ribbonGeo(pts, STREET_W[style], 0.1 + (stats.streets3d % 5) * 0.025, 9);
+        const geo = ribbonGeo(pts, STREET_W[style], 0.1 + (stats.streets3d % 5) * 0.025, 9, !!frame);
         if (!geo) continue;
         if (!streetMats[style]) {
-          streetMats[style] = new THREE.MeshLambertMaterial({ map: streetTexture(style) });
+          // in the diorama the ribbon carries a per-vertex alpha that fades its
+          // ends out (vertexColors RGBA); transparent + no depth-write so the
+          // taper blends over the ground instead of cutting a hard edge
+          streetMats[style] = frame
+            ? new THREE.MeshLambertMaterial({ map: streetTexture(style), vertexColors: true, transparent: true, depthWrite: false })
+            : new THREE.MeshLambertMaterial({ map: streetTexture(style) });
         }
         const mesh = new THREE.Mesh(geo, streetMats[style]);
         mesh.matrixAutoUpdate = false;
@@ -851,6 +913,35 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         }
       }
 
+      // Street segments per harbour, in a common metric frame, so block-infill
+      // houses can face the nearest road (else clusters ignore the streetlines).
+      const llM = (lng, lat) => [lng * M_PER_DEG_LAT * Math.cos(lat * D2RAD), lat * M_PER_DEG_LAT];
+      const streetSegs = {};
+      for (const f of S.streets) {
+        const cs = f.geometry.coordinates;
+        if (!cs || cs.length < 2) continue;
+        const arr = (streetSegs[f.properties.harbor] = streetSegs[f.properties.harbor] || []);
+        for (let i = 0; i < cs.length - 1; i++) {
+          const [x1, y1] = llM(cs[i][0], cs[i][1]), [x2, y2] = llM(cs[i + 1][0], cs[i + 1][1]);
+          arr.push([x1, y1, x2, y2, Math.atan2(y2 - y1, x2 - x1) / D2RAD]);
+        }
+      }
+      function nearestStreetAngle(harbor, lng, lat, fallback) {
+        const segs = streetSegs[harbor];
+        if (!segs || !segs.length) return fallback;
+        const [px, py] = llM(lng, lat);
+        let best = Infinity, ang = fallback;
+        for (const s of segs) {
+          const dx = s[2] - s[0], dy = s[3] - s[1], l2 = dx * dx + dy * dy || 1;
+          let t = ((px - s[0]) * dx + (py - s[1]) * dy) / l2;
+          t = t < 0 ? 0 : t > 1 ? 1 : t;
+          const cx = s[0] + t * dx, cy = s[1] + t * dy;
+          const d = (px - cx) * (px - cx) + (py - cy) * (py - cy);
+          if (d < best) { best = d; ang = s[4]; }
+        }
+        return ang;
+      }
+
       for (const f of S.blocks) {
         const ring = f.geometry.coordinates[0];
         if (!ring || ring.length < 4 || total > 4000) continue;
@@ -912,9 +1003,10 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             plantTree(f.properties.harbor, style,
               [clon + px / mx, clat + py / M_PER_DEG_LAT]);
           } else {
-            pushHouse(style, f.properties.harbor,
-              clon + px / mx, clat + py / M_PER_DEG_LAT,
-              mainAng + (Math.random() < 0.5 ? 0 : 90),
+            const lng = clon + px / mx, lat = clat + py / M_PER_DEG_LAT;
+            // face the nearest street, so the block reads as fronting its roads
+            const ang = nearestStreetAngle(f.properties.harbor, lng, lat, mainAng) + (Math.random() - 0.5) * 6;
+            pushHouse(style, f.properties.harbor, lng, lat, ang,
               wBase - 1 + Math.random() * 2.4, 5 + Math.random() * 2);
           }
           placed++;
@@ -1241,7 +1333,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       // the old alpha skirt to blend into parchment — the draped canopy now
       // covers it.
       const hillMat = new THREE.MeshLambertMaterial({ map: hillTexture(), vertexColors: true });
-      for (const [hillHarbor, hills] of Object.entries(HILLS)) {
+      // Legacy mercator only: the diorama's terrain mesh owns the relief.
+      if (!frame) for (const [hillHarbor, hills] of Object.entries(HILLS)) {
         for (const hill of hills) {
           anchorAt(hillHarbor, hill.c);
           const geo = new THREE.PlaneGeometry(2, 2, 56, 40);
@@ -1361,7 +1454,9 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
           }));
           // the hill carries its own draped canopy; the flat canopy stops at
           // its skirt. A small overlap (0.95) avoids a bare ring at the seam.
-          const offHill = (px, py) => {
+          // In the diorama the hills are real terrain, so the wood climbs them;
+          // only the legacy mercator hill-mounds need their skirt kept clear.
+          const offHill = frame ? () => true : (px, py) => {
             for (const h of hillsL) {
               const ang = Math.atan2(py - h.c[1], px - h.c[0]);
               const wob = 1.0 + 0.30 * Math.sin(ang * 3 + h.p1) + 0.17 * Math.sin(ang * 5 + h.p2);
@@ -1402,7 +1497,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
           };
           const step = Math.max(13, Math.sqrt(area / 7200));
           // finer half-step grid so small edge tiles can pack in
-          for (let gx = bx0; gx < bx1; gx += step) {
+          // (diorama: terrain owns the ground surface — no flat canopy tiles)
+          if (!frame) for (let gx = bx0; gx < bx1; gx += step) {
             for (let gy = by0; gy < by1; gy += step) {
               const px = gx + (Math.random() - 0.5) * step * 0.6;
               const py = gy + (Math.random() - 0.5) * step * 0.6;
@@ -1429,8 +1525,10 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             }
           }
 
-          // ρ: one grove centre per ~2,600 m²; each grove ~ Gaussian σ≈12 m
-          const centres = Math.min(650, Math.floor(area / 2600));
+          // ρ: denser groves for the diorama — one centre per ~1,500 m²,
+          // each grove ~ Gaussian σ≈12 m, more members per grove
+          const dense = !!frame;
+          const centres = Math.min(dense ? 1300 : 650, Math.floor(area / (dense ? 1700 : 2600)));
           for (let c = 0; c < centres; c++) {
             const cx = bx0 + Math.random() * (bx1 - bx0);
             const cy = by0 + Math.random() * (by1 - by0);
@@ -1438,7 +1536,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             const sigma = 8 + Math.random() * 14;                // grove radius
             const groveKind = Math.random() < (style === 'spanish' ? 0.62 : 0.32)
               ? 'palm' : (Math.random() < 0.7 ? 'leaf' : 'scrub');
-            const members = 16 + ((Math.random() * 30) | 0);     // density of the grove
+            const members = (dense ? 22 : 16) + ((Math.random() * (dense ? 34 : 30)) | 0); // density of the grove
             for (let k = 0; k < members; k++) {
               // Box–Muller Gaussian offset from the centre
               const r = sigma * Math.sqrt(-2 * Math.log(1 - Math.random()));

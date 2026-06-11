@@ -54,6 +54,15 @@
   color: ${INK_SOFT}; margin-top: 2px; line-height: 1.35;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
+#hb-scroll .hb-view {
+  display: none; pointer-events: auto; cursor: pointer; margin: 7px auto 0;
+  font-family: 'IM Fell English SC', 'IM Fell English', serif;
+  font-size: 12px; letter-spacing: 1.2px; color: ${INK};
+  padding: 4px 16px 5px; background: rgba(255,250,230,0.6);
+  border: 1.5px solid ${INK}; outline: 1px solid ${INK}; outline-offset: 2px;
+}
+#hb-scroll.hb-view-on .hb-view { display: inline-block; }
+#hb-scroll .hb-view:hover { background: rgba(255,250,230,0.95); }
 .hb-m .hb-ripple {
   position: absolute; left: 0; top: 0; width: 36px; height: 22px;
   transform: translate(-50%, -50%); border: 1px solid rgba(61,47,30,0.28);
@@ -241,19 +250,9 @@
     carta.harborShips = ships3d;
     carta.harborStructures = structures;
     carta.bus.emit('harbors-ready');
-    carta.bus.on('harbor3d-changed', () => {
-      updateMarkers();
-      // The Rung-1 extrusion slabs stand down while the modelled town is up,
-      // else they bury the houses built on the same footprints.
-      const vis = window.cartaHarbor3d && window.cartaHarbor3d.active ? 'none' : 'visible';
-      // The Rung-1 extrusion slabs and the flat engraved block fills both
-      // stand down while the modelled town is up — the 3D houses replace the
-      // subdivided squares, which read as ugly beneath the diorama.
-      for (const id of ['hb-block-3d', 'hb-fort-3d', 'hb-block', 'hb-block-hatch',
-        'hb-block-shadow', 'hb-block-line']) {
-        if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis);
-      }
-    });
+    // The flat engraved plan + extrusion slabs + marks are the in-map preview;
+    // the full town now lives in the standalone diorama (harbordiorama.js) on
+    // its own canvas, so nothing on the map needs to stand down for it.
     window.cartaTime && window.cartaTime.on(() => { applyYearFilters(); updateMarkers(); });
     map.on('zoom', updateMarkers);
     map.on('move', updateScroll);
@@ -635,18 +634,13 @@
     });
   }
 
-  const HIDE_3D = { ship: 1, church: 1, building: 1, battery: 1, gallows: 1 };
-
   function updateMarkers() {
     const z = map.getZoom(), y = yearOf();
     for (const m of markers) {
       const minZ = m.kind === 'label' ? 9.6
         : m.kind === 'street' ? 12.2
         : (m.kind === 'rose' || m.kind === 'scale') ? 11 : 9.2;
-      let on = z >= minZ && m.yearBuilt <= y && y < m.yearDestroyed;
-      // When the living harbour rises, the engraved marks for everything it
-      // models in the round strike below (labels and street names remain).
-      if (HIDE_3D[m.kind] && window.cartaHarbor3d && window.cartaHarbor3d.active) on = false;
+      const on = z >= minZ && m.yearBuilt <= y && y < m.yearDestroyed;
       m.el.style.display = on ? '' : 'none';
       if (m.nameEl && m.kind !== 'label' && m.kind !== 'street') {
         m.nameEl.style.display = z >= 11 ? '' : 'none';
@@ -676,9 +670,18 @@
   /* ---------- harbor title scroll ---------- */
   const scroll = document.createElement('div');
   scroll.id = 'hb-scroll';
-  scroll.innerHTML = '<div class="hb-t"></div><div class="hb-s"></div>';
+  scroll.innerHTML = '<div class="hb-t"></div><div class="hb-s"></div>'
+    + '<button class="hb-view" type="button">View Harbour ⚓</button>';
   document.body.appendChild(scroll);
   let scrollId = null;
+
+  // The rotatable diorama (Rung 3): a "View Harbour" button when over a port,
+  // plus an auto-enter once zoomed in close. tier ≥ 3 only.
+  const dioOK = () => ((carta.gfx && carta.gfx.tier) || 0) >= 3 && window.cartaDiorama;
+  const viewBtn = scroll.querySelector('.hb-view');
+  let autoSuppressId = null; // don't auto-reopen the port we just closed until we leave it
+  viewBtn.addEventListener('click', () => { if (dioOK() && scrollId) window.cartaDiorama.open(scrollId); });
+  carta.bus.on('diorama-closed', () => { autoSuppressId = scrollId; });
 
   function updateScroll() {
     let hit = null;
@@ -696,10 +699,18 @@
         enterPitch();
       }
       scroll.classList.add('hb-on');
+      scroll.classList.toggle('hb-view-on', !!dioOK());
+      // Auto-raise the diorama once zoomed in close, unless we just closed it
+      // here (the guard clears when the chart pans off this port).
+      if (dioOK() && map.getZoom() >= 14 && !window.cartaDiorama.active
+        && autoSuppressId !== hit.id) {
+        window.cartaDiorama.open(hit.id);
+      }
     } else {
       if (scrollId) leavePitch();
-      scroll.classList.remove('hb-on');
+      scroll.classList.remove('hb-on', 'hb-view-on');
       scrollId = null;
+      autoSuppressId = null;
     }
   }
 

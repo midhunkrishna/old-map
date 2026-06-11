@@ -237,3 +237,114 @@ Additional rules:
 ### Suggested order
 Part A first pass → Rung 1 (+ tier probe, which Part A also uses for the
 Tier-0 fallback page) → Rung 2 → Rung 3 as a separate, opt-in project.
+
+---
+
+## Rebuild: the harbour as a rotatable diorama (standalone artifact)
+
+Rung 3 was rebuilt as a **standalone 3D artifact**, disconnected from the map.
+A separate full-screen Three.js canvas builds the island in **metres at the
+world origin** and orbits it 360° with `PerspectiveCamera` + `OrbitControls`
+— so the harbour reads at eye level, and the small local coordinates retire
+the float32 shimmer entirely (no more mercator projection plumbing).
+
+- **`web/js/harbordiorama.js`** (new) — the host: own canvas/renderer/camera,
+  `OrbitControls` (360° azimuth, polar clamped above the water), fade + camera
+  tween transition, `open(id)`/`close()`, lighting (`HemisphereLight` +
+  `DirectionalLight` sun with `PCFSoftShadowMap`) and a CSS vignette. Entered by
+  a **"View Harbour ⚓"** button (over a port) and **auto-enter past z≈14**.
+- **`web/js/harborterrain.js`** (new) — the land: a heightfield draped over the
+  real coastline polygons (`carta.harborStructures.lands`); offshore it dips
+  below sea level so a flat shader-water sheet cuts a clean shoreline. Colour
+  ramps light **sand at the beach → grass inland → rock on the heights**, with a
+  surf band at the waterline. Owns the authoritative `HILLS` relief table
+  (Tortuga's turtle-back, Nassau's ridge, Havana's knolls, Cartagena's La Popa).
+  Water = `ShaderMaterial`, the swell trains from the old `makeWaterLayer`
+  ported into a vertex shader + a fresnel rim.
+- **`web/vendor/OrbitControls.module.js`** (new, three **r160** to match the
+  vendored core) + an import map in `index.html`.
+- **`harbortown.js`** — `build(S, frame)`: when a metric `{ project, heightAt }`
+  frame is injected, `groundMatrix` places the whole town in origin-metres
+  anchored to the terrain (a Y/Z swap + −Y flip, det +1 so winding holds);
+  the hill-mounds and flat canopy-ground tiles stand down (terrain owns them).
+  Legacy mercator path retained but now unused.
+- **`harbortrees.js`** — `cartaTreeSystem(THREE, frame)` + `update(camera)`: the
+  SpeedTree-style LOD now keyed to the orbit camera, with **camera-facing
+  billboard** vertex shaders (the map path relied on a locked bearing); bands
+  scaled to the island so the whole wood reads at rest and near trees gain real
+  geometry on dolly-in. Trees climb the hills via `heightAt`.
+- **`harbor3d.js`** — the map-embedded custom layers + toggle were removed; what
+  remains is the shared **`window.cartaShipwright(THREE)`** factory (materials /
+  `buildProto` / `shipInstance`), reused by the diorama.
+- **`harbors.js`** — added the entry button + auto-enter; reverted the slab- and
+  mark-hiding that the old in-map 3D needed. The flat plan, extrusion slabs and
+  Rung-2 ink water stay as the map's in-place preview.
+
+Gated at `gfx.tier ≥ 3`; below that the button is absent and the map behaves as
+before. Verified across tiers (zero console errors) and visually at Port Royal,
+Havana, Tortuga and Cartagena.
+
+---
+
+## Diorama enhancement pass (eight asks)
+
+1. **Dynamic tree density on zoom** — each tree carries a stable `rank`; the
+   metric LOD now reveals a fraction that rises from ~0.45 (wide) to 1.0 (close),
+   so the viewport fills with more trees as you dolly in (`harbortrees.js`).
+2. **Birds** — `web/js/harborbirds.js`: ~52 low-poly gulls with flapping wing
+   triangles wheeling on circular/figure-eight paths over the harbour, banking
+   into turns; drawn a touch out of scale (like the ships) to read at range.
+3. **POI markers + cards** — `web/js/harborpoi.js`: every named work (forts,
+   churches, public buildings, batteries, wharves, gallows, greens) and every
+   ship gets a DOM marker (glyph + name) projected world→screen each frame, with
+   a hover/click card carrying the period note. Names/notes come straight from
+   `data/harbors/*.json` via `carta.harborPlans`. A **Labels** toggle on the
+   artifact window. Year-filtered like the chart.
+4. **Reflections + shimmer + bloom (behind Studio light)** — the water shader
+   gains a `uShine` path: sky reflection, a moving Blinn-Phong **sun glitter**,
+   and high-frequency **shimmer**; plus a real **bloom** post-pass (vendored r160
+   `EffectComposer`/`RenderPass`/`UnrealBloomPass` under `web/vendor/jsm/`). All
+   of it rides the Studio-light toggle — straight render with no post cost when off.
+8. **Ships carry class/capacity** — `SHIP_SPECS` by type (researched period
+   figures) with name/note overrides for the named vessels (Capitana, Almiranta,
+   VOC Retourschip, Fourth-rate/station ships, guarda-costa, register ship); the
+   ship card shows class · guns · crew · tons + its own note.
+5. **BUG fixed: clusters follow the streets** — block-infill houses now orient to
+   the nearest street (`nearestStreetAngle`, common metric frame) instead of the
+   block's main axis ± random 90° (`harbortown.js`).
+6. **Curvy streets** — `ribbonGeo` resamples the centreline through a centripetal
+   `CatmullRomCurve3` with gentle width variation when building the diorama town,
+   so roads meander with character instead of long rectangles.
+7. **High-poly near trees** — the NEAR tier uses a higher-poly build (more sides,
+   individual palm fronds, broadleaf boughs); kept framerate-safe by a tight
+   near cap + frustum culling, so only the close handful are ever high-poly.
+
+All gated at `tier ≥ 3`; verified across tiers at Havana / Cartagena / Tortuga /
+Port Royal with zero console errors.
+
+## Diorama polish pass (five asks)
+
+1. **Fewer, finer gulls.** Flock halved (52 → 26) and each gull rebuilt at ~4×
+   the detail — higher-res body/head, a beak, a fanned tail, and swept
+   multi-segment wings with camber (`harborbirds.js`).
+2. **Slower birds.** Glide speed and wingbeat roughly halved for a lazier,
+   more convincing wheel.
+3. **Streets fade out.** Curvy ribbons no longer stop at a hard square edge:
+   `ribbonGeo` now pinches the lane width in and fades a per-vertex alpha to
+   zero over the last ~18 m of each end (diorama street material → vertexColors
+   RGBA, transparent, no depth-write). Roads and trails dissolve naturally
+   (`harbortown.js`).
+4. **Golden hour.** The whole diorama is lit as an evening — a low warm sun
+   raking long shadows, peach sky + warm distance fog, a dusky-gold PMREM env,
+   and a water shader that now reflects a real golden sun (broad warm sheen +
+   sharp glitter the bloom turns to glow + a horizon glow toward the sun's
+   azimuth), all tinted by `uSunCol`. The water's `uSunDir` is pointed at the
+   scene's actual sun (`harbordiorama.js`, `harborterrain.js`).
+5. **Townsfolk on the streets.** Prototyped in `harborpeople.js` (walking
+   low-poly figures pinned to the ground via `frame.heightAt()`) but **removed**
+   on review — the figures read as ugly at the diorama's scale. The module is
+   deleted and no longer loaded.
+
+Verified at tier 3 (Havana) with the golden-hour glow on the water and faded
+street ends, and zero console errors; tier 1/2 fallback re-checked intact (no
+diorama, map + extrusions + Rung-2 water preserved).

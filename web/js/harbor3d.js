@@ -10,24 +10,19 @@
    sleeps"). Registered via window.cartaInits. */
 'use strict';
 
-(window.cartaInits = window.cartaInits || []).push(function init_harbor3d(carta) {
-  const map = carta.map;
-  if (((carta.gfx && carta.gfx.tier) || 0) < 3) return; // toggle not offered below tier 3
-
-  const LS_KEY = 'cartaHarbor3d.v1';
+/* ---------- shipwright ----------
+   A self-contained factory for the period vessels — materials, prototypes,
+   instances. Shared by the map-embedded Living Harbour below and by the
+   standalone diorama (harbordiorama.js); both pass the same cached Three.js
+   module, so the protos and materials build once per engine. */
+window.cartaShipwright = function cartaShipwright(THREE) {
+  const D2RAD = Math.PI / 180;
   const LENGTHS = { canoe: 7, sloop: 18, brigantine: 24, merchantman: 30, 'man-of-war': 42 };
   // Period plans drew their ships hugely out of scale, and so do we: at this
   // chart's maxZoom a true-size man-of-war is a 13px lozenge.
   const SYMBOLIC_SCALE = 3.4;
-  const D2RAD = Math.PI / 180;
-
-  window.cartaHarbor3d = { active: false };
-  let THREE = null;
-  let failed = false;
   let MAT = null;
   const protos = {};
-
-  /* ---------- shipwright ---------- */
 
   function materials() {
     if (MAT) return MAT;
@@ -302,287 +297,12 @@
     return { inst, anim };
   }
 
-  /* ---------- the town ashore ----------
-     Rebuilt in harbortown.js: streets and plazas laid as real WebGL ground,
-     planked wharves on piles with their cranes, battered masonry forts with
-     merlons and guns, nation-styled houses carrying close-zoom detail
-     (dormers, stoops, hanging signs), landmark churches a touch over scale,
-     and sculpted, palm-grown relief. This module raises it all and drives
-     the level-of-detail tier from the camera. */
+  return { materials, buildProto, shipInstance, LENGTHS, SYMBOLIC_SCALE };
+};
 
-  function buildTownAndLand() {
-    if (!window.cartaTownBuilder) return { group: new THREE.Group(), lod: [], stats: {} };
-    return window.cartaTownBuilder(THREE, carta, materials()).build(carta.harborStructures);
-  }
-
-  /* ---------- diorama water ----------
-     A translucent swell sheet per harbour, foam whitening on the crests —
-     after the fluid-diorama reference. It is inserted UNDER the hb-land
-     fill, so the land masks it; ships render in a later pass against the
-     shared depth buffer, so hulls sit properly IN the water. */
-
-  let sharedRenderer = null;
-  function rendererFor(gl) {
-    if (!sharedRenderer) {
-      sharedRenderer = new THREE.WebGLRenderer({ canvas: map.getCanvas(), context: gl, antialias: true });
-      sharedRenderer.autoClear = false;
-    }
-    return sharedRenderer;
-  }
-
-  // MapLibre hands us a matrix over absolute mercator coordinates, whose
-  // magnitudes drown metres in float32 on the GPU — the whole scene
-  // shimmers and crawls while the camera zooms. We render relative to the
-  // map centre instead: the projection matrix folds T(ref) in (multiplied
-  // here in JS, in double precision) and the camera stands at ref, so every
-  // translation that reaches the GPU stays small.
-  function applyCamera(camera, matrix) {
-    const ref = maplibregl.MercatorCoordinate.fromLngLat(map.getCenter(), 0);
-    camera.projectionMatrix = new THREE.Matrix4().fromArray(matrix)
-      .multiply(new THREE.Matrix4().makeTranslation(ref.x, ref.y, ref.z));
-    camera.position.set(ref.x, ref.y, ref.z);
-  }
-
-  // The sheet dissolves into the engraved sea at its rim — no hard edge.
-  function waterAlphaMap() {
-    const c = document.createElement('canvas');
-    c.width = 256;
-    c.height = 160;
-    const x = c.getContext('2d');
-    x.fillStyle = '#000';
-    x.fillRect(0, 0, 256, 160);
-    x.save();
-    x.translate(128, 80);
-    x.scale(1, 160 / 256);
-    const g = x.createRadialGradient(0, 0, 0, 0, 0, 126);
-    g.addColorStop(0, '#fff');
-    g.addColorStop(0.72, '#fff');
-    g.addColorStop(1, '#000');
-    x.fillStyle = g;
-    x.fillRect(-128, -128, 256, 256);
-    x.restore();
-    return new THREE.CanvasTexture(c);
-  }
-
-  function makeWaterLayer(boxes) {
-    return {
-      id: 'hb-water-3d',
-      type: 'custom',
-      renderingMode: '3d',
-      onAdd(_, gl) {
-        const alpha = waterAlphaMap();
-        this.camera = new THREE.Camera();
-        this.scene = new THREE.Scene();
-        this.scene.add(new THREE.AmbientLight(0xeaf2f5, 1.1));
-        const sun = new THREE.DirectionalLight(0xfff6e0, 2.0);
-        sun.position.set(0.5, -0.6, 1);
-        this.scene.add(sun);
-        this.sheets = [];
-        for (const b of boxes) {
-          const sw = maplibregl.MercatorCoordinate.fromLngLat([b.w, b.s]);
-          const ne = maplibregl.MercatorCoordinate.fromLngLat([b.e, b.n]);
-          const x0 = Math.min(sw.x, ne.x), x1 = Math.max(sw.x, ne.x);
-          const y0 = Math.min(sw.y, ne.y), y1 = Math.max(sw.y, ne.y);
-          // The sheet's vertices stay local (centered on the box) — baking
-          // absolute mercator coords into float32 attributes makes the
-          // water shimmer and crawl as the camera moves.
-          const geo = new THREE.PlaneGeometry(x1 - x0, y1 - y0, 72, 48);
-          const count = geo.attributes.position.count;
-          geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3).fill(0.4), 3));
-          const mat = new THREE.MeshPhongMaterial({
-            vertexColors: true, transparent: true, opacity: 0.78, alphaMap: alpha,
-            shininess: 90, specular: 0x9fd4e8, side: THREE.DoubleSide,
-          });
-          const mesh = new THREE.Mesh(geo, mat);
-          mesh.position.set((x0 + x1) / 2, (y0 + y1) / 2, 0);
-          this.scene.add(mesh);
-          const mm = maplibregl.MercatorCoordinate
-            .fromLngLat([(b.w + b.e) / 2, (b.s + b.n) / 2], 0).meterInMercatorCoordinateUnits();
-          // three trains of swell, by wavelength and bearing
-          const kv = [[58, 20, 1.1, 0.55], [27, 110, 1.9, 0.3], [13, 65, 3.1, 0.15]].map(
-            ([lam, dir, om, w]) => [
-              Math.cos(dir * D2RAD) * 2 * Math.PI / (lam * mm),
-              Math.sin(dir * D2RAD) * 2 * Math.PI / (lam * mm),
-              om, w,
-            ]);
-          this.sheets.push({ mesh, b, amp: mm * 0.9, kv });
-        }
-        this.t0 = performance.now();
-      },
-      render(gl, matrix) {
-        if (map.getZoom() < 10.4 || document.hidden) return;
-        const t = (performance.now() - this.t0) / 1000;
-        const c = map.getCenter();
-        for (const sh of this.sheets) {
-          const b = sh.b; // animate only the harbour in view; the rest lie still
-          if (c.lng < b.w - 0.06 || c.lng > b.e + 0.06 || c.lat < b.s - 0.06 || c.lat > b.n + 0.06) continue;
-          const pos = sh.mesh.geometry.attributes.position;
-          const col = sh.mesh.geometry.attributes.color;
-          const a = sh.amp, kv = sh.kv;
-          for (let i = 0; i < pos.count; i++) {
-            const x = pos.getX(i), y = pos.getY(i);
-            let z = 0;
-            for (const [kx, ky, om, w] of kv) z += Math.sin(x * kx + y * ky + t * om) * w;
-            // The whole crest stays below the chart datum: the sheet spans
-            // land too (the land fill masks it visually), and any wave that
-            // rose above ground wrote depth that clipped the shoreline
-            // houses in and out, wave by wave.
-            pos.setZ(i, a * (z - 1.15));
-            const f = Math.max(0, z - 0.5) / 0.5; // the crests break white
-            const ff = f * f;
-            col.setXYZ(i, 0.15 + 0.85 * ff, 0.4 + 0.58 * ff, 0.52 + 0.48 * ff);
-          }
-          pos.needsUpdate = true;
-          col.needsUpdate = true;
-          sh.mesh.geometry.computeVertexNormals();
-        }
-        applyCamera(this.camera, matrix);
-        const r = rendererFor(gl);
-        r.resetState();
-        r.render(this.scene, this.camera);
-        map.triggerRepaint();
-      },
-    };
-  }
-
-  /* ---------- the custom layer ---------- */
-
-  function makeShipsLayer(ships) {
-    return {
-      id: 'hb-ships-3d',
-      type: 'custom',
-      renderingMode: '3d',
-      onAdd(_, gl) {
-        this.camera = new THREE.Camera();
-        this.scene = new THREE.Scene();
-        this.scene.add(new THREE.AmbientLight(0xf0e4c8, 1.1));
-        this.scene.add(new THREE.HemisphereLight(0xfff6e0, 0xcab389, 0.9));
-        const sun = new THREE.DirectionalLight(0xfff2d0, 1.7);
-        sun.position.set(0.6, 1, 0.8);
-        this.scene.add(sun);
-        this.ships = [];
-        for (const s of ships) {
-          const mc = maplibregl.MercatorCoordinate.fromLngLat(s.lngLat, 0);
-          const sc = mc.meterInMercatorCoordinateUnits() * SYMBOLIC_SCALE;
-          const base = new THREE.Matrix4()
-            .makeTranslation(mc.x, mc.y, 0)
-            .scale(new THREE.Vector3(sc, -sc, sc))
-            .multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2))
-            .multiply(new THREE.Matrix4().makeRotationY(THREE.MathUtils.degToRad(90 - s.heading)));
-          const { inst, anim } = shipInstance(s.type);
-          inst.matrixAutoUpdate = false;
-          this.scene.add(inst);
-          this.ships.push({ group: inst, anim, base, phase: (s.lngLat[0] * 7919) % Math.PI });
-        }
-        const t3 = buildTownAndLand();
-        this.scene.add(t3.group);
-        this.lod = t3.lod;
-        this.lodOn = null;
-        window.cartaHarbor3d.stats = t3.stats;
-        // the level-of-detail tree field (frustum-culled, billboarded at range)
-        this.trees = null;
-        if (window.cartaTreeSystem && t3.treeField && t3.treeField.length) {
-          this.trees = window.cartaTreeSystem(THREE, map);
-          this.trees.init(t3.treeField);
-          this.scene.add(this.trees.group);
-          window.cartaHarbor3d.stats.treeField = t3.treeField.length;
-        }
-        this.townFlutter = [];
-        t3.group.traverse((o) => { if (o.userData.flutter) this.townFlutter.push(o); });
-        this.renderer = rendererFor(gl);
-        this.t0 = performance.now();
-      },
-      render(gl, matrix) {
-        if (map.getZoom() < 10.4 || document.hidden) return; // asleep below harbor zoom
-        const hi = map.getZoom() >= 14.2; // the close-zoom detail tier
-        if (hi !== this.lodOn) {
-          this.lodOn = hi;
-          for (const o of this.lod) o.visible = hi;
-        }
-        const t = (performance.now() - this.t0) / 1000;
-        const roll = new THREE.Matrix4();
-        for (const s of this.ships) {
-          roll.makeRotationZ(Math.sin(t * 0.9 + s.phase) * 0.022); // riding at anchor
-          s.group.matrix.copy(s.base).multiply(roll);
-          for (const sail of s.anim.billow) sail.scale.z = 1 + 0.14 * Math.sin(t * 1.2 + s.phase);
-          for (const pen of s.anim.flutter) pen.rotation.y = Math.sin(t * 2.6 + s.phase) * 0.45;
-        }
-        for (let i = 0; i < this.townFlutter.length; i++) {
-          this.townFlutter[i].rotation.y = Math.sin(t * 2.2 + i * 1.7) * 0.35;
-        }
-        if (this.trees) this.trees.update(matrix);
-        applyCamera(this.camera, matrix);
-        this.renderer.resetState();
-        this.renderer.render(this.scene, this.camera);
-        map.triggerRepaint();
-      },
-      onRemove() {
-        if (this.renderer) this.renderer.resetState();
-      },
-    };
-  }
-
-  /* ---------- toggle & lifecycle ---------- */
-
-  const shipsReady = () => new Promise((res) => {
-    if (carta.harborShips) res();
-    else carta.bus.on('harbors-ready', res);
-  });
-
-  async function enable() {
-    if (failed) { sleeps(); return; }
-    try {
-      if (!THREE) THREE = await import('/vendor/three.module.min.js');
-      await shipsReady();
-      if (!map.getLayer('hb-water-3d') && map.getLayer('hb-land') && carta.harborBoxes) {
-        map.addLayer(makeWaterLayer(carta.harborBoxes), 'hb-land');
-      }
-      if (!map.getLayer('hb-ships-3d')) {
-        map.addLayer(makeShipsLayer(carta.harborShips));
-      }
-      window.cartaHarbor3d.active = true;
-      carta.bus.emit('harbor3d-changed');
-      try { localStorage.setItem(LS_KEY, '1'); } catch (e) { /* ignore */ }
-    } catch (e) {
-      console.warn('harbor3d: failed, falling back to engraved ships', e);
-      failed = true;
-      disable(true);
-      sleeps();
-    }
-  }
-
-  function disable(silent) {
-    for (const id of ['hb-ships-3d', 'hb-water-3d']) {
-      if (map.getLayer(id)) { try { map.removeLayer(id); } catch (e) { /* gone */ } }
-    }
-    window.cartaHarbor3d.active = false;
-    carta.bus.emit('harbor3d-changed');
-    if (!silent) { try { localStorage.setItem(LS_KEY, '0'); } catch (e) { /* ignore */ } }
-  }
-
-  function sleeps() {
-    if (box) box.checked = false;
-    carta.showCard('<h3>The harbour sleeps</h3><p>The living harbour could not be raised on this device; the engraved ships keep their stations.</p>');
-    setTimeout(carta.hideCard, 3500);
-  }
-
-  const toggles = document.querySelector('#cartouche .toggles');
-  let box = null;
-  if (toggles) {
-    const label = document.createElement('label');
-    label.innerHTML = '<input type="checkbox" id="t-h3d"> A Living Harbour ⛵';
-    label.title = 'ships in the round, riding at anchor (close zoom)';
-    toggles.appendChild(label);
-    box = label.querySelector('input');
-    box.addEventListener('change', () => (box.checked ? enable() : disable()));
-  }
-
-  // On by default where the hardware allows (we only get here at tier ≥ 3);
-  // the cartouche toggle is the remembered opt-out.
-  let saved = '1';
-  try { saved = localStorage.getItem(LS_KEY) || '1'; } catch (e) { /* ignore */ }
-  if (saved === '1' && box) {
-    box.checked = true;
-    enable();
-  }
-});
+/* The map-embedded Living Harbour (Rung 3: the hb-water-3d / hb-ships-3d
+   custom layers + applyCamera) has been retired. The harbour now rises as a
+   standalone rotatable diorama on its own canvas (harbordiorama.js), which
+   reuses the shipwright above together with cartaTownBuilder and
+   cartaTreeSystem. The map keeps the flat engraved plan, extrusion slabs and
+   marks as its in-place preview. */

@@ -15,9 +15,54 @@
    billboard facing the fixed viewer never has to spin). */
 'use strict';
 
-window.cartaTreeSystem = function cartaTreeSystem(THREE, map) {
-  const NEAR = 280, MID = 780, FAR = 2400;            // distance bands, metres
-  const CAP = { near: 3000, mid: 7000, far: 20000 };  // per-band visible budget
+window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
+  // Dual frame: the diorama injects a metric { project, heightAt } and drives
+  // update(camera); the legacy map-embedded path passes the MapLibre `map` and
+  // drives update(matrix). In the diorama the camera orbits freely, so the
+  // billboards must turn to face it (a vertex-shader billboard, below).
+  const metric = !!(arg && typeof arg.project === 'function');
+  const frame = metric ? arg : null;
+  const map = metric ? null : arg;
+  let NEAR = 280, MID = 780, FAR = 2400;              // distance bands, metres
+  const CAP = metric
+    ? { near: 2500, mid: 16000, far: 60000 }          // near is high-poly → tighter cap
+    : { near: 3000, mid: 7000, far: 20000 };          // per-band visible budget
+  // The diorama camera orbits well back from the island, so scale the bands to
+  // its footprint: the whole wood reads as billboards at rest, near trees turn
+  // to geometry as you dolly in.
+  if (metric && frame.radius) {
+    const R = frame.radius;
+    NEAR = Math.max(160, R * 0.16);
+    MID = Math.max(650, R * 0.55);
+    FAR = Math.max(3000, R * 6);
+  }
+
+  // metric ground frame (matches harbortown/harbordiorama: Y/Z swap + −Y flip)
+  const SWAP = new THREE.Matrix4().set(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
+  function groundMatM(x, y, z, ang, scale) {
+    return new THREE.Matrix4().makeTranslation(x, y, z).multiply(SWAP)
+      .multiply(new THREE.Matrix4().makeScale(scale, -scale, scale))
+      .multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2))
+      .multiply(new THREE.Matrix4().makeRotationY(ang));
+  }
+  // an upright quad whose base sits at the instance origin (camera-faced in shader)
+  function billboardQuad() { return new THREE.PlaneGeometry(9, 12).translate(0, 6, 0); }
+  // camera-facing billboard: position from the instance translation, orient to
+  // the view's right/up so the card always faces the orbiting camera.
+  function billboardMat(tex) {
+    const m = new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.42, side: THREE.DoubleSide });
+    m.onBeforeCompile = (sh) => {
+      sh.vertexShader = sh.vertexShader.replace('#include <project_vertex>', `
+        vec3 ip = (modelMatrix * instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+        float scl = length(instanceMatrix[0].xyz);
+        vec3 vRight = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
+        vec3 vUp = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
+        vec3 wp = ip + (vRight * position.x + vUp * position.y) * scl;
+        vec4 mvPosition = viewMatrix * vec4(wp, 1.0);
+        gl_Position = projectionMatrix * mvPosition;`);
+    };
+    return m;
+  }
 
   /* ---------- painted billboard sprites ---------- */
   function spriteTex(kind) {
@@ -87,19 +132,44 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, map) {
      Near tier built Y-up (stood upright by the ground matrix). Billboards
      built standing in X (width) × Z (height) at Y≈0, normal along Y. */
   function taggedTrunk(g) { g.userData.trunk = true; return g; }
-  function nearGeo(kind) {
+  // hi = the close-up, higher-poly build (more sides, fronds/branches, denser
+  // crown). Only a tightly-capped, frustum-culled handful are ever near the
+  // camera, so the vertex budget stays bounded and the frame rate holds.
+  function nearGeo(kind, hi) {
     if (kind === 'palm') {
-      const trunk = new THREE.CylinderGeometry(0.16, 0.28, 5.4, 6).translate(0, 2.7, 0);
+      const sides = hi ? 10 : 6;
+      const trunk = new THREE.CylinderGeometry(0.16, 0.30, 5.4, sides).translate(0, 2.7, 0);
       trunk.rotateZ(-0.08);
-      const crown = new THREE.ConeGeometry(2.4, 1.7, 8).translate(0.45, 5.6, 0);
-      return mergeGeos([taggedTrunk(trunk), crown]);
+      if (!hi) {
+        const crown = new THREE.ConeGeometry(2.4, 1.7, 8).translate(0.45, 5.6, 0);
+        return mergeGeos([taggedTrunk(trunk), crown]);
+      }
+      const parts = [taggedTrunk(trunk)];     // a spray of individual fronds
+      for (let i = 0; i < 8; i++) {
+        const fr = new THREE.ConeGeometry(0.34, 3.0, 4).translate(0, 1.5, 0);
+        fr.rotateX(Math.PI / 2.3);
+        fr.rotateY((i / 8) * Math.PI * 2);
+        fr.translate(0.45, 5.5, 0);
+        parts.push(fr);
+      }
+      return mergeGeos(parts);
     }
     if (kind === 'scrub') {
-      return mergeGeos([new THREE.SphereGeometry(1.0, 7, 5).scale(1.2, 0.7, 1.2).translate(0, 0.6, 0)]);
+      return mergeGeos([new THREE.SphereGeometry(1.0, hi ? 10 : 7, hi ? 7 : 5).scale(1.2, 0.7, 1.2).translate(0, 0.6, 0)]);
     }
-    const trunk = new THREE.CylinderGeometry(0.16, 0.24, 3.0, 6).translate(0, 1.5, 0);
-    const crown = new THREE.SphereGeometry(2.0, 8, 6).scale(1, 0.85, 1).translate(0, 4.0, 0);
-    return mergeGeos([taggedTrunk(trunk), crown]);
+    const sides = hi ? 9 : 6;
+    const trunk = new THREE.CylinderGeometry(0.16, 0.26, 3.0, sides).translate(0, 1.5, 0);
+    const crown = new THREE.SphereGeometry(2.0, hi ? 12 : 8, hi ? 9 : 6).scale(1, 0.88, 1).translate(0, 4.0, 0);
+    const parts = [taggedTrunk(trunk), crown];
+    if (hi) {                                  // a couple of boughs and a second clump
+      for (const s of [-1, 1]) {
+        const b = new THREE.CylinderGeometry(0.07, 0.12, 1.8, 5).translate(0, 0.9, 0);
+        b.rotateZ(s * 0.7); b.translate(s * 0.5, 2.6, 0);
+        parts.push(taggedTrunk(b));
+        parts.push(new THREE.SphereGeometry(1.0, 8, 6).scale(1, 0.85, 1).translate(s * 1.2, 3.6, 0));
+      }
+    }
+    return mergeGeos(parts);
   }
   function billboardGeo(cross) {
     const make = () => {
@@ -183,15 +253,32 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, map) {
   function init(field) {
     const sprites = { palm: spriteTex('palm'), leaf: spriteTex('leaf'), scrub: spriteTex('scrub') };
     for (const k of KINDS) {
-      tiers.near[k] = makeTier('near', nearGeo(k), foliageMat(null), CAP.near);
-      tiers.mid[k] = makeTier('mid', billboardGeo(true), foliageMat(sprites[k]), CAP.mid);
-      tiers.far[k] = makeTier('far', billboardGeo(false), foliageMat(sprites[k]), CAP.far);
+      tiers.near[k] = makeTier('near', nearGeo(k, metric), foliageMat(null), CAP.near);
+      if (metric) {
+        tiers.mid[k] = makeTier('mid', billboardQuad(), billboardMat(sprites[k]), CAP.mid);
+        tiers.far[k] = makeTier('far', billboardQuad(), billboardMat(sprites[k]), CAP.far);
+      } else {
+        tiers.mid[k] = makeTier('mid', billboardGeo(true), foliageMat(sprites[k]), CAP.mid);
+        tiers.far[k] = makeTier('far', billboardGeo(false), foliageMat(sprites[k]), CAP.far);
+      }
     }
+    if (metric) { group.matrix.identity(); group.matrixWorldNeedsUpdate = true; }
     trees = field.map((t) => {
+      const kind = KINDS.includes(t.kind) ? t.kind : 'leaf';
+      const color = tintColor(t.kind, t.tint);
+      if (metric) {
+        const p = frame.project(t.lngLat[0], t.lngLat[1]);
+        const y = (frame.heightAt ? frame.heightAt(p.x, p.z) : 0) + (t.y || 0);
+        const gm = groundMatM(p.x, y, p.z, Math.random() * Math.PI * 2, t.scale);
+        const bm = new THREE.Matrix4().makeTranslation(p.x, y, p.z)
+          .multiply(new THREE.Matrix4().makeScale(t.scale, t.scale, t.scale));
+        // a stable per-tree rank in [0,1) for distance-gated reveal (#1)
+        const rank = (Math.sin(p.x * 12.9898 + p.z * 78.233) * 43758.5453) % 1;
+        return { gm, bm, px: p.x, py: y, pz: p.z, kind, color, rank: rank < 0 ? rank + 1 : rank };
+      }
       const mc = maplibregl.MercatorCoordinate.fromLngLat(t.lngLat, 0);
       const s = mc.meterInMercatorCoordinateUnits();
       const yOff = t.y || 0;          // hill trees sit up their slope
-      // near: full ground transform (Y-up geometry stood upright), random spin
       const gm = new THREE.Matrix4()
         .makeTranslation(mc.x, mc.y, mc.z)
         .scale(new THREE.Vector3(s, -s, s))
@@ -199,11 +286,10 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, map) {
         .multiply(new THREE.Matrix4().makeTranslation(0, yOff, 0))
         .multiply(new THREE.Matrix4().makeRotationY(Math.random() * Math.PI * 2))
         .multiply(new THREE.Matrix4().makeScale(t.scale, t.scale, t.scale));
-      // billboard: stands in X–Z, lifted by yOff, translate + uniform scale only
       const bm = new THREE.Matrix4()
         .makeTranslation(mc.x, mc.y, mc.z + yOff * s)
         .scale(new THREE.Vector3(s * t.scale, s * t.scale, s * t.scale));
-      return { gm, bm, x: mc.x, y: mc.y, kind: KINDS.includes(t.kind) ? t.kind : 'leaf', color: tintColor(t.kind, t.tint) };
+      return { gm, bm, x: mc.x, y: mc.y, kind, color };
     });
   }
 
@@ -213,8 +299,10 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, map) {
   const _sphere = new THREE.Sphere(new THREE.Vector3(), 0);
   let counts = { near: 0, mid: 0, far: 0 };
 
-  function update(matrix) {
+  function update(arg) {
     if (!trees.length) return;
+    if (metric) return updateMetric(arg);
+    const matrix = arg;
     _m.fromArray(matrix);
     _frustum.setFromProjectionMatrix(_m);
     const cmc = maplibregl.MercatorCoordinate.fromLngLat(map.getCenter(), 0);
@@ -245,6 +333,54 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, map) {
       _rel.elements[13] -= cmc.y;
       _rel.elements[14] -= cmc.z;
       tier.setMatrixAt(i, _rel);
+      tier.setColorAt(i, t.color);
+      idx[band][t.kind] = i + 1;
+    }
+    for (const band of ['near', 'mid', 'far']) {
+      for (const k of KINDS) {
+        const tier = tiers[band][k];
+        tier.count = idx[band][k];
+        tier.instanceMatrix.needsUpdate = true;
+        if (tier.instanceColor) tier.instanceColor.needsUpdate = true;
+      }
+    }
+    counts = {
+      near: idx.near.palm + idx.near.leaf + idx.near.scrub,
+      mid: idx.mid.palm + idx.mid.leaf + idx.mid.scrub,
+      far: idx.far.palm + idx.far.leaf + idx.far.scrub,
+    };
+  }
+
+  // Diorama path: bucket by 3-D distance from the orbiting camera, frustum-cull,
+  // and write small origin-relative matrices (no centre ride needed).
+  function updateMetric(camera, camDist) {
+    _m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+    _frustum.setFromProjectionMatrix(_m);
+    const cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
+    const near2 = NEAR * NEAR, mid2 = MID * MID, far2 = FAR * FAR;
+    // #1 — reveal more of the field as the camera comes in: a fraction rising
+    // from ~0.45 at the wide view to 1.0 close in, gating each tree by its rank.
+    const R = frame.radius || 1500;
+    const dCam = camDist || Math.hypot(cx, cy, cz);
+    const reveal = Math.max(0.45, Math.min(1, 1 - (dCam - R * 0.4) / (R * 2.2) * 0.55));
+    const idx = {
+      near: { palm: 0, leaf: 0, scrub: 0 },
+      mid: { palm: 0, leaf: 0, scrub: 0 },
+      far: { palm: 0, leaf: 0, scrub: 0 },
+    };
+    for (const t of trees) {
+      if (t.rank > reveal) continue;
+      const dx = t.px - cx, dy = t.py - cy, dz = t.pz - cz;
+      const d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 > far2) continue;
+      _sphere.center.set(t.px, t.py + 6, t.pz);
+      _sphere.radius = 9;
+      if (!_frustum.intersectsSphere(_sphere)) continue;
+      const band = d2 < near2 ? 'near' : d2 < mid2 ? 'mid' : 'far';
+      const i = idx[band][t.kind];
+      if (i >= CAP[band]) continue;
+      const tier = tiers[band][t.kind];
+      tier.setMatrixAt(i, band === 'near' ? t.gm : t.bm);
       tier.setColorAt(i, t.color);
       idx[band][t.kind] = i + 1;
     }
