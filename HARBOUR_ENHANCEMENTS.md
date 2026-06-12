@@ -348,3 +348,168 @@ Port Royal with zero console errors.
 Verified at tier 3 (Havana) with the golden-hour glow on the water and faded
 street ends, and zero console errors; tier 1/2 fallback re-checked intact (no
 diorama, map + extrusions + Rung-2 water preserved).
+
+## Canoe tour — bug-fix pass
+
+1. **No water inside the hull.** The open U-hull let the sea sheet show through
+   from inside. Added a continuous, opaque **floorboard** sealing the interior
+   just above the waterline (`floorGeometry`) and raised the boat's `DRAFT` to
+   0.5 so the floor stays above the swell through the whole wave cycle — the
+   outer hull still dips under, so she sits *in* the water, but the bilge reads
+   as dry planks. Verified by an offscreen down-look render: the floor samples
+   are wood, never water.
+2. **Detailed near birds.** Exposed the flock's detailed gull from
+   `harborbirds.js` (`gull()`) and the canoe now reuses it for its close
+   companions (≈1.5 m span) instead of the 2-triangle placeholder.
+3. **Ships sit on the water.** Anchored ships were pinned at a fixed `y` ≈ 1 m
+   above the real (wave-displaced) surface. Added `terrain.waterAt(x,z,t)` (the
+   CPU twin of the water vertex shader) and the diorama now floats each ship on
+   that swell each frame, tilting with the surface — so they ride the waves
+   instead of hovering. The canoe floats on the same `waterAt` (one source).
+4. **Speed control.** Tour HUD gains −/+ buttons (and the scroll wheel) that
+   scale a cruise speed by ×1.5, clamped 0–6 km/h; the canoe eases to it.
+5. **Near foliage refines.** In tour mode the diorama feeds a small `camDist`
+   so the tree LOD promotes nearby trees to their hero (max-poly) tier.
+6. **Keys.** W rows forward, S/D reverse (the gaze still steers); the canoe
+   supports reverse (negative way).
+
+Reused models where they existed (the gull); generic per-object 10× LOD for
+houses/ships is not implemented (no LOD pipeline for those). Verified at tier 3
+with zero console errors; tier 1/2 fallback intact.
+
+## Canoe tour — second bug-fix pass (water, ships, HD detail)
+
+1. **Dry hull from EVERY angle.** The floorboard sealed the midships but
+   tapered out near bow/stern, so the sea sheet still peeked inside the end
+   wedges at glancing angles. Added an invisible **depth lid** spanning the
+   whole hull opening (`lidGeometry`: full half-beam at every station,
+   `colorWrite:false`, renderOrder 0.5 — after the opaque interior, before the
+   transparent water) so every water fragment inside the hull volume fails the
+   depth test, whatever the camera does. Verified by an offscreen leak scan
+   over 7 pitches/yaws (down, bow-steep/glance/low, stern, both sides):
+   **0 leaked water pixels in 81 samples per view**.
+2. **Hero birds within 50 m.** New `heroGull()` in `harborbirds.js` — a
+   real-bird low-poly seagull in the spirit of the classic game asset: white
+   faceted body, grey mantle, two-jointed wings (the outer "hand" flaps with a
+   lag), black wingtips, orange bill with the hooked tip, eyes, fanned tail,
+   tucked orange feet (~860 tris). The canoe's companions use it outright, and
+   every flock bird swaps to its hero twin inside 50 m of the seated viewer
+   (verified: swap-in and swap-out both fire).
+3. **Ships were authored one hull-height in the air.** The real root cause of
+   the "ships floating" reports: the symbolic protos in `harbor3d.js` placed
+   the hull extrusion (which runs UP from the mesh origin) at `position.y = H`,
+   so every hull's keel sat exactly H×3.4 ≈ 8–13 m above its anchor point —
+   measured empirically (sloop hull world-y ∈ [7.96, 15.91] before, [0, 7.96]
+   after). Fixed the proto authoring (hull/edges to the keel line, quarterdeck
+   onto the deck, ring riding the new waterline) and the diorama now sinks each
+   ship draft-deep (0.22·H) into the per-frame swell. Screenshot-verified from
+   9 m above the water: hulls meet the waterline.
+4. **Speed on the arrows.** The −/+ HUD buttons are gone; ↑ steps the cruise
+   ×1.5 up, ↓ steps it down (still clamped 0–6 km/h, scroll wheel still works,
+   readout stays). Verified via dispatched key events: 0 → 1.2 → 1.8 → 1.2.
+5. **Ultra tree tier.** `harbortrees.js` gains a fourth LOD band: trees within
+   130 m of the camera take a new max-poly hero build (palms: 14-side trunk,
+   12 blade fronds in two droop tiers, coconut cluster, frond-base collar;
+   leaf trees: 16×12 crown, four boughs with clumps, under-crown fill, root
+   flare; scrub: triple clump). Verified: 72 ultra-tier trees drawn standing
+   in the Havana wood.
+6. **W/S only.** D no longer reverses (verified: holding D moves the boat
+   0.00 m; W and S move it at the 1 : 0.55 thrust ratio).
+7. **High-definition period vessels.** New `harborshiphd.js`: fully-modelled
+   ships of 1650–1730, researched from the period record — the merchantman as
+   a Dutch **fluyt** (pear-section hull with pronounced tumblehome, rounded
+   high stern, square fore & main, lateen mizzen), the sloop as a
+   **Bermuda/Jamaica sloop** (single raked mast, big gaff main, long steeved
+   bowsprit, two jibs, tiller), a brigantine, and a two-decker **man-of-war**
+   (beakhead, gilded figurehead, quarter galleries, three stern lanterns,
+   14 guns a side). Sea-of-Thieves-leaning art direction: weathered procedural
+   plank textures, glowing stern windows, warm lantern point light. Lofted
+   hulls (30 stations), real wales, keel/rudder/anchor, fighting tops,
+   crosstrees, shrouds **with ratlines**, deck clutter (4–6 k tris each).
+   Authored keel-at-origin on the same SYMBOLIC_SCALE footprint, so in tour
+   mode any anchored mark within 150 m of the canoe swaps seamlessly to its HD
+   twin (hysteresis 150/175 m, ≤3 live, lazily built & cached). Verified: the
+   swap shows the HD vessel and hides the symbolic one, and all five types
+   build clean.
+8. **Realistic water around the boat.** A 72 m high-detail water patch rides
+   with the canoe (120×120 grid, renderOrder 2): the SAME three swell trains
+   as the sheet & physics (stays in phase), plus short chop, scrolling
+   high-frequency ripple normals, a fresnel blend from deep teal to the golden
+   horizon, and a Blinn-Phong sun glitter — the standard "pretty water"
+   recipe, fading to nothing at its rim so it melts into the base sheet. Wake
+   foam re-ordered above it.
+
+Verified end-to-end at tier 3 (0 console errors) plus the full tier-1/2/3
+regression and the prior canoe physics harness (cruise settles at 1.0 m/s).
+
+## Canoe tour — third pass (birds, trees, shore, minimap)
+
+1. **Birds rebuilt to the reference.** One seagull model now serves every bird
+   at every distance (no more paper-dart flock model): flat-shaded plump white
+   body, raised neck and head, yellow-orange bill with the hooked tip, eyes,
+   LONG narrow angular two-jointed wings — light grey above with BLACK
+   fingered tips (notched primaries) — short white fan tail, tucked orange
+   feet (~900 tris; 26 birds is still trivial).
+2. **Birds flew in reverse.** `Object3D.lookAt()` points an object's **+Z**
+   at the target, but the gulls are authored nose-toward-−Z — every bird flew
+   tail-first (the old spherical body hid it). Flight code now looks at the
+   MIRROR of the next path point (flock and canoe companions both); verified
+   across 26 birds × 3 path moments: 78 beak-first, 0 reversed.
+3. **Nine tree silhouettes.** The lollipop wood is gone: coconut palm (leaning
+   curved trunk, drooping fronds, coconuts), royal palm (tall straight trunk,
+   green crownshaft, upswept crown), broadleaf (boughs + irregular clustered
+   crown), canopy giant (ceiba-like flat tiers, buttress roots in ultra),
+   spreading acacia (forked trunk, wide flat top), column cypress (stacked
+   cones), dead snag (bare reaching branches), bush scrub and sea-grape
+   mounds. Every tree picks its variant from a stable position hash (separate
+   from the reveal rank, so all variants appear at all distances); geometry
+   tiers are now per-variant, billboards stay per base kind. Verified: 24
+   distinct live tier geometries drawn around the island.
+4. **Shore grass.** The canoe module scatters instanced grass tufts (crossed
+   alpha-tested blade sprites) along the shore within ~42 m of the boat —
+   greener near the wet sand, drier straw higher, and standing reeds right at
+   the waterline. Cells hash deterministically from world position so
+   re-seeding as the boat moves never pops a tuft. Verified: 380 tufts at a
+   beach approach; screenshot shows the grassy hem and reeds.
+5. **Tour minimap.** Bottom-left while touring: a small engraved chart of the
+   harbour (parchment land from the surveyed coastline rings over a verdigris
+   sea, anchored ships as dots, neatline + N arrow) with a red canoe arrow
+   tracking position AND heading at ~7 Hz over a pre-rendered base. Verified:
+   visible in tour, painted, and the arrow follows the boat (east→right,
+   north→up).
+6. **(Found en route)** POI labels (z-index 4, clickable) could drift over and
+   steal clicks from the diorama buttons (z-index 3) — all interactive
+   controls now sit at z-index 5.
+
+Verified at tier 3 with zero console errors; full tier-1/2/3 regression green.
+
+## Birds — sculpted seagull (reference-fidelity pass)
+
+The user supplied four reference renders of an artist-made low-poly seagull;
+ours (assembled from scaled sphere/cone/cylinder primitives) didn't compare.
+Root causes identified: primitive composition with visible seams vs ONE
+sculpted hull; regular UV-sphere tessellation vs irregular jittered facets;
+rectangle wings vs true planform with feathered edges.
+
+Rebuilt procedurally in `harborbirds.js` (per the approved plan; asset-vendor
+fallback was prepared but not needed):
+- **Sculpting toolkit**: `loft()` (section-lofted hulls with hash-alternated
+  triangle diagonals), `sheet()` (wing/tail surfaces with cambered mid-row and
+  SCALLOPED trailing edges), `finger()` (separated primary feathers), and
+  `facet()` — deterministic vertex jitter while indexed (no cracks), exploded
+  to per-face vertices, flat normals, and per-FACE colour with facet-to-facet
+  value variation: the "low poly art" treatment.
+- **The gull**: one continuous body hull bill-base→skull→neck→breast→tail
+  (12 stations × 10), grey saddle; yellow lofted bill with hooked tip and red
+  gonys spot; black eyes; scalloped white fan tail; tucked feet; two-jointed
+  wings with true planform (chord grows to the wrist, hand sweeps back to a
+  point), scalloped secondaries, five separated black primary fingers, black
+  tip fringe with two white mirror spots. ~600 tris; single flat-shaded
+  vertex-coloured material.
+- Flight logic untouched (mirror-lookAt fix, banking, wrist-lag flap all kept).
+
+Quality gate: side-by-side renders at the reference framings (side glide,
+top-¾, close-¾) iterated 3 rounds → `/tmp/gull_compare_v3.png`. In-scene tour
+and flock verified; 78/0 beak-first; colour story (black tips, yellow bill,
+white body, red spot) verified from vertex colours; tiers 1/2/3 regression
+zero errors.

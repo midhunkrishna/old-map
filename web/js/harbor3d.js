@@ -26,15 +26,30 @@ window.cartaShipwright = function cartaShipwright(THREE) {
 
   function materials() {
     if (MAT) return MAT;
+    /* Hexes track the HD shipwright's weathered palette (harborshiphd.js:
+       hull plank base #7a5836, wale 0x3c2c1a, deck #a98c5d, mast 0x6e5638,
+       sail 0xeadfc2, iron 0x23211e) so the 175 m HD→base swap doesn't jump
+       colour when a close ship demotes to this symbolic model. */
+    /* Depth-fight discipline: the hull skin recedes a couple of polygon-offset
+       units while everything layered over it (wales, waterline bands, deck)
+       pulls forward — so the ink edges and the thin overlays win the z-buffer
+       at ANY range. (The canoe camera runs near=0.1 with a multi-km far plane;
+       absolute offsets of a few cm flickered in and out past ~200 m.) */
     MAT = {
-      hull: new THREE.MeshLambertMaterial({ color: 0x8a6a45 }),
-      wale: new THREE.MeshLambertMaterial({ color: 0x4a3826 }),
-      castle: new THREE.MeshLambertMaterial({ color: 0x7d5f3e }),
-      deck: new THREE.MeshLambertMaterial({ color: 0xd8c49a }),
-      mast: new THREE.MeshLambertMaterial({ color: 0x6b5436 }),
-      sail: new THREE.MeshLambertMaterial({ color: 0xf0e4c8, side: THREE.DoubleSide }),
+      hull: new THREE.MeshLambertMaterial({ color: 0x7e5d3c, polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2 }),
+      wale: new THREE.MeshLambertMaterial({ color: 0x3c2c1a, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }),
+      castle: new THREE.MeshLambertMaterial({ color: 0x77573a }),
+      deck: new THREE.MeshLambertMaterial({ color: 0xcdb488, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }),
+      mast: new THREE.MeshLambertMaterial({ color: 0x6e5638 }),
+      sail: new THREE.MeshLambertMaterial({ color: 0xeadfc2, side: THREE.DoubleSide }),
       flag: new THREE.MeshLambertMaterial({ color: 0x8a3b2e, side: THREE.DoubleSide }),
-      port: new THREE.MeshLambertMaterial({ color: 0x2e241a }),
+      port: new THREE.MeshLambertMaterial({ color: 0x23211e }),
+      // the waterline story, sampled from the HD loft's vertex tints: pale
+      // tallow 'white stuff' below the waterline, weed-grime just above it
+      // grime offsets one tier past tallow: their abutting extrusion caps at
+      // 0.30·H are exactly coplanar, and the offset tier decides that fight
+      tallow: new THREE.MeshLambertMaterial({ color: 0xddd2b0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }),
+      grime: new THREE.MeshLambertMaterial({ color: 0x554a33, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
       lantern: new THREE.MeshBasicMaterial({ color: 0xffd890 }),
       ring: new THREE.MeshBasicMaterial({ color: 0x5b4636, transparent: true, opacity: 0.22, side: THREE.DoubleSide }),
       ink: new THREE.LineBasicMaterial({ color: 0x3d2f1e, transparent: true, opacity: 0.55 }),
@@ -53,6 +68,25 @@ window.cartaShipwright = function cartaShipwright(THREE) {
     s.quadraticCurveTo(-L * 0.5, -W * 0.32 * w, -L * 0.34, -W * 0.5 * w);
     s.quadraticCurveTo(L * 0.18, -W * 0.62 * w, L * 0.5, 0);
     return s;
+  }
+
+  /* Sheer & bow-rake warp for the hull-frame extrusions (pre-rotation local
+     frame: x fore-aft, z up). The rail rises toward bow and — more — toward
+     the stern, matching the HD loft's sheer line; the stem rakes forward at
+     the top. Weight = (baseY + z)/H so the keel stays put and anything
+     riding higher sweeps more. Costs zero triangles. */
+  function sheerWarp(geo, L, H, baseY, sternRise) {
+    const p = geo.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), z = p.getZ(i);
+      const t = x / L + 0.5;                       // 0 stern → 1 bow
+      const w = Math.max(0, Math.min(1.4, (baseY + z) / H));
+      const sheer = 0.14 * Math.pow(Math.abs(2 * t - 1), 2) + (t < 0.5 ? (0.5 - t) * sternRise : 0);
+      p.setZ(i, z + H * sheer * w);
+      if (x > 0) p.setX(i, x + L * 0.05 * Math.pow(w, 1.5) * Math.pow(x / (L * 0.5), 3));
+    }
+    p.needsUpdate = true;
+    geo.computeVertexNormals();
   }
 
   // Bellied trapezoid sail, wider at the foot, more belly low. Animated by
@@ -117,32 +151,60 @@ window.cartaShipwright = function cartaShipwright(THREE) {
     const rig = []; // rigging line endpoints, pushed in pairs
 
     if (type === 'canoe') {
+      // extrusion runs UP from the mesh origin: keel at y=0 ⇒ position.y = 0
       const hull = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L, W * 1.2), { depth: H, bevelEnabled: false }), m.hull);
       hull.rotation.x = -Math.PI / 2;
-      hull.position.y = H;
+      hull.position.y = 0;
       g.add(hull);
       const hut = new THREE.Mesh(new THREE.BoxGeometry(L * 0.3, H, W * 0.5), m.deck);
-      hut.position.y = H * 1.6;
+      hut.position.y = H * 1.45;
       g.add(hut);
       return g;
     }
 
-    /* hull, wales, deck */
-    const hull = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L, W), { depth: H, bevelEnabled: false }), m.hull);
+    /* hull, wales, deck.  The −π/2-rotated extrusion runs UP from the mesh
+       origin, so position.y = 0 puts the keel at the proto's y=0 — the proto's
+       origin IS the keel line, and the diorama sinks it draft-deep into the
+       swell. (The old +H offset here floated every ship one hull-height in
+       the air — glaring once seen from the canoe at water level.) */
+    const sternRise = type === 'merchantman' ? 0.5 : type === 'man-of-war' ? 0.42 : 0.26; // same per-type rise as the HD loft
+    const hullGeo = new THREE.ExtrudeGeometry(deckShape(L, W), { depth: H, bevelEnabled: false });
+    sheerWarp(hullGeo, L, H, 0, sternRise);
+    const hull = new THREE.Mesh(hullGeo, m.hull);
     hull.rotation.x = -Math.PI / 2;
-    hull.position.y = H;
+    hull.position.y = 0;
     g.add(hull);
-    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(hull.geometry, 30), m.edge);
+    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(hullGeo, 30), m.edge);
     edges.rotation.x = -Math.PI / 2;
-    edges.position.y = H;
+    edges.position.y = 0;
     g.add(edges); // the engraver's outline
-    for (const wy of [0.5, 0.78]) { // wales: dark strakes proud of the planking
-      const wale = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L, W, 1.045), { depth: H * 0.1, bevelEnabled: false }), m.wale);
+    for (const wy of [0.5, 0.78]) { // wales: dark strakes proud of the planking, swept along the sheer
+      const wGeo = new THREE.ExtrudeGeometry(deckShape(L, W, 1.045), { depth: H * 0.1, bevelEnabled: false });
+      sheerWarp(wGeo, L, H, H * (wy + 0.1), sternRise);
+      const wale = new THREE.Mesh(wGeo, m.wale);
       wale.rotation.x = -Math.PI / 2;
       wale.position.y = H * wy + H * 0.1;
       g.add(wale);
     }
-    const deck = new THREE.Mesh(new THREE.ShapeGeometry(deckShape(L, W * 0.94)), m.deck);
+    /* waterline bands, kept level (no sheer — water is flat): the diorama
+       sinks the hull 0.22·H, so a pale sliver of tallow shows to 0.30·H with
+       the dark weed-grime strake riding above it — the HD hulls' colour story
+       legible from 300 m out */
+    const tallow = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L, W, 1.03), { depth: H * 0.30, bevelEnabled: false }), m.tallow);
+    tallow.rotation.x = -Math.PI / 2;
+    tallow.position.y = 0;
+    g.add(tallow);
+    const grime = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L, W, 1.035), { depth: H * 0.12, bevelEnabled: false }), m.grime);
+    grime.rotation.x = -Math.PI / 2;
+    grime.position.y = H * 0.30;
+    g.add(grime);
+    /* deck: warped with the SAME sheer as the hull's top cap (baseY = H ⇒
+       weight 1, exactly the cap vertices' warp) so it rides a constant 0.02
+       above it — the old flat plane crossed the warped cap and the deck
+       cut in and out toward bow and stern */
+    const deckGeo = new THREE.ShapeGeometry(deckShape(L, W * 0.94));
+    sheerWarp(deckGeo, L, H, H, sternRise);
+    const deck = new THREE.Mesh(deckGeo, m.deck);
     deck.rotation.x = -Math.PI / 2;
     deck.position.y = H + 0.02;
     g.add(deck);
@@ -150,7 +212,7 @@ window.cartaShipwright = function cartaShipwright(THREE) {
     /* castles: quarterdeck aft (all), forecastle (man-of-war) */
     const qd = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L * 0.62, W * 0.86), { depth: H * 0.62, bevelEnabled: false }), m.castle);
     qd.rotation.x = -Math.PI / 2;
-    qd.position.set(-L * 0.27, H + H * 0.62, 0);
+    qd.position.set(-L * 0.27, H, 0);          // extrusion runs up: base sits on the deck
     g.add(qd);
     if (type === 'man-of-war') {
       const fc = new THREE.Mesh(new THREE.BoxGeometry(L * 0.16, H * 0.45, W * 0.7), m.castle);
@@ -162,7 +224,10 @@ window.cartaShipwright = function cartaShipwright(THREE) {
     const portRows = type === 'man-of-war' ? 2 : type === 'merchantman' ? 1 : 0;
     if (portRows) {
       const n = type === 'man-of-war' ? 7 : 4;
-      const portGeo = new THREE.BoxGeometry(L * 0.035, L * 0.028, 0.02);
+      // deep enough in z (was an absolute 2 cm) to straddle the approximated
+      // hull surface — the paper-thin ports sat tangent to the skin and
+      // flickered in and out as she rolled
+      const portGeo = new THREE.BoxGeometry(L * 0.035, L * 0.028, L * 0.02);
       for (let row = 0; row < portRows; row++) {
         for (let i = 0; i < n; i++) {
           const x = -L * 0.36 + (i / (n - 1)) * L * 0.62;
@@ -211,13 +276,13 @@ window.cartaShipwright = function cartaShipwright(THREE) {
       if (isSquare) {
         const wC = W * 2.1 * (mi === mastDefs.length - 1 ? 0.8 : 1);
         spar(g, d.x, H + lowerH * 0.92, wC, L * 0.01);
-        squareSail(g, d.x, H + lowerH * 0.66, wC * 0.82, wC * 0.95, lowerH * 0.5, W * 0.34);
+        squareSail(g, d.x, H + lowerH * 0.66, wC * 0.82, wC * 0.95, lowerH * 0.5, W * 0.44); // fuller belly: the billow reads at range
         spar(g, d.x, headY - topH * 0.12, wC * 0.72, L * 0.008);
-        squareSail(g, d.x, H + lowerH + topH * 0.42, wC * 0.55, wC * 0.74, topH * 0.55, W * 0.26);
+        squareSail(g, d.x, H + lowerH + topH * 0.42, wC * 0.55, wC * 0.74, topH * 0.55, W * 0.34);
       } else {
         // fore-and-aft gaff sail abaft the mast, along the centerline
         const gaffH = lowerH * 0.85, boomL = L * 0.5;
-        const sail = new THREE.Mesh(sailGeo(boomL * 0.7, boomL, gaffH, W * 0.2), m.sail);
+        const sail = new THREE.Mesh(sailGeo(boomL * 0.7, boomL, gaffH, W * 0.28), m.sail);
         sail.rotation.y = 0; // in the keel plane
         sail.position.set(d.x - boomL / 2 - L * 0.02, H + gaffH * 0.62, 0);
         sail.userData.billow = true;
@@ -277,9 +342,14 @@ window.cartaShipwright = function cartaShipwright(THREE) {
       lamp.position.set(-L * 0.5, H * 2.1, 0);
       g.add(lamp);
     }
+    // anchor-ripple ring: keel-relative, riding just clear of the waterline once
+    // the diorama sinks the hull draft-deep (draft = 0.22·H at symbolic scale)
+    // 0.5 m of freeboard for the ring: the swell trains run ±0.34 m and the
+    // ship only tracks the water at her own centre — at 0.15 m the broad flat
+    // ring dipped under the passing crests and visibly cut in and out
     const ring = new THREE.Mesh(new THREE.RingGeometry(L * 0.58, L * 0.64, 28), m.ring);
     ring.rotation.x = -Math.PI / 2;
-    ring.position.y = 0.4;
+    ring.position.y = H * 0.22 + 0.5;
     g.add(ring);
 
     g.add(riggingLines(rig));
