@@ -571,7 +571,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const m = shipMats;
       const group = new THREE.Group();
       const lod = [];
-      const stats = { houses: 0, streets: S ? S.streets.length : 0, byGroup: {}, streets3d: 0, palms: 0, fortWalls: 0, wharves: 0 };
+      const stats = { houses: 0, streets: S ? S.streets.length : 0, byGroup: {}, streets3d: 0, palms: 0, fortWalls: 0, wharves: 0, jetties: 0 };
       if (!S) return { group, lod, stats };
 
       const wallGeo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
@@ -581,7 +581,12 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const woodMat = new THREE.MeshLambertMaterial({ color: 0x6b4a2e });
       const brickMat = new THREE.MeshLambertMaterial({ color: 0x7a4434 });
 
-      const mark = (mesh) => { mesh.userData.lod = true; mesh.visible = false; lod.push(mesh); return mesh; };
+      // Close-zoom detail tier. The legacy map path (harbor3d) gates these by
+      // zoom (z ≈ 14.7) and starts them hidden; the diorama is itself the
+      // close view (eye-level, first person) and has no zoom gate, so there
+      // the tier stays visible — everything in it is instanced and
+      // frustum-culled, the far side of the island culls away on its own.
+      const mark = (mesh) => { mesh.userData.lod = true; mesh.visible = !!frame; lod.push(mesh); return mesh; };
 
       /* Instanced meshes live under a per-harbour anchor group and carry
          small local matrices. Absolute mercator translations baked into a
@@ -640,6 +645,18 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         }
       }
 
+      /* pass-4 furnishings: market stalls about the plazas, street furniture
+         (signposts, hitching posts, horse-troughs), tenders at the wharf
+         heads, hearth smoke, bee skeps and second blossom hues in the yards.
+         All hash-deterministic, instanced per harbour, close-zoom tier. */
+      const dhash = (a, b, n) => {
+        const s = Math.sin(a * 7919.33 + b * 6101.71 + n * 83.17) * 43758.5453;
+        return s - Math.floor(s);
+      };
+      const stallAS = [], stallBS = [], tripodS = [];
+      const troughS = [], signpostS = [], hitchS = [], skepS = [], smokeS = [];
+      const yardShrub2S = [], yardFlower2S = [];
+
       /* ===== the ground: streets, plazas, canals ===== */
 
       const streetMats = {};
@@ -647,7 +664,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         const cs = f.geometry.coordinates;
         if (!cs || cs.length < 2) continue;
         const style = HARBOR_STYLE[f.properties.harbor] || 'english';
-        const { clon, clat, pts } = ringMeters(cs);
+        const { clon, clat, mx, pts } = ringMeters(cs);
         anchorAt(f.properties.harbor, [clon, clat]);
         // staggered heights: crossings at one shared height z-fight,
         // flickering as depth precision shifts with zoom
@@ -666,6 +683,15 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         mesh.matrix.copy(groundMatrix([clon, clat], 0));
         group.add(mesh);
         stats.streets3d++;
+        if (pts.length > 2 && dhash(clon, clat, 71) < 0.22) {  // a stone horse-trough by the way
+          const i = (pts.length / 2) | 0;
+          const [ax, ay] = pts[i - 1], [bx, by] = pts[i];
+          const ex = bx - ax, ey = by - ay, el = Math.hypot(ex, ey) || 1;
+          const off = (STREET_W[style] / 2 + 1.0) * (dhash(clon, clat, 72) < 0.5 ? 1 : -1);
+          troughS.push({ harbor: f.properties.harbor,
+            m: groundMatrix([clon + ((ax + bx) / 2 - ey / el * off) / mx,
+              clat + ((ay + by) / 2 + ex / el * off) / M_PER_DEG_LAT], Math.atan2(ey, ex) / D2RAD) });
+        }
       }
 
       const greenMat = new THREE.MeshLambertMaterial({ map: plazaTexture('green'), side: THREE.DoubleSide });
@@ -699,6 +725,22 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
               .multiply(new THREE.Matrix4().makeScale(sc, sc, sc)),
           });
         });
+        /* market day: 2-4 stalls about the well — awning stalls, basket
+           stalls, the odd weighing tripod. Set out between the well at the
+           centre and the shade trees at the rim (which stand at 0.82 of the
+           ring), hash-placed so the same plaza always keeps its market. */
+        if (area > 140) {
+          const nSt = 2 + ((dhash(clon, clat, 1) * 2.6) | 0);
+          for (let k = 0; k < nSt; k++) {
+            const a = dhash(clon, clat, 2 + k) * Math.PI * 2 + k * 2.2;
+            const r = 4 + dhash(clon, clat, 7 + k) * 3.5;       // clear of the well
+            const px = Math.cos(a) * r, py = Math.sin(a) * r;
+            if (!insideRing(pts, px / 0.68, py / 0.68)) continue;  // clear of the tree ring
+            const spec = { harbor, m: groundMatrix(toLL(px, py), a / D2RAD + 90) };
+            const v = dhash(clon, clat, 20 + k);
+            (v < 0.45 ? stallAS : v < 0.8 ? stallBS : tripodS).push(spec);
+          }
+        }
       }
       if (wellPositions.length) {       // the town well at each plaza, close-zoom
         const lift = (s, y) => ({
@@ -750,6 +792,11 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
 
       const plankMat = new THREE.MeshLambertMaterial({ map: plankTexture() });
       const pileSpec = [], bollardSpec = [], barrelSpec = [], crateSpec = [];
+      const fishRackS = [], dinghyS = [];      // the working strand by each wharf root
+      const sackS = [], anchorS = [], cartS = [], timberS = [];  // dockside inventory
+      const jettyDeckS = [], skiffS = [], headGearS = [];        // the small jetties
+      const mooringS = [];                     // rings and cleats at the pier heads
+      const ropeCoilS = [], fenderS = [], careenS = []; // wharf polish; the careened hull ashore
       for (const f of S.wharves) {
         const cs = f.geometry.coordinates;
         if (!cs || cs.length < 2) continue;
@@ -782,7 +829,11 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
           }
           for (let k = 0; k < Math.max(1, Math.floor(len / 8)); k++) {
             const t = (k + 0.5) / Math.max(1, Math.floor(len / 8));
-            bollardSpec.push(at(toLL(ax + ex * t - uy * 2.1, ay + ey * t + ux * 2.1), 1.0));
+            const bpx = ax + ex * t - uy * 2.1, bpy = ay + ey * t + ux * 2.1;
+            bollardSpec.push(at(toLL(bpx, bpy), 1.0));
+            if (dhash(bpx, bpy, 33) < 0.35) {  // a rope coil dropped over the bollard
+              ropeCoilS.push(at(toLL(bpx, bpy), 1.12));
+            }
             if (Math.random() < 0.6) {
               barrelSpec.push(at(toLL(ax + ex * t + uy * 1.2 + (Math.random() - 0.5) * 2,
                 ay + ey * t - ux * 1.2 + (Math.random() - 0.5) * 2), 1.18));
@@ -810,11 +861,246 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         crane.matrixAutoUpdate = false;
         crane.matrix.copy(groundMatrix(toLL(head[0], head[1]), ang).multiply(localM(1, 1, 1, 0.7)));
         group.add(crane);
+        // the strand at the wharf root: drying racks for the catch, and the
+        // odd dinghy hauled out and turned turtle, oars beside it. Set back
+        // along the wharf line (toward the shore) and off to one side.
+        const root = pts[0], rnext = pts[1];
+        const rang = Math.atan2(rnext[1] - root[1], rnext[0] - root[0]);
+        const rux = Math.cos(rang), ruy = Math.sin(rang);
+        if (Math.random() < 0.55) {
+          fishRackS.push(at(toLL(root[0] - rux * 2 - ruy * 4.5, root[1] - ruy * 2 + rux * 4.5),
+            0, rang / D2RAD + 90));
+        }
+        if (Math.random() < 0.4) {
+          dinghyS.push(at(toLL(root[0] - rux * 3.5 + ruy * 4.5, root[1] - ruy * 3.5 - rux * 4.5),
+            0, Math.random() * 360));
+        }
+        /* dockside inventory of the trade, deterministically hashed from the
+           wharf position: hogsheads rolled out in a row, sack piles, an
+           anchor laid out awaiting fitting, squared timber, a hand cart, a
+           gangplank run down at the moored berth. */
+        const wh = (n) => {
+          const s = Math.sin(clon * 6311.9 + clat * 9277.1 + n * 53.71) * 43758.5453;
+          return s - Math.floor(s);
+        };
+        let wlen = 0;
+        const runs = [];
+        for (let i = 0; i < pts.length - 1; i++) {
+          const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]);
+          runs.push([wlen, l, i]);
+          wlen += l;
+        }
+        const pAt = (d) => {                 // point + bearing at run-length d
+          let r = runs[runs.length - 1];
+          for (const cand of runs) if (d <= cand[0] + cand[1]) { r = cand; break; }
+          const t = Math.min(1, Math.max(0, (d - r[0]) / (r[1] || 1)));
+          const [ax, ay] = pts[r[2]], [bx, by] = pts[r[2] + 1];
+          return [ax + (bx - ax) * t, ay + (by - ay) * t, Math.atan2(by - ay, bx - ax)];
+        };
+        const deckAt = (d, off, y, rotDeg, sc) => {
+          const [px, py, ra] = pAt(d);
+          return groundMatrix(toLL(px - Math.sin(ra) * off, py + Math.cos(ra) * off),
+            ra / D2RAD + (rotDeg || 0))
+            .multiply(new THREE.Matrix4().makeTranslation(0, y, 0))
+            .multiply(new THREE.Matrix4().makeScale(sc || 1, sc || 1, sc || 1));
+        };
+        if (wlen > 12) {
+          if (wh(0) < 0.6) {                 // hogsheads in a row, mid-wharf
+            const d0 = wlen * (0.25 + wh(1) * 0.4);
+            for (let k = 0; k < 3; k++) {
+              barrelSpec.push({ harbor, m: deckAt(d0 + k * 1.3, 1.15, 1.32, 0, 1.25) });
+            }
+          }
+          if (wh(27) < 0.7) {                // hogsheads landed at the crane's foot
+            const nB = 2 + (wh(28) < 0.4 ? 1 : 0);
+            for (let k = 0; k < nB; k++) {
+              barrelSpec.push({ harbor,
+                m: deckAt(Math.max(2, wlen - 1.4 - k * 1.2), -0.7 - wh(29 + k) * 0.8, 1.18, 0, 0.95 + wh(32 + k) * 0.25) });
+            }
+          }
+          for (const fd of [0.35, 0.68]) {   // fender boards hung down the wharf face
+            if (wh(34 + Math.round(fd * 10)) < 0.6) {
+              fenderS.push({ harbor, m: deckAt(wlen * fd, 2.56, 0.38) });
+            }
+          }
+          if (wh(2) < 0.5) {                 // sacks — the sugar and flour
+            sackS.push({ harbor, m: deckAt(wlen * (0.5 + wh(3) * 0.35), -1.0, 0.7, wh(12) * 360) });
+          }
+          if (wh(4) < 0.28) {                // an anchor near the root
+            anchorS.push({ harbor, m: deckAt(2.5 + wh(13) * 3, 0.8, 0.7, wh(14) * 360) });
+          }
+          if (wh(5) < 0.32) {                // the hand cart between loads
+            cartS.push({ harbor, m: deckAt(wlen * (0.15 + wh(15) * 0.2), -0.9, 0.7, 160 + wh(16) * 40) });
+          }
+          if (wh(6) < 0.4) {                 // squared timber awaiting the carpenter
+            timberS.push({ harbor,
+              m: deckAt(wlen * (0.3 + wh(7) * 0.4), 1.2, 0.7)
+                .multiply(new THREE.Matrix4().makeScale(2.4, 1.25, 1.3)) });
+          }
+          if (wh(8) < 0.55) {                // gangplank down to the moored boat
+            crateSpec.push({ harbor,
+              m: deckAt(Math.max(2, wlen - 2.5), 1.9, 0.72)
+                .multiply(new THREE.Matrix4().makeRotationX(0.5))
+                .multiply(localM(0.8, 0.07, 3.6, 0)) });
+          }
+          for (const side of [-1, 1]) {      // mooring rings bolted at the pier head
+            mooringS.push({ harbor, m: deckAt(Math.max(1, wlen - 0.7), side * 1.9, 0.74, side * 90) });
+          }
+          if (wh(23) < 0.55) {               // lobster pots stacked out at the head
+            headGearS.push({ harbor, m: deckAt(Math.max(2, wlen - 1.8), -1.2, 0.72, wh(24) * 360) });
+            if (wh(25) < 0.5) {
+              headGearS.push({ harbor, m: deckAt(Math.max(2.5, wlen - 3.1), 1.1, 0.72, wh(26) * 360) });
+            }
+          }
+        }
+        if (wh(20) < 0.5) {                  // a rowing tender rides off the head,
+          const hl = Math.hypot(head[0] - prev[0], head[1] - prev[1]) || 1;
+          const hx = (head[0] - prev[0]) / hl, hy = (head[1] - prev[1]) / hl;
+          const side = wh(21) < 0.5 ? -1 : 1; // tying the anchored fleet to shore
+          const g2 = groundMatrix(toLL(head[0] + hx * 3.0 - hy * side * 1.8,
+            head[1] + hy * 3.0 + hx * side * 1.8), ang + (wh(22) - 0.5) * 60);
+          if (frame) g2.elements[13] = 0;     // afloat at sea level
+          skiffS.push({ harbor, m: g2 });
+        }
+      }
+
+      /* ===== small jetties: the working shore between the wharves =====
+         Where the town fronts the water and no surveyed wharf serves, a
+         humble plank jetty runs out over the shallows — paired piles, a
+         slightly uneven two-run deck, mooring posts, a skiff tied alongside,
+         crab pots and a rope coil at the head. Deterministically hashed from
+         the shore position, thinned to one per ~80–150 m of built-up
+         shoreline; when the terrain frame is reachable the head must reach
+         water and the root must hold the shore. */
+      const jh = (a, b, n) => {
+        const s = Math.sin(a * 8191.7 + b * 5407.3 + n * 97.13) * 43758.5453;
+        return s - Math.floor(s);
+      };
+      const careenDone = {};   // at most one careened hull per harbour
+      for (const f of S.lands) {
+        const harbor = f.properties.harbor;
+        const streetsLL = S.streets.filter((st) => st.properties.harbor === harbor);
+        if (!streetsLL.length) continue;
+        const wharfRootsLL = S.wharves.filter((w) => w.properties.harbor === harbor)
+          .map((w) => w.geometry.coordinates[0]);
+        const rings = f.geometry.type === 'MultiPolygon'
+          ? f.geometry.coordinates.map((p) => p[0]) : [f.geometry.coordinates[0]];
+        for (const ring of rings) {
+          if (!ring || ring.length < 4) continue;
+          const { clon, clat, mx, pts } = ringMeters(ring);
+          const toL = ([x, y]) => [(x - clon) * mx, (y - clat) * M_PER_DEG_LAT];
+          const toLL = (px, py) => [clon + px / mx, clat + py / M_PER_DEG_LAT];
+          const streetsL = streetsLL.map((st) => st.geometry.coordinates.map(toL));
+          const wharfL = wharfRootsLL.map(toL);
+          anchorAt(harbor, [clon, clat]);
+          // pinned to sea level: the deck rides just above high water,
+          // whatever the shore terrain does under its root
+          const seaAt = (px, py, ang, y) => {
+            const g2 = groundMatrix(toLL(px, py), ang || 0);
+            if (frame) g2.elements[13] = 0;
+            return g2.multiply(new THREE.Matrix4().makeTranslation(0, y || 0, 0));
+          };
+          let walk = 0;
+          let nextAt = 40 + jh(clon, clat, 0) * 90;
+          let lastJetty = 0;        // run-length of the last jetty accepted
+          for (let i = 0; i < pts.length - 1; i++) {
+            const [ax, ay] = pts[i], [bx, by] = pts[i + 1];
+            const segLen = Math.hypot(bx - ax, by - ay);
+            if (segLen < 0.01) continue;
+            while (nextAt <= walk + segLen) {
+              const t = (nextAt - walk) / segLen;
+              const sx = ax + (bx - ax) * t, sy = ay + (by - ay) * t;
+              const dHere = nextAt;
+              nextAt += 80 + jh(sx, sy, 1) * 70;
+              // a built-up stretch left unserved too long relaxes the gates,
+              // so no waterfront frontage runs >200 m without wharf or jetty
+              const starved = dHere - lastJetty > 200;
+              // only where the town fronts the water
+              let near = Infinity;
+              for (const st of streetsL) near = Math.min(near, distToLine(st, sx, sy));
+              if (near > (starved ? 100 : 70)) continue;
+              // the surveyed wharves keep their own ground
+              let wd = Infinity;
+              for (const [wx, wy] of wharfL) wd = Math.min(wd, Math.hypot(wx - sx, wy - sy));
+              if (wd < (starved ? 28 : 45)) continue;
+              // outward: the water lies outside the land ring
+              let nx = (by - ay) / segLen, ny = -(bx - ax) / segLen;
+              if (insideRing(pts, sx + nx * 8, sy + ny * 8)) { nx = -nx; ny = -ny; }
+              const L = 8 + jh(sx, sy, 2) * 12;
+              if (frame && frame.heightAt) {   // confirm against the real terrain
+                const hd = toLL(sx + nx * L, sy + ny * L);
+                const ph = frame.project(hd[0], hd[1]);
+                if (frame.heightAt(ph.x, ph.z) > 0.05) continue;   // head must reach water
+                const rt = toLL(sx - nx * 2, sy - ny * 2);
+                const pr = frame.project(rt[0], rt[1]);
+                if (frame.heightAt(pr.x, pr.z) < -0.1) continue;   // root must hold the shore
+              }
+              const ang = Math.atan2(ny, nx) / D2RAD;
+              /* the shoreline work scene: where a jetty might have stood, a
+                 hull is instead careened on her side for repair — propped by
+                 timber shores, the carpenter's sawhorse and plank beside her.
+                 Roughly one harbour in 2-3 keeps such a scene. */
+              if (!careenDone[harbor] && dhash(clon, clat, 131) < 0.4 && jh(sx, sy, 30) < 0.35) {
+                careenS.push({ harbor,
+                  m: groundMatrix(toLL(sx - nx * 3.4, sy - ny * 3.4),
+                    ang + 90 + (jh(sx, sy, 31) - 0.5) * 30) });
+                careenDone[harbor] = true;
+                lastJetty = dHere;
+                continue;
+              }
+              const deckY = 0.65 + jh(sx, sy, 3) * 0.25;           // just above high water
+              const Lmid = L * (0.4 + jh(sx, sy, 4) * 0.2);
+              const deckRuns = [[-2, Lmid], [Lmid, L]];
+              if (jh(sx, sy, 12) < 0.3) {    // an aged deck: a plank run lost mid-span
+                const g0 = Lmid + (L - Lmid) * (0.3 + jh(sx, sy, 13) * 0.3);
+                deckRuns[1] = [Lmid, g0];
+                deckRuns.push([g0 + 0.9, L]);
+              }
+              deckRuns.forEach(([d0, d1], si) => {                 // uneven runs, root ashore
+                const mid = (d0 + d1) / 2;
+                jettyDeckS.push({ harbor,
+                  m: seaAt(sx + nx * mid, sy + ny * mid, ang,
+                    deckY + (jh(sx, sy, 5 + si) - 0.5) * 0.12)
+                    .multiply(localM(d1 - d0, 0.12, 1.8, 0)) });
+              });
+              for (let d = 0; d <= L; d += 2.8) {                  // paired piles, heads proud
+                for (const side of [-1, 1]) {
+                  pileSpec.push({ harbor,
+                    m: seaAt(sx + nx * d - ny * side * 0.7, sy + ny * d + nx * side * 0.7, 0, deckY - 0.55) });
+                }
+              }
+              for (let k = 0; k < 3; k++) {                        // mooring posts down one side
+                const d = L * (0.25 + k * 0.3);
+                bollardSpec.push({ harbor,
+                  m: seaAt(sx + nx * d - ny * 0.75, sy + ny * d + nx * 0.75, 0, deckY + 0.4) });
+              }
+              pileSpec.push({ harbor,                              // a taller pile off the head
+                m: seaAt(sx + nx * (L + 0.9), sy + ny * (L + 0.9), 0, deckY + 0.5) });
+              if (jh(sx, sy, 6) < 0.5) {                           // a skiff tied alongside
+                const d = L * (0.4 + jh(sx, sy, 7) * 0.35);
+                const side = jh(sx, sy, 8) < 0.5 ? -1 : 1;
+                skiffS.push({ harbor,
+                  m: seaAt(sx + nx * d - ny * side * 2.1, sy + ny * d + nx * side * 2.1,
+                    ang + (jh(sx, sy, 9) - 0.5) * 24, 0) });
+              }
+              if (jh(sx, sy, 10) < 0.55) {                         // crab pots & rope at the head
+                headGearS.push({ harbor,
+                  m: seaAt(sx + nx * (L - 1.3), sy + ny * (L - 1.3), jh(sx, sy, 11) * 360, deckY + 0.12) });
+              }
+              mooringS.push({ harbor,        // a cleat at the head for the skiff's line
+                m: seaAt(sx + nx * (L - 0.5), sy + ny * (L - 0.5), jh(sx, sy, 14) * 360, deckY + 0.12) });
+              lastJetty = dHere;
+              stats.jetties++;
+            }
+            walk += segLen;
+          }
+        }
       }
       addInst(new THREE.CylinderGeometry(0.22, 0.26, 1.6, 5), woodMat, pileSpec);
       addInst(new THREE.CylinderGeometry(0.14, 0.17, 0.6, 5), m.wale, bollardSpec, { lod: true });
       addInst(new THREE.CylinderGeometry(0.5, 0.42, 0.95, 8), woodMat, barrelSpec, { lod: true });
       addInst(wallGeo, plankMat, crateSpec, { lod: true });
+      addInst(wallGeo, plankMat, jettyDeckS);   // jetty decks stay at every distance
 
       /* ===== the houses, in the nation's manner ===== */
 
@@ -917,10 +1203,12 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       // houses can face the nearest road (else clusters ignore the streetlines).
       const llM = (lng, lat) => [lng * M_PER_DEG_LAT * Math.cos(lat * D2RAD), lat * M_PER_DEG_LAT];
       const streetSegs = {};
+      const streetLines = [];      // per street, lon/lat + metric, for the signposts
       for (const f of S.streets) {
         const cs = f.geometry.coordinates;
         if (!cs || cs.length < 2) continue;
         const arr = (streetSegs[f.properties.harbor] = streetSegs[f.properties.harbor] || []);
+        streetLines.push({ harbor: f.properties.harbor, cs, line: cs.map(([x, y]) => llM(x, y)) });
         for (let i = 0; i < cs.length - 1; i++) {
           const [x1, y1] = llM(cs[i][0], cs[i][1]), [x2, y2] = llM(cs[i + 1][0], cs[i + 1][1]);
           arr.push([x1, y1, x2, y2, Math.atan2(y2 - y1, x2 - x1) / D2RAD]);
@@ -941,6 +1229,53 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         }
         return ang;
       }
+
+      /* signposts where the ways cross: a street's end lying on another
+         street is a junction; every n-th (hashed) gets a post with one or
+         two angled boards, set back to the roadside, deduped within 16 m. */
+      const signPlaced = {};
+      streetLines.forEach((st, si) => {
+        for (const ei of [0, st.cs.length - 1]) {
+          const [lng, lat] = st.cs[ei];
+          const [px, py] = llM(lng, lat);
+          let crossing = false;
+          for (let sj = 0; sj < streetLines.length && !crossing; sj++) {
+            if (sj === si || streetLines[sj].harbor !== st.harbor) continue;
+            if (distToLine(streetLines[sj].line, px, py) < 7) crossing = true;
+          }
+          if (!crossing || dhash(lng, lat, 61) > 0.4) continue;
+          const list = (signPlaced[st.harbor] = signPlaced[st.harbor] || []);
+          let dup = false;
+          for (const [qx, qy] of list) if (Math.hypot(qx - px, qy - py) < 16) { dup = true; break; }
+          if (dup) continue;
+          list.push([px, py]);
+          const ang = nearestStreetAngle(st.harbor, lng, lat, 0);
+          const aR = ang * D2RAD;
+          const off = (STREET_W[HARBOR_STYLE[st.harbor] || 'english'] / 2 + 1.1)
+            * (dhash(lng, lat, 62) < 0.5 ? 1 : -1);
+          const mxL = M_PER_DEG_LAT * Math.cos(lat * D2RAD);
+          signpostS.push({ harbor: st.harbor,
+            m: groundMatrix([lng - Math.sin(aR) * off / mxL,
+              lat + Math.cos(aR) * off / M_PER_DEG_LAT], ang + dhash(lng, lat, 63) * 40 - 20) });
+        }
+      });
+
+      // shoreline polylines per harbour, in the same shared metric frame —
+      // for telling the shore-front houses (they hang their nets to dry)
+      const shoreL = {};
+      for (const f of S.lands) {
+        const rings = f.geometry.type === 'MultiPolygon'
+          ? f.geometry.coordinates.map((p) => p[0]) : [f.geometry.coordinates[0]];
+        const arr = (shoreL[f.properties.harbor] = shoreL[f.properties.harbor] || []);
+        for (const ring of rings) if (ring && ring.length >= 4) arr.push(ring.map(([x, y]) => llM(x, y)));
+      }
+      const nearShore = (h) => {
+        const ss = shoreL[h.harbor];
+        if (!ss) return false;
+        const [px, py] = llM(h.lngLat[0], h.lngLat[1]);
+        for (const ln of ss) if (distToLine(ln, px, py) < 45) return true;
+        return false;
+      };
 
       for (const f of S.blocks) {
         const ring = f.geometry.coordinates[0];
@@ -1014,6 +1349,18 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       }
 
       const dormerWallS = [], dormerRoofS = [], stoopS = [], signArmS = [], signPlateS = [];
+      // yard clutter about the houses, close-zoom tier (one instanced draw
+      // per kind per harbour): flowering shrubs, kitchen gardens, firewood,
+      // benches, rain barrels, leaning planks, rock piles, ground litter
+      const yardShrubS = [], yardGardenS = [], yardWoodS = [], yardBenchS = [];
+      const yardPlankS = [], yardScrapS = [], yardBarrelS = [];
+      const yardFlowerS = [], tavernS = [];    // window boxes; tables by tavern doors
+      const clothesS = [], netS = [];          // washing lines; nets drying on shore walls
+      const leanToS = [], privyS = [], shingleS = [], boundaryS = [];  // mid-size filler
+      const fenceBrokenS = [], brambleS = [];                          // wear & neglect
+      const middenS = [], brokenBarrelS = [], wheelS = [], shardS = []; // trash, kept rare
+      const doorWoodS = [], bootScrapeS = [], shutterS = [], fruitTreeS = []; // street life; walled-yard green
+      const WHITEWASH = new THREE.Color(0xf2ead8);
       for (const [key, list] of Object.entries(groups)) {
         const [style, storiesStr] = key.split('|');
         const stories = +storiesStr;
@@ -1022,13 +1369,31 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         const roofMat = new THREE.MeshLambertMaterial({ color: 0xffffff, map: roofTexture(style), side: THREE.DoubleSide });
         const wallTints = WALL_TINTS[style].map((c) => new THREE.Color(c));
         const roofTints = ROOF_TINTS[style].map((c) => new THREE.Color(c));
+        // facade window centres in texture px (192 wide), outermost casements —
+        // for hanging propped-open shutters on the prosperous houses. The
+        // French facade paints its own; the Spanish upper rows carry rejas.
+        const winSlots = { english: [36, 156], dutch: [29, 161] }[style];
         const wallS = [], plinthS = [], roofS = [];
         for (const h of list) {
           const g = groundMatrix(h.lngLat, h.ang);
-          wallS.push({ harbor: h.harbor, m: g.clone().multiply(localM(h.w, h.hw, h.d, 0)), color: wallTints[h.tint] });
+          /* prosperity, hashed from the house position: the tidy house wears
+             fresh whitewash, the poor one darker weather-peeled walls and a
+             rougher yard — the patchiness that makes a street read real. */
+          const yr = (n) => {
+            const s = Math.sin(h.lngLat[0] * 9173.51 + h.lngLat[1] * 7841.33 + n * 74.77) * 43758.5453;
+            return s - Math.floor(s);
+          };
+          const pros = yr(60);
+          let wallC = wallTints[h.tint], roofC = roofTints[h.tint];
+          if (pros > 0.72) wallC = wallC.clone().lerp(WHITEWASH, 0.45);
+          else if (pros < 0.22) {
+            wallC = wallC.clone().multiplyScalar(0.72 + pros);
+            roofC = roofC.clone().multiplyScalar(0.85);
+          }
+          wallS.push({ harbor: h.harbor, m: g.clone().multiply(localM(h.w, h.hw, h.d, 0)), color: wallC });
           plinthS.push({ harbor: h.harbor, m: g.clone().multiply(localM(h.w + 0.4, 0.55, h.d + 0.4, 0)) });
           // the deep miniature overhang: roofs sit proud of their walls
-          roofS.push({ harbor: h.harbor, m: g.clone().multiply(localM(h.w + 1.0, h.hr, h.d + 1.1, h.hw)), color: roofTints[h.tint] });
+          roofS.push({ harbor: h.harbor, m: g.clone().multiply(localM(h.w + 1.0, h.hr, h.d + 1.1, h.hw)), color: roofC });
           if (h.dormer) {           // a dormer through the front slope
             const dx = (Math.random() - 0.5) * h.w * 0.4;
             const base = g.clone().multiply(new THREE.Matrix4().makeTranslation(dx, h.hw + h.hr * 0.28, h.d * 0.22));
@@ -1050,6 +1415,154 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
               m: base.multiply(new THREE.Matrix4().makeTranslation(0, -0.55, 0.95))
                 .multiply(localM(0.9, 0.7, 0.08, 0)),
             });
+          }
+          /* ----- the yard: the lived-in ground about the house -----
+             Deterministically hashed from the house position, so the same
+             house always keeps the same yard. Everything sits at the back
+             (-z) or along the gable sides; the door and stoop face +z and
+             stay clear, and nothing strays more than ~2.5 m from the wall,
+             so the streets keep their width. */
+          const yardAt = (lx, lz, rotDeg, sc) => g.clone()
+            .multiply(new THREE.Matrix4().makeTranslation(lx, 0, lz))
+            .multiply(new THREE.Matrix4().makeRotationY((rotDeg || 0) * D2RAD))
+            .multiply(new THREE.Matrix4().makeScale(sc || 1, sc || 1, sc || 1));
+          const sideX = yr(0) < 0.5 ? -1 : 1;
+          const backZ = -(h.d / 2 + 0.9);
+          if (yr(1) < 0.3) {        // a flowering shrub by the gable wall —
+            (yr(50) < 0.5 ? yardShrubS : yardShrub2S).push({ harbor: h.harbor,  // hash picks the blossom hue
+              m: yardAt(sideX * (h.w / 2 + 0.8), (yr(2) - 0.5) * h.d * 0.6, yr(3) * 360, 0.75 + yr(4) * 0.5) });
+          }
+          if (pros > 0.12 && yr(5) < (pros > 0.7 ? 0.3 : 0.16)) {  // a kitchen-garden out back — the tidy house keeps a fuller one
+            yardGardenS.push({ harbor: h.harbor,
+              m: yardAt((yr(6) - 0.5) * h.w * 0.5, backZ - 1.5, (yr(7) - 0.5) * 14, 0.85 + yr(8) * 0.3) });
+          }
+          const hasLeanTo = yr(96) < 0.13;
+          if (hasLeanTo) {          // a lean-to shed against the side wall
+            leanToS.push({ harbor: h.harbor,
+              m: yardAt(-sideX * (h.w / 2 + 0.9), (yr(73) - 0.5) * h.d * 0.3, -sideX * 90, 0.9 + yr(74) * 0.25) });
+          }
+          if (yr(9) < 0.22 && !hasLeanTo) {  // firewood stacked along the side wall
+            yardWoodS.push({ harbor: h.harbor,
+              m: yardAt(-sideX * (h.w / 2 + 0.5), (yr(10) - 0.5) * h.d * 0.5, 90, 0.85 + yr(11) * 0.35) });
+          }
+          if (yr(12) < 0.18) {      // a bench by the door, off to the corner
+            yardBenchS.push({ harbor: h.harbor,
+              m: yardAt(sideX * h.w * 0.33, h.d / 2 + 0.8, 180 + (yr(13) - 0.5) * 16) });
+          }
+          if (yr(14) < 0.25) {      // the rain barrel at the back corner
+            yardBarrelS.push({ harbor: h.harbor,
+              m: yardAt(sideX * (h.w / 2 - 0.5), backZ + 0.3, 0, 0.8 + yr(15) * 0.3) });
+          }
+          if (yr(16) < 0.14) {      // planks leaning on the back wall
+            yardPlankS.push({ harbor: h.harbor,
+              m: yardAt((yr(17) - 0.5) * h.w * 0.6, backZ + 0.45, 180) });
+          }
+          if (yr(18) < 0.18) {      // back-yard scraps: a rock pile and litter
+            yardScrapS.push({ harbor: h.harbor,
+              m: yardAt((yr(19) - 0.5) * (h.w + 2), backZ - 0.8 - yr(20) * 1.4, yr(21) * 360, 0.8 + yr(22) * 0.5) });
+          }
+          if (yr(23) < 0.22) {      // more of the same along the gable side
+            yardScrapS.push({ harbor: h.harbor,
+              m: yardAt(sideX * (h.w / 2 + 0.4 + yr(24)), backZ * 0.4, yr(25) * 360) });
+          }
+          if (pros > 0.25 && yr(36) < 0.15) {  // a window box abloom under a front casement
+            (yr(51) < 0.5 ? yardFlowerS : yardFlower2S).push({ harbor: h.harbor,
+              m: g.clone().multiply(new THREE.Matrix4()
+                .makeTranslation((yr(37) - 0.5) * h.w * 0.5, 2.3, h.d / 2 + 0.18)) });
+          }
+          if (yr(100) < 0.1) {      // a firewood bundle dropped by the door
+            doorWoodS.push({ harbor: h.harbor,
+              m: yardAt(-sideX * h.w * 0.28, h.d / 2 + 0.7, yr(101) * 360, 0.85 + yr(102) * 0.3) });
+          }
+          if (h.stoop && yr(103) < 0.15) {  // a boot-scraper set beside the doorstep
+            bootScrapeS.push({ harbor: h.harbor, m: yardAt(1.15, h.d / 2 + 0.5, 0) });
+          }
+          if (pros > 0.72 && h.stories >= 2 && winSlots && yr(104) < 0.45) {
+            // shutters propped open at an upper casement of the prosperous house
+            const wx2 = ((winSlots[yr(105) < 0.5 ? 0 : 1] - 96) / 192) * h.w;
+            shutterS.push({ harbor: h.harbor,
+              m: g.clone().multiply(new THREE.Matrix4()
+                .makeTranslation(wx2, h.hw * (1 - 0.47 / h.stories), h.d / 2)) });
+          }
+          if (yr(110) < 0.13) {     // a water butt under the front eave corner, catching the rain
+            yardBarrelS.push({ harbor: h.harbor,
+              m: yardAt(-sideX * (h.w / 2 - 0.5), h.d / 2 + 0.55, 0, 0.7 + yr(111) * 0.25) });
+          }
+          if (h.stories >= 3 && yr(45) < 0.35) {  // a hitching post before the bigger houses
+            hitchS.push({ harbor: h.harbor,
+              m: yardAt(h.w * 0.42, h.d / 2 + 1.3, (yr(52) - 0.5) * 20) });
+          }
+          if (yr(46) < 0.05) {      // a bee skep in the back yard, rare
+            skepS.push({ harbor: h.harbor,
+              m: yardAt((yr(47) - 0.5) * h.w * 0.5, backZ - 0.7, yr(48) * 360, 0.9 + yr(49) * 0.35) });
+          }
+          if (h.sign) {             // tavern trade spills out: a table and stools,
+            tavernS.push({ harbor: h.harbor,   // set beside the door, never in it
+              m: yardAt(-h.w * 0.3, h.d / 2 + 1.6, yr(38) * 360) });
+          }
+          if (yr(39) < 0.13) {      // washing strung out to dry behind the house
+            clothesS.push({ harbor: h.harbor,
+              m: yardAt((yr(40) - 0.5) * h.w * 0.4, backZ - 1.7, (yr(41) - 0.5) * 40) });
+          }
+          if (yr(43) < 0.4 && nearShore(h)) {  // a net drying on the sun-side wall
+            const aR = h.ang * D2RAD;          // pick the wall facing nearest south
+            const sun = [
+              [-Math.cos(aR), 0, -(h.d / 2 + 0.22), 180],
+              [Math.sin(aR), -(h.w / 2 + 0.22), 0, -90],
+              [-Math.sin(aR), h.w / 2 + 0.22, 0, 90],
+            ].sort((p, q) => q[0] - p[0])[0];
+            netS.push({ harbor: h.harbor, m: yardAt(sun[1], sun[2], sun[3]) });
+          }
+          /* ----- wear, mid-size filler, and the rare piece of trash ----- */
+          if (pros < 0.1) {         // the abandoned yard: bramble and rank grass
+            brambleS.push({ harbor: h.harbor,
+              m: yardAt((yr(75) - 0.5) * h.w * 0.6, backZ - 1.0, yr(76) * 360, 0.9 + yr(77) * 0.6) });
+            for (let k = 0; k < 3; k++) {
+              grassSpec.push({ harbor: h.harbor,
+                m: yardAt((yr(78 + k) - 0.5) * (h.w + 2), backZ * (0.3 + yr(81 + k) * 0.7), 0, 1.2 + yr(84 + k) * 0.8) });
+            }
+          }
+          if (pros < 0.32 && yr(85) < 0.3) {  // a fence section gone to ruin
+            fenceBrokenS.push({ harbor: h.harbor,
+              m: yardAt(sideX * (h.w / 2 + 1.5), h.d * 0.1, 90 + (yr(64) - 0.5) * 20) });
+          } else if (pros > 0.45 && yr(64) < 0.18) {  // a low stone wall between yards
+            boundaryS.push({ harbor: h.harbor,
+              m: yardAt(sideX * (h.w / 2 + 1.7), 0, 90).multiply(localM(h.d + 1.6, 0.55, 0.32, 0)) });
+            if (yr(106) < 0.4) {    // and within the walled yard, a small fruit tree
+              fruitTreeS.push({ harbor: h.harbor,
+                m: yardAt(sideX * (h.w / 2 + 1.0), backZ - 0.6 - yr(107), yr(108) * 360, 0.8 + yr(109) * 0.45) });
+            }
+          }
+          if (yr(97) < 0.07) {      // spare shingles stacked for the next repair
+            shingleS.push({ harbor: h.harbor,
+              m: yardAt((yr(63) - 0.5) * h.w * 0.5, backZ - 0.4, yr(62) * 360) });
+          }
+          if (yr(98) < 0.08) {      // the privy hut in the back corner
+            privyS.push({ harbor: h.harbor,
+              m: yardAt(-sideX * (h.w / 2 - 0.4), backZ - 1.3, 180 + (yr(99) - 0.5) * 30) });
+          }
+          if (yr(86) < 0.07) {      // the midden by the back door — oyster shells
+            middenS.push({ harbor: h.harbor,
+              m: yardAt((yr(87) - 0.5) * h.w * 0.4, backZ - 0.5, yr(88) * 360, 0.8 + yr(89) * 0.4) });
+          }
+          if (yr(90) < 0.06) {      // a barrel broken down to its staves
+            brokenBarrelS.push({ harbor: h.harbor,
+              m: yardAt(sideX * (h.w / 2 - 0.8), backZ - 0.3, yr(61) * 360) });
+          }
+          if (yr(91) < 0.05) {      // a sprung cartwheel left leaning on the wall
+            wheelS.push({ harbor: h.harbor,
+              m: yardAt((yr(92) - 0.5) * h.w * 0.5, backZ + 0.55, 180) });
+          }
+          if (yr(93) < 0.06) {      // pottery shards swept into the alley
+            shardS.push({ harbor: h.harbor,
+              m: yardAt(sideX * (h.w / 2 + 1.2), (yr(94) - 0.5) * h.d * 0.7, yr(95) * 360) });
+          }
+          for (let k = 0; k < 2; k++) {   // grass tufts along the wall bases
+            if (yr(26 + k * 3) < 0.5) continue;
+            const gx = (k ? -1 : 1) * (h.w / 2 + 0.3);
+            const sc = 0.5 + yr(27 + k * 3) * 0.6;
+            grassSpec.push({ harbor: h.harbor,
+              m: yardAt(gx, (yr(28 + k * 3) - 0.5) * h.d * 0.8, 0, sc) });
           }
         }
         addInst(wallGeo, wallMat, wallS);
@@ -1076,6 +1589,510 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       addInst(wallGeo, stoneMat, stoopS, { lod: true });
       addInst(wallGeo, woodMat, signArmS, { lod: true });
       addInst(wallGeo, new THREE.MeshLambertMaterial({ color: 0x8a3b2e }), signPlateS, { lod: true });
+
+      /* ----- yard clutter: shared geometry, instanced per harbour -----
+         Each kind is a single two-tone geometry (colours baked per vertex,
+         one Lambert material), so the whole pass costs one draw call per
+         kind per harbour at close zoom. */
+      function mergeColored(parts) {     // parts: [geometry, hexColour][]
+        let vn = 0;
+        for (const [pg] of parts) vn += pg.attributes.position.count;
+        const pos = new Float32Array(vn * 3), nor = new Float32Array(vn * 3), col = new Float32Array(vn * 3);
+        const idx = [];
+        let vo = 0;
+        const c = new THREE.Color();
+        for (const [pg, hex] of parts) {
+          const p = pg.attributes.position, nm = pg.attributes.normal;
+          c.set(hex);
+          for (let i = 0; i < p.count; i++) {
+            pos[(vo + i) * 3] = p.getX(i); pos[(vo + i) * 3 + 1] = p.getY(i); pos[(vo + i) * 3 + 2] = p.getZ(i);
+            if (nm) { nor[(vo + i) * 3] = nm.getX(i); nor[(vo + i) * 3 + 1] = nm.getY(i); nor[(vo + i) * 3 + 2] = nm.getZ(i); }
+            col[(vo + i) * 3] = c.r; col[(vo + i) * 3 + 1] = c.g; col[(vo + i) * 3 + 2] = c.b;
+          }
+          if (pg.index) for (let i = 0; i < pg.index.count; i++) idx.push(vo + pg.index.getX(i));
+          else for (let i = 0; i < p.count; i++) idx.push(vo + i);
+          vo += p.count;
+        }
+        const out = new THREE.BufferGeometry();
+        out.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        out.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+        out.setAttribute('color', new THREE.BufferAttribute(col, 3));
+        out.setIndex(idx);
+        return out;
+      }
+      const lump = (r) => new THREE.IcosahedronGeometry(r, 0);
+      // a flowering shrub: green clump with bright blossom studs; two blossom
+      // palettes, hash-chosen per house, so the gardens vary down a street
+      const shrubOf = (b) => mergeColored([
+        [lump(0.55).scale(1.15, 0.8, 1.15).translate(0, 0.42, 0), 0x5d7a3c],
+        [lump(0.34).translate(0.42, 0.3, 0.2), 0x69884a],
+        [lump(0.08).translate(0.3, 0.78, 0.25), b[0]],
+        [lump(0.07).translate(-0.35, 0.62, -0.1), b[1]],
+        [lump(0.07).translate(-0.05, 0.85, -0.3), b[0]],
+        [lump(0.06).translate(0.5, 0.5, -0.35), b[2]],
+      ]);
+      const shrubGeo = shrubOf([0xc4566a, 0xd8b04a, 0xe6e2d2]);   // rose-led
+      const shrubGeo2 = shrubOf([0xe6e2d2, 0xc98a3a, 0xc4566a]);  // white-and-ochre
+      // a kitchen garden: a soil bed with two ridged rows of greens, ringed
+      // by a low wattle fence (baked into the same geometry — no extra draw)
+      const gardenParts = [[new THREE.BoxGeometry(2.6, 0.22, 1.8).translate(0, 0.11, 0), 0x6a4f33]];
+      for (const rz of [-0.45, 0.45]) {
+        gardenParts.push([new THREE.BoxGeometry(2.3, 0.14, 0.34).translate(0, 0.26, rz), 0x59422b]);
+        for (let gi = 0; gi < 4; gi++) {
+          gardenParts.push([new THREE.ConeGeometry(0.16, 0.42, 4).translate(-0.9 + gi * 0.6, 0.48, rz), 0x6f8a42]);
+        }
+      }
+      {
+        const fx = 1.6, fz = 1.2;        // fence line just outside the bed
+        for (const [px, pz] of [[-fx, -fz], [0, -fz], [fx, -fz], [-fx, fz], [0, fz], [fx, fz], [-fx, 0], [fx, 0]]) {
+          gardenParts.push([new THREE.BoxGeometry(0.07, 0.55, 0.07).translate(px, 0.27, pz), 0x6b4f30]);
+        }
+        for (const [rx, rz, w, alongX] of [[0, -fz, 3.2, 1], [0, fz, 3.2, 1], [-fx, 0, 2.4, 0], [fx, 0, 2.4, 0]]) {
+          for (const ry of [0.2, 0.42]) {  // two woven rails
+            gardenParts.push([new THREE.BoxGeometry(alongX ? w : 0.05, 0.06, alongX ? 0.05 : w)
+              .translate(rx, ry, rz), 0x7d5e3a]);
+          }
+        }
+      }
+      const gardenGeo = mergeColored(gardenParts);
+      // stacked firewood, logs lying along x
+      const woodParts = [];
+      const logTones = [0x6b4a2e, 0x7a5636, 0x5e402a];
+      let li = 0;
+      for (const [nLogs, ly] of [[4, 0.12], [3, 0.32], [2, 0.5]]) {
+        for (let gi = 0; gi < nLogs; gi++) {
+          woodParts.push([new THREE.CylinderGeometry(0.11, 0.11, 1.2, 5).rotateZ(Math.PI / 2)
+            .translate(0, ly, (gi - (nLogs - 1) / 2) * 0.24), logTones[li++ % 3]]);
+        }
+      }
+      const woodpileGeo = mergeColored(woodParts);
+      // a plain bench
+      const benchGeo = mergeColored([
+        [new THREE.BoxGeometry(1.5, 0.09, 0.42).translate(0, 0.46, 0), 0x7a5a38],
+        [new THREE.BoxGeometry(0.12, 0.46, 0.38).translate(-0.6, 0.23, 0), 0x5e442c],
+        [new THREE.BoxGeometry(0.12, 0.46, 0.38).translate(0.6, 0.23, 0), 0x5e442c],
+      ]);
+      // planks leaning on a wall (tip tilted toward -z, the wall side)
+      const plankLeanGeo = mergeColored([
+        [new THREE.BoxGeometry(0.3, 2.3, 0.07).translate(0, 1.15, 0).rotateX(-0.42), 0x9b8158],
+        [new THREE.BoxGeometry(0.26, 1.9, 0.06).translate(0.34, 0.95, 0.05).rotateX(-0.5), 0x8a7350],
+      ]);
+      // back-yard scraps: a rock pile with flat shards strewn about it —
+      // one combined kit, so rocks and litter share a single instanced draw
+      const scrapsGeo = mergeColored([
+        [lump(0.3).scale(1.2, 0.75, 1).translate(0, 0.16, 0), 0x8d8275],
+        [lump(0.2).translate(0.34, 0.1, 0.18), 0x7c7264],
+        [lump(0.16).translate(-0.28, 0.09, -0.14), 0x968b7c],
+        [new THREE.BoxGeometry(0.5, 0.03, 0.2).translate(0.62, 0.02, 0.35).rotateY(0.6), 0x7a6a4d],
+        [new THREE.BoxGeometry(0.35, 0.03, 0.16).translate(-0.55, 0.02, -0.3).rotateY(-0.9), 0x6a5a40],
+        [new THREE.BoxGeometry(0.2, 0.05, 0.12).translate(0.15, 0.03, -0.55).rotateY(1.7), 0x8a7a5c],
+      ]);
+      // a window box abloom: planter, greens, bright blossom studs — the
+      // same two-palette treatment as the shrubs
+      const flowerBoxOf = (b) => mergeColored([
+        [new THREE.BoxGeometry(1.1, 0.22, 0.3).translate(0, 0, 0.05), 0x6b4a2e],
+        [lump(0.16).translate(-0.3, 0.16, 0.08), 0x5d7a3c],
+        [lump(0.15).translate(0.05, 0.18, 0.1), 0x69884a],
+        [lump(0.14).translate(0.35, 0.15, 0.08), 0x5d7a3c],
+        [lump(0.06).translate(-0.3, 0.28, 0.15), b[0]],
+        [lump(0.05).translate(0.08, 0.3, 0.17), b[1]],
+        [lump(0.05).translate(0.38, 0.26, 0.15), b[0]],
+      ]);
+      const flowerBoxGeo = flowerBoxOf([0xc4566a, 0xd8b04a]);
+      const flowerBoxGeo2 = flowerBoxOf([0xe6e2d2, 0xc98a3a]);
+      // the tavern front: a round table with three stools about it
+      const tavernParts = [
+        [new THREE.CylinderGeometry(0.55, 0.55, 0.07, 8).translate(0, 0.72, 0), 0x8a6a42],
+        [new THREE.CylinderGeometry(0.07, 0.1, 0.7, 5).translate(0, 0.36, 0), 0x5e442c],
+      ];
+      for (const [sx, sz] of [[0.95, 0.2], [-0.75, 0.6], [0.15, -0.95]]) {
+        tavernParts.push([new THREE.CylinderGeometry(0.22, 0.22, 0.06, 6).translate(sx, 0.42, sz), 0x7a5a38]);
+        tavernParts.push([new THREE.CylinderGeometry(0.05, 0.07, 0.42, 5).translate(sx, 0.21, sz), 0x5e442c]);
+      }
+      const tavernGeo = mergeColored(tavernParts);
+      // a drying rack: crossed poles, a ridge pole, the split catch hung over it
+      const rackParts = [];
+      for (const rx of [-0.9, 0.9]) {
+        rackParts.push([new THREE.CylinderGeometry(0.05, 0.06, 1.6, 4).rotateZ(0.45).translate(rx, 0.7, 0), 0x6b4f30]);
+        rackParts.push([new THREE.CylinderGeometry(0.05, 0.06, 1.6, 4).rotateZ(-0.45).translate(rx, 0.7, 0), 0x6b4f30]);
+      }
+      rackParts.push([new THREE.CylinderGeometry(0.04, 0.04, 2.4, 4).rotateZ(Math.PI / 2).translate(0, 1.32, 0), 0x7d5e3a]);
+      for (let fi = 0; fi < 6; fi++) {
+        rackParts.push([new THREE.BoxGeometry(0.07, 0.34, 0.16).translate(-0.8 + fi * 0.32, 1.12, 0), 0xb8a98a]);
+      }
+      const rackGeo = mergeColored(rackParts);
+      // a dinghy hauled out and turned turtle, an oar dropped beside her
+      const oarShaft = new THREE.BoxGeometry(0.07, 0.05, 1.9).translate(0, 0.03, 0);
+      const oarBlade = new THREE.BoxGeometry(0.18, 0.04, 0.5).translate(0, 0.03, 1.1);
+      oarShaft.rotateY(0.5); oarShaft.translate(1.3, 0, 0.5);
+      oarBlade.rotateY(0.5); oarBlade.translate(1.3, 0, 0.5);
+      const dinghyGeo = mergeColored([
+        [lump(1).scale(1.5, 0.38, 0.55).translate(0, 0.3, 0), 0x7a5a38],     // the upturned hull
+        [new THREE.BoxGeometry(2.5, 0.08, 0.14).translate(0, 0.66, 0), 0x5e442c], // keel strip
+        [oarShaft, 0x9b8158],
+        [oarBlade, 0x9b8158],
+      ]);
+      const yardBarrelGeo = new THREE.CylinderGeometry(0.5, 0.42, 0.95, 8).translate(0, 0.48, 0);
+      // a skiff afloat, right side up, tied alongside a jetty
+      const skiffGeo = mergeColored([
+        [lump(1).scale(1.55, 0.42, 0.58).translate(0, 0.28, 0), 0x7a5a38],   // the hull
+        [lump(1).scale(1.3, 0.3, 0.44).translate(0, 0.44, 0), 0x33281b],     // the open hold
+        [new THREE.BoxGeometry(0.14, 0.05, 0.95).translate(0.4, 0.72, 0), 0x9b8158],   // thwarts
+        [new THREE.BoxGeometry(0.14, 0.05, 0.85).translate(-0.55, 0.7, 0), 0x9b8158],
+      ]);
+      // crab pots stacked at the jetty head, a rope coil beside them
+      const headGearGeo = mergeColored([
+        [new THREE.BoxGeometry(0.6, 0.32, 0.6).translate(0, 0.16, 0), 0x5a4a33],
+        [new THREE.BoxGeometry(0.66, 0.05, 0.66).translate(0, 0.34, 0), 0x7d5e3a],
+        [new THREE.BoxGeometry(0.55, 0.3, 0.55).translate(0.04, 0.5, -0.03), 0x52432e],
+        [new THREE.BoxGeometry(0.6, 0.05, 0.6).translate(0.04, 0.66, -0.03), 0x7d5e3a],
+        [new THREE.TorusGeometry(0.26, 0.08, 5, 10).rotateX(Math.PI / 2).translate(0.78, 0.08, 0.2), 0x8a7350],
+      ]);
+      // a sack pile — the sugar and flour of the trade
+      const sackGeo = mergeColored([
+        [lump(0.3).scale(1.3, 0.7, 1).translate(0, 0.16, 0), 0xb3a079],
+        [lump(0.28).scale(1.25, 0.7, 1).translate(0.48, 0.15, 0.32), 0xa6916b],
+        [lump(0.27).scale(1.2, 0.7, 1).translate(-0.44, 0.15, 0.28), 0xbfae87],
+        [lump(0.26).scale(1.2, 0.65, 0.95).translate(0.04, 0.42, 0.18), 0xae9c74],
+      ]);
+      // an anchor laid out on the wharf, awaiting fitting
+      const IRON = 0x474a50;
+      const anchorGeo = mergeColored([
+        [new THREE.CylinderGeometry(0.06, 0.08, 2.1, 5).rotateZ(Math.PI / 2).translate(0, 0.12, 0), IRON],
+        [new THREE.BoxGeometry(0.1, 0.1, 1.1).translate(0.8, 0.12, 0), IRON],          // the stock
+        [new THREE.TorusGeometry(0.16, 0.045, 5, 10).translate(1.15, 0.16, 0), IRON],  // the ring
+        [new THREE.CylinderGeometry(0.05, 0.07, 0.95, 5).rotateX(Math.PI / 2).rotateY(0.55).translate(-0.82, 0.12, 0.28), IRON],
+        [new THREE.CylinderGeometry(0.05, 0.07, 0.95, 5).rotateX(Math.PI / 2).rotateY(-0.55).translate(-0.82, 0.12, -0.28), IRON],
+        [new THREE.ConeGeometry(0.14, 0.4, 4).rotateX(Math.PI / 2).rotateY(0.55).translate(-1.05, 0.12, 0.62), IRON],
+        [new THREE.ConeGeometry(0.14, 0.4, 4).rotateX(-Math.PI / 2).rotateY(-0.55).translate(-1.05, 0.12, -0.62), IRON],
+      ]);
+      // a two-wheeled hand cart left between loads
+      const cartGeo = mergeColored([
+        [new THREE.BoxGeometry(1.1, 0.08, 1.6).translate(0, 0.6, 0), 0x8a6a42],
+        [new THREE.BoxGeometry(1.1, 0.26, 0.06).translate(0, 0.74, -0.78), 0x7a5a38],
+        [new THREE.BoxGeometry(1.1, 0.26, 0.06).translate(0, 0.74, 0.78), 0x7a5a38],
+        [new THREE.CylinderGeometry(0.05, 0.05, 1.34, 5).rotateZ(Math.PI / 2).translate(0, 0.45, 0.1), 0x5e442c],
+        [new THREE.CylinderGeometry(0.45, 0.45, 0.09, 8).rotateZ(Math.PI / 2).translate(-0.64, 0.45, 0.1), 0x5e442c],
+        [new THREE.CylinderGeometry(0.45, 0.45, 0.09, 8).rotateZ(Math.PI / 2).translate(0.64, 0.45, 0.1), 0x5e442c],
+        [new THREE.BoxGeometry(0.06, 0.06, 1.3).rotateX(-0.4).translate(-0.42, 0.36, -1.2), 0x8a6a42],
+        [new THREE.BoxGeometry(0.06, 0.06, 1.3).rotateX(-0.4).translate(0.42, 0.36, -1.2), 0x8a6a42],
+      ]);
+      // a clothes-line: two posts, the line sagging between, linen out to dry
+      const clothesParts = [
+        [new THREE.BoxGeometry(0.08, 2.0, 0.08).translate(-1.6, 1.0, 0), 0x6b4f30],
+        [new THREE.BoxGeometry(0.08, 2.0, 0.08).translate(1.6, 1.0, 0), 0x6b4f30],
+        [new THREE.BoxGeometry(1.16, 0.03, 0.03).rotateZ(-0.13).translate(-1.05, 1.86, 0), 0xcfc6b4],
+        [new THREE.BoxGeometry(1.1, 0.03, 0.03).translate(0, 1.79, 0), 0xcfc6b4],
+        [new THREE.BoxGeometry(1.16, 0.03, 0.03).rotateZ(0.13).translate(1.05, 1.86, 0), 0xcfc6b4],
+      ];
+      for (const [lx, lw, lc] of [[-0.85, 0.6, 0xe8e2d2], [0.05, 0.5, 0xc9d0d6], [0.9, 0.55, 0xddd2b8]]) {
+        clothesParts.push([new THREE.BoxGeometry(lw, 0.62, 0.03).translate(lx, 1.48, 0), lc]);
+      }
+      const clothesGeo = mergeColored(clothesParts);
+      // a market stall: trestle table, four poles, a striped canvas awning
+      // (strips baked as alternating colours), the goods heaped on the board
+      const trestleParts = () => [
+        [new THREE.BoxGeometry(2.2, 0.08, 1.0).translate(0, 0.78, 0), 0x8a6a42],
+        [new THREE.BoxGeometry(0.1, 0.74, 0.9).translate(-0.85, 0.37, 0), 0x5e442c],
+        [new THREE.BoxGeometry(0.1, 0.74, 0.9).translate(0.85, 0.37, 0), 0x5e442c],
+      ];
+      const stallAParts = trestleParts();
+      for (const [px2, pz2] of [[-1.15, -0.65], [1.15, -0.65], [-1.15, 0.65], [1.15, 0.65]]) {
+        stallAParts.push([new THREE.BoxGeometry(0.07, 2.3, 0.07).translate(px2, 1.15, pz2), 0x6b4f30]);
+      }
+      for (let si2 = 0; si2 < 6; si2++) {     // the striped awning, pitched a touch
+        stallAParts.push([new THREE.BoxGeometry(0.44, 0.04, 1.8).rotateX(0.14)
+          .translate(-1.1 + si2 * 0.44, 2.28, 0.08), si2 % 2 ? 0xe8e0cc : 0xa84a3a]);
+      }
+      stallAParts.push([lump(0.22).translate(-0.5, 0.95, 0.1), 0x7f9a4a]);
+      stallAParts.push([lump(0.18).translate(0.1, 0.92, -0.15), 0xc9842f]);
+      stallAParts.push([lump(0.2).translate(0.6, 0.94, 0.12), 0xb05030]);
+      const stallAGeo = mergeColored(stallAParts);
+      // a basket stall: the open trestle with the produce baskets on and by it
+      const stallBParts = trestleParts();
+      for (const [bx2, by2, bz2] of [[-0.55, 0.82, 0.05], [0.25, 0.82, -0.12], [0.95, 0, 0.62]]) {
+        stallBParts.push([new THREE.CylinderGeometry(0.26, 0.2, 0.24, 6).translate(bx2, by2 + 0.12, bz2), 0xb08a4e]);
+        stallBParts.push([lump(0.14).translate(bx2, by2 + 0.28, bz2), bz2 > 0.3 ? 0x7f9a4a : 0xc9842f]);
+      }
+      const stallBGeo = mergeColored(stallBParts);
+      // an open-sided weighing tripod, the pan slung beneath the apex
+      const tripodParts = [];
+      for (let li2 = 0; li2 < 3; li2++) {
+        tripodParts.push([new THREE.CylinderGeometry(0.05, 0.06, 2.5, 4).translate(0, 1.25, 0)
+          .rotateZ(0.34).translate(0.55, 0, 0).rotateY(li2 * 2.094), 0x6b4f30]);
+      }
+      tripodParts.push([new THREE.BoxGeometry(0.03, 0.7, 0.03).translate(0, 1.9, 0), 0x474a50]);
+      tripodParts.push([new THREE.CylinderGeometry(0.3, 0.34, 0.08, 7).translate(0, 1.5, 0), 0x474a50]);
+      tripodParts.push([lump(0.18).translate(0, 1.65, 0), 0xb3a079]);
+      const tripodGeo = mergeColored(tripodParts);
+      // a signpost: a post and one or two boards angled down different ways
+      const signpostGeo = mergeColored([
+        [new THREE.CylinderGeometry(0.07, 0.09, 2.6, 5).translate(0, 1.3, 0), 0x6b4f30],
+        [new THREE.BoxGeometry(1.0, 0.18, 0.05).translate(0.45, 0, 0).rotateY(0.4).translate(0, 2.3, 0), 0x9b8158],
+        [new THREE.BoxGeometry(0.85, 0.16, 0.05).translate(0.4, 0, 0).rotateY(-2.2).translate(0, 2.0, 0), 0x8a7350],
+      ]);
+      // a hitching post with its cross-rail
+      const hitchGeo = mergeColored([
+        [new THREE.CylinderGeometry(0.07, 0.09, 1.1, 5).translate(0, 0.55, 0), 0x5e442c],
+        [new THREE.CylinderGeometry(0.05, 0.05, 0.9, 4).rotateZ(Math.PI / 2).translate(0, 1.0, 0), 0x6b4f30],
+      ]);
+      // a stone horse-trough, the water dark within
+      const troughGeo = mergeColored([
+        [new THREE.BoxGeometry(1.7, 0.5, 0.75).translate(0, 0.25, 0), 0x99917f],
+        [new THREE.BoxGeometry(1.5, 0.06, 0.55).translate(0, 0.52, 0), 0x4e6664],
+      ]);
+      // a bee skep: coiled straw in a tapering stack, the entrance at its foot
+      const skepGeo = mergeColored([
+        [new THREE.CylinderGeometry(0.4, 0.44, 0.22, 7).translate(0, 0.11, 0), 0xc2a35e],
+        [new THREE.CylinderGeometry(0.34, 0.4, 0.2, 7).translate(0, 0.31, 0), 0xb6975a],
+        [new THREE.CylinderGeometry(0.25, 0.33, 0.18, 7).translate(0, 0.49, 0), 0xc2a35e],
+        [new THREE.CylinderGeometry(0.12, 0.24, 0.14, 7).translate(0, 0.63, 0), 0xb6975a],
+        [new THREE.BoxGeometry(0.12, 0.08, 0.06).translate(0, 0.08, 0.42), 0x4a3a26],
+      ]);
+      // a lean-to shed against the side wall: two posts, a mono-pitch roof
+      // sloping off the house, one boarded end, a barrel kept dry beneath
+      const leanToGeo = mergeColored([
+        [new THREE.BoxGeometry(0.12, 1.5, 0.12).translate(-1.0, 0.75, 0.95), 0x6b4f30],
+        [new THREE.BoxGeometry(0.12, 1.5, 0.12).translate(1.0, 0.75, 0.95), 0x6b4f30],
+        [new THREE.BoxGeometry(2.4, 0.07, 1.6).rotateX(0.42).translate(0, 1.75, 0.25), 0x8a7350],
+        [new THREE.BoxGeometry(0.1, 1.2, 1.4).translate(-1.05, 0.6, 0.2), 0x9b8158],
+        [new THREE.CylinderGeometry(0.32, 0.28, 0.6, 7).translate(0.3, 0.3, 0.2), 0x7a5a38],
+      ]);
+      // the privy hut out back: a plank box, tipped roof, a planked door
+      const privyGeo = mergeColored([
+        [new THREE.BoxGeometry(1.1, 2.0, 1.1).translate(0, 1.0, 0), 0x8a7350],
+        [new THREE.BoxGeometry(1.3, 0.08, 1.3).rotateX(0.18).translate(0, 2.08, 0), 0x5e442c],
+        [new THREE.BoxGeometry(0.5, 1.4, 0.06).translate(0, 0.7, 0.56), 0x5e442c],
+      ]);
+      // spare shingles stacked in slightly skewed courses, awaiting repairs
+      const shingleGeo = mergeColored([
+        [new THREE.BoxGeometry(0.9, 0.12, 0.6).translate(0, 0.06, 0), 0x8a7350],
+        [new THREE.BoxGeometry(0.85, 0.12, 0.55).rotateY(0.12).translate(0.02, 0.18, 0.02), 0x7a6448],
+        [new THREE.BoxGeometry(0.8, 0.12, 0.5).rotateY(-0.1).translate(-0.03, 0.3, 0), 0x8a7350],
+      ]);
+      // a wattle fence section gone to ruin: one post askew, the rail down
+      const fenceBrokenGeo = mergeColored([
+        [new THREE.BoxGeometry(0.08, 0.7, 0.08).translate(-0.9, 0.35, 0), 0x6b4f30],
+        [new THREE.BoxGeometry(0.08, 0.5, 0.08).rotateZ(0.5).translate(0.85, 0.22, 0), 0x6b4f30],
+        [new THREE.BoxGeometry(1.9, 0.06, 0.05).rotateZ(-0.16).translate(0, 0.5, 0), 0x7d5e3a],
+        [new THREE.BoxGeometry(1.1, 0.06, 0.05).rotateZ(0.9).translate(0.45, 0.2, 0.1), 0x8a7350],
+      ]);
+      // the abandoned yard's bramble: dark tangled clumps, dead canes through
+      const brambleGeo = mergeColored([
+        [lump(0.6).scale(1.4, 0.7, 1.2).translate(0, 0.3, 0), 0x4a5c34],
+        [lump(0.4).translate(0.6, 0.25, 0.3), 0x52643a],
+        [lump(0.35).translate(-0.55, 0.22, -0.2), 0x44542f],
+        [new THREE.CylinderGeometry(0.02, 0.03, 0.9, 4).rotateZ(0.7).translate(0.3, 0.6, 0), 0x5e4a30],
+        [new THREE.CylinderGeometry(0.02, 0.03, 0.8, 4).rotateZ(-0.5).rotateY(1.2).translate(-0.2, 0.55, 0.2), 0x5e4a30],
+      ]);
+      // the midden by the back door: pale heaps of oyster shell and bone
+      const middenGeo = mergeColored([
+        [lump(0.4).scale(1.3, 0.5, 1.1).translate(0, 0.14, 0), 0xd8cfb8],
+        [lump(0.22).translate(0.4, 0.1, 0.25), 0xc9bfa4],
+        [lump(0.16).translate(-0.35, 0.08, -0.2), 0xe2dac4],
+        [new THREE.BoxGeometry(0.3, 0.03, 0.18).rotateY(0.8).translate(0.6, 0.02, -0.3), 0xb8ad90],
+      ]);
+      // a barrel broken down: the sawn half-tub, sprung staves on the ground
+      const brokenBarrelGeo = mergeColored([
+        [new THREE.CylinderGeometry(0.48, 0.42, 0.45, 8).translate(0, 0.22, 0), 0x6b4a2e],
+        [new THREE.CylinderGeometry(0.4, 0.4, 0.04, 8).translate(0, 0.42, 0), 0x33281b],
+        [new THREE.BoxGeometry(0.85, 0.03, 0.12).rotateY(0.5).translate(0.55, 0.02, 0.35), 0x7a5636],
+        [new THREE.BoxGeometry(0.8, 0.03, 0.11).rotateY(-0.7).translate(-0.5, 0.02, 0.4), 0x5e402a],
+      ]);
+      // a sprung cartwheel, a spoke gone, left leaning against the wall
+      const wheelGeo = (() => {
+        const parts = [[new THREE.TorusGeometry(0.5, 0.05, 5, 12), 0x6b4a2e]];
+        for (let si3 = 0; si3 < 3; si3++) {   // three spokes where four should be
+          parts.push([new THREE.BoxGeometry(0.06, 0.92, 0.05).rotateZ(si3 * 1.05 + 0.3), 0x8a7350]);
+        }
+        parts.push([new THREE.CylinderGeometry(0.09, 0.09, 0.1, 6).rotateX(Math.PI / 2), 0x474a50]);
+        const g3 = mergeColored(parts);
+        g3.rotateX(-0.3);                     // leaning back against the wall
+        g3.translate(0, 0.52, 0);
+        return g3;
+      })();
+      // pottery shards swept into the alley, the pot's base on its side
+      const shardsGeo = mergeColored([
+        [new THREE.BoxGeometry(0.22, 0.03, 0.16).rotateY(0.7).translate(0.1, 0.02, 0), 0xa05838],
+        [new THREE.BoxGeometry(0.18, 0.03, 0.13).rotateY(-0.9).translate(-0.25, 0.02, 0.2), 0x8a4a30],
+        [new THREE.BoxGeometry(0.15, 0.03, 0.1).rotateY(1.8).translate(0.3, 0.02, 0.3), 0xb06a44],
+        [new THREE.BoxGeometry(0.2, 0.03, 0.14).rotateY(0.2).translate(-0.1, 0.02, -0.3), 0x96503a],
+        [new THREE.CylinderGeometry(0.12, 0.09, 0.16, 6).rotateZ(1.2).translate(0.05, 0.06, -0.15), 0xa05838],
+      ]);
+      // a mooring ring on its base plate, bolted at the pier head
+      const mooringGeo = mergeColored([
+        [new THREE.CylinderGeometry(0.16, 0.18, 0.08, 6).translate(0, 0.04, 0), IRON],
+        [new THREE.TorusGeometry(0.14, 0.035, 5, 10).rotateY(Math.PI / 2).rotateZ(0.5).translate(0, 0.16, 0), IRON],
+      ]);
+      // a firewood bundle dropped by the door: short logs in two courses
+      const doorWoodGeo = mergeColored([
+        [new THREE.CylinderGeometry(0.07, 0.07, 0.8, 5).rotateZ(Math.PI / 2).translate(0, 0.07, 0), 0x6b4a2e],
+        [new THREE.CylinderGeometry(0.07, 0.07, 0.8, 5).rotateZ(Math.PI / 2).translate(0, 0.07, 0.15), 0x7a5636],
+        [new THREE.CylinderGeometry(0.07, 0.07, 0.8, 5).rotateZ(Math.PI / 2).translate(0, 0.07, -0.14), 0x5e402a],
+        [new THREE.CylinderGeometry(0.07, 0.07, 0.78, 5).rotateZ(Math.PI / 2).translate(0.02, 0.2, 0.01), 0x6b4a2e],
+        [new THREE.CylinderGeometry(0.07, 0.07, 0.76, 5).rotateZ(Math.PI / 2).translate(-0.02, 0.2, -0.13), 0x7a5636],
+      ]);
+      // the iron boot-scraper beside the doorstep: two posts and a blade
+      const bootScrapeGeo = mergeColored([
+        [new THREE.BoxGeometry(0.05, 0.22, 0.05).translate(-0.14, 0.11, 0), IRON],
+        [new THREE.BoxGeometry(0.05, 0.22, 0.05).translate(0.14, 0.11, 0), IRON],
+        [new THREE.BoxGeometry(0.3, 0.04, 0.02).translate(0, 0.2, 0), IRON],
+      ]);
+      // a pair of shutters propped open beside a casement, painted green —
+      // hinged at the window jambs, swung out toward the street
+      const shutterGeo = mergeColored([
+        [new THREE.BoxGeometry(0.5, 1.1, 0.06).translate(0.25, 0, 0).rotateY(-0.7).translate(0.55, 0, 0.04), 0x5e6e54],
+        [new THREE.BoxGeometry(0.5, 1.1, 0.06).translate(-0.25, 0, 0).rotateY(0.7).translate(-0.55, 0, 0.04), 0x5e6e54],
+      ]);
+      // a small fruit tree for the walled yard: a short trunk, two leaf
+      // lobes, ripe fruit studded through the crown
+      const fruitTreeGeo = mergeColored([
+        [new THREE.CylinderGeometry(0.09, 0.13, 1.1, 5).translate(0, 0.55, 0), 0x6b4f30],
+        [lump(0.75).scale(1.1, 0.85, 1.05).translate(-0.15, 1.5, 0), 0x6f8a42],
+        [lump(0.55).scale(1, 0.8, 0.95).translate(0.45, 1.25, 0.15), 0x7f9a4a],
+        [lump(0.07).translate(0.2, 1.6, 0.45), 0xc9842f],
+        [lump(0.06).translate(-0.45, 1.35, 0.3), 0xb05030],
+        [lump(0.06).translate(0.55, 1.05, -0.25), 0xc9842f],
+      ]);
+      // a rope coil dropped over a bollard: two stacked rings of line
+      const ropeCoilGeo = mergeColored([
+        [new THREE.TorusGeometry(0.2, 0.06, 5, 10).rotateX(Math.PI / 2), 0x8a7350],
+        [new THREE.TorusGeometry(0.17, 0.05, 5, 10).rotateX(Math.PI / 2).translate(0.02, 0.09, 0), 0x9b8158],
+      ]);
+      // the careened hull on the beach: rolled onto her bilge, keel up to
+      // the weather, propped by three timber shores; the carpenter's
+      // sawhorse, its plank, and a spare board dropped on the sand
+      const careenParts = [
+        [lump(1).scale(2.7, 0.8, 1.0).translate(0, 0.8, 0).rotateX(1.05).translate(0, 0.45, 0), 0x7a5a38],
+        [new THREE.BoxGeometry(4.4, 0.14, 0.2).translate(0, 1.66, 0).rotateX(1.05).translate(0, 0.45, 0), 0x5e442c],
+      ];
+      for (const [sx3, st3] of [[-1.5, 0.45], [0.1, 0.55], [1.5, 0.45]]) {
+        careenParts.push([new THREE.CylinderGeometry(0.07, 0.09, 2.1, 5)
+          .translate(0, 1.05, 0).rotateX(-st3).translate(sx3, 0, 2.2), 0x6b4f30]);
+      }
+      careenParts.push([new THREE.BoxGeometry(0.12, 0.85, 0.6).rotateZ(0.08).translate(-2.6, 0.42, -2.0), 0x5e442c]);
+      careenParts.push([new THREE.BoxGeometry(0.12, 0.85, 0.6).rotateZ(-0.08).translate(-1.1, 0.42, -2.0), 0x5e442c]);
+      careenParts.push([new THREE.BoxGeometry(2.6, 0.08, 0.34).translate(-1.85, 0.88, -2.0), 0x9b8158]);
+      careenParts.push([new THREE.BoxGeometry(1.8, 0.05, 0.3).rotateY(0.4).translate(-2.4, 0.03, -0.9), 0x8a7350]);
+      const careenGeo = mergeColored(careenParts);
+      // hearth smoke: three still grey puffs rising in a slight S, their
+      // alpha thinning with height (RGBA vertex colours, no animation)
+      const smokeGeo = (() => {
+        const puffs = [[0, 0.4, 0, 0.5, 0.5], [0.32, 1.25, 0.12, 0.42, 0.34], [-0.18, 2.05, -0.1, 0.36, 0.18]];
+        const parts = puffs.map(([px2, py2, pz2, r2]) => lump(r2).translate(px2, py2, pz2));
+        let vn2 = 0;
+        for (const p of parts) vn2 += p.attributes.position.count;
+        const pos2 = new Float32Array(vn2 * 3), nor2 = new Float32Array(vn2 * 3), col2 = new Float32Array(vn2 * 4);
+        const idx2 = [];
+        let vo2 = 0;
+        parts.forEach((pg, pi) => {
+          const al = puffs[pi][4], p = pg.attributes.position, nm = pg.attributes.normal;
+          for (let i = 0; i < p.count; i++) {
+            pos2[(vo2 + i) * 3] = p.getX(i); pos2[(vo2 + i) * 3 + 1] = p.getY(i); pos2[(vo2 + i) * 3 + 2] = p.getZ(i);
+            nor2[(vo2 + i) * 3] = nm.getX(i); nor2[(vo2 + i) * 3 + 1] = nm.getY(i); nor2[(vo2 + i) * 3 + 2] = nm.getZ(i);
+            col2[(vo2 + i) * 4] = 0.62; col2[(vo2 + i) * 4 + 1] = 0.62;
+            col2[(vo2 + i) * 4 + 2] = 0.65; col2[(vo2 + i) * 4 + 3] = al;
+          }
+          if (pg.index) for (let i = 0; i < pg.index.count; i++) idx2.push(vo2 + pg.index.getX(i));
+          else for (let i = 0; i < p.count; i++) idx2.push(vo2 + i);
+          vo2 += p.count;
+        });
+        const g2 = new THREE.BufferGeometry();
+        g2.setAttribute('position', new THREE.BufferAttribute(pos2, 3));
+        g2.setAttribute('normal', new THREE.BufferAttribute(nor2, 3));
+        g2.setAttribute('color', new THREE.BufferAttribute(col2, 4));
+        g2.setIndex(idx2);
+        return g2;
+      })();
+      const smokeMat = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false });
+      for (const { h, end } of chimneys) {     // a quarter of the hearths are lit
+        const r2 = dhash(h.lngLat[0], h.lngLat[1], 81);
+        if (r2 > 0.27) continue;
+        const sc2 = 0.8 + r2 * 1.5;
+        smokeS.push({ harbor: h.harbor,
+          m: groundMatrix(h.lngLat, h.ang)
+            .multiply(new THREE.Matrix4().makeTranslation(end * (h.w / 2 - 0.7), h.hw + h.hr + 1.2, 0))
+            .multiply(new THREE.Matrix4().makeScale(sc2, sc2, sc2)) });
+      }
+      // a fishing net drying against the wall: a dark lattice, alpha-cut
+      const netMat = new THREE.MeshLambertMaterial({
+        map: canvasTex('net', 64, 64, (x) => {
+          x.clearRect(0, 0, 64, 64);
+          x.strokeStyle = 'rgba(40,34,24,0.95)';
+          x.lineWidth = 1.6;
+          for (let i = -64; i < 64; i += 8) {
+            x.beginPath(); x.moveTo(i, 0); x.lineTo(i + 64, 64); x.stroke();
+            x.beginPath(); x.moveTo(i + 64, 0); x.lineTo(i, 64); x.stroke();
+          }
+        }),
+        transparent: true, alphaTest: 0.25, side: THREE.DoubleSide,
+      });
+      const netGeo = new THREE.PlaneGeometry(2.3, 1.8).rotateX(-0.24).translate(0, 0.92, 0.2);
+      const clutterMat = new THREE.MeshLambertMaterial({ vertexColors: true });
+      for (const s of timberS) yardWoodS.push(s);   // wharf timber shares the woodpile draw
+      addInst(shrubGeo, clutterMat, yardShrubS, { lod: true });
+      addInst(gardenGeo, clutterMat, yardGardenS, { lod: true });
+      addInst(woodpileGeo, clutterMat, yardWoodS, { lod: true });
+      addInst(benchGeo, clutterMat, yardBenchS, { lod: true });
+      addInst(plankLeanGeo, clutterMat, yardPlankS, { lod: true });
+      addInst(scrapsGeo, clutterMat, yardScrapS, { lod: true });
+      addInst(yardBarrelGeo, woodMat, yardBarrelS, { lod: true });
+      addInst(flowerBoxGeo, clutterMat, yardFlowerS, { lod: true });
+      addInst(tavernGeo, clutterMat, tavernS, { lod: true });
+      addInst(rackGeo, clutterMat, fishRackS, { lod: true });
+      addInst(dinghyGeo, clutterMat, dinghyS, { lod: true });
+      addInst(skiffGeo, clutterMat, skiffS, { lod: true });
+      addInst(headGearGeo, clutterMat, headGearS, { lod: true });
+      addInst(sackGeo, clutterMat, sackS, { lod: true });
+      addInst(anchorGeo, clutterMat, anchorS, { lod: true });
+      addInst(cartGeo, clutterMat, cartS, { lod: true });
+      addInst(clothesGeo, clutterMat, clothesS, { lod: true });
+      addInst(netGeo, netMat, netS, { lod: true });
+      addInst(shrubGeo2, clutterMat, yardShrub2S, { lod: true });
+      addInst(flowerBoxGeo2, clutterMat, yardFlower2S, { lod: true });
+      addInst(stallAGeo, clutterMat, stallAS, { lod: true });
+      addInst(stallBGeo, clutterMat, stallBS, { lod: true });
+      addInst(tripodGeo, clutterMat, tripodS, { lod: true });
+      addInst(signpostGeo, clutterMat, signpostS, { lod: true });
+      addInst(hitchGeo, clutterMat, hitchS, { lod: true });
+      addInst(troughGeo, clutterMat, troughS, { lod: true });
+      addInst(skepGeo, clutterMat, skepS, { lod: true });
+      addInst(leanToGeo, clutterMat, leanToS, { lod: true });
+      addInst(privyGeo, clutterMat, privyS, { lod: true });
+      addInst(shingleGeo, clutterMat, shingleS, { lod: true });
+      addInst(wallGeo, stoneMat, boundaryS, { lod: true });
+      addInst(fenceBrokenGeo, clutterMat, fenceBrokenS, { lod: true });
+      addInst(brambleGeo, clutterMat, brambleS, { lod: true });
+      addInst(middenGeo, clutterMat, middenS, { lod: true });
+      addInst(brokenBarrelGeo, clutterMat, brokenBarrelS, { lod: true });
+      addInst(wheelGeo, clutterMat, wheelS, { lod: true });
+      addInst(shardsGeo, clutterMat, shardS, { lod: true });
+      addInst(mooringGeo, clutterMat, mooringS, { lod: true });
+      addInst(doorWoodGeo, clutterMat, doorWoodS, { lod: true });
+      addInst(bootScrapeGeo, clutterMat, bootScrapeS, { lod: true });
+      addInst(shutterGeo, clutterMat, shutterS, { lod: true });
+      addInst(fruitTreeGeo, clutterMat, fruitTreeS, { lod: true });
+      addInst(ropeCoilGeo, clutterMat, ropeCoilS, { lod: true });
+      addInst(new THREE.BoxGeometry(0.95, 0.6, 0.12), woodMat, fenderS, { lod: true });
+      addInst(careenGeo, clutterMat, careenS, { lod: true });
+      addInst(smokeGeo, smokeMat, smokeS, { lod: true });
+      stats.clutter = yardShrubS.length + yardGardenS.length + yardWoodS.length + yardBenchS.length
+        + yardPlankS.length + yardScrapS.length + yardBarrelS.length
+        + yardFlowerS.length + tavernS.length + fishRackS.length + dinghyS.length
+        + sackS.length + anchorS.length + cartS.length + skiffS.length
+        + headGearS.length + clothesS.length + netS.length
+        + yardShrub2S.length + yardFlower2S.length + hitchS.length + skepS.length
+        + signpostS.length + troughS.length;
+      stats.stalls = stallAS.length + stallBS.length + tripodS.length;
+      stats.smoke = smokeS.length;
+      stats.filler = leanToS.length + privyS.length + shingleS.length + boundaryS.length;
+      stats.debris = middenS.length + brokenBarrelS.length + wheelS.length
+        + shardS.length + brambleS.length + fenceBrokenS.length;
+      stats.moorings = mooringS.length;
+      stats.streetLife = doorWoodS.length + bootScrapeS.length + shutterS.length;
+      stats.fruitTrees = fruitTreeS.length;
+      stats.careened = careenS.length;
+      stats.wharfPolish = ropeCoilS.length + fenderS.length;
 
       /* ===== the forts: battered masonry, merlons, garitas, guns ===== */
 

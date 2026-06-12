@@ -12,7 +12,8 @@
    build(frame, opts) → { group, spawn(), update(dt, t, input, camera), dispose() }
      frame = { project, heightAt, centroid, radius }   (from harbordiorama)
      opts  = { seaLevel, sunDir, spawnXZ }
-     input = { camYaw, camPitch, rowing }               (from the host each frame) */
+     input = { camYaw, camPitch, rowing, reverse, cruise } (from the host each frame;
+               cruise = stepped target speed in m/s, 0..8.94 ≈ 20 mph)            */
 'use strict';
 
 window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
@@ -26,6 +27,13 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
       kz: Math.sin(dir * Math.PI / 180) * 2 * Math.PI / lam,
       om, w,
     }));
+
+  // Dominant swell train: with phase = k·x + ωt the waves travel along −k̂.
+  // A floating gull weathervanes bow-on INTO the swell (facing +k̂) and drifts
+  // slowly down-wave; the heading the bow convention (−sinθ,−cosθ) needs:
+  const _k0 = Math.hypot(TRAINS[0].kx, TRAINS[0].kz);
+  const SWELL_DX = -TRAINS[0].kx / _k0, SWELL_DZ = -TRAINS[0].kz / _k0; // wave travel dir
+  const SWELL_HDG = Math.atan2(SWELL_DX, SWELL_DZ);  // bow = −travel = into the swell
 
   // height + (un-normalised) surface tilt at a world point, in phase with uTime=t.
   // (build() prefers opts.waterAt — the terrain's own — so there is one source.)
@@ -481,6 +489,14 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
     let theta = 0;                             // heading (matches the look yaw convention)
     let v = 0;                                 // forward speed (m/s, ≥ 0)
     let strokePh = 0;                          // paddle stroke phase
+    let prevDip = 0;                           // last frame's blade-dip, for exit drips
+    // audio hook timers (window.cartaHarborAudio is optional — every call is
+    // guarded, so a missing/partial audio module never throws)
+    let lapTimer = 0, creakTimer = 0;
+    // anchored-ship positions [{x,z}] for the rigging-creak hook; the host does
+    // not pass these yet (built.shipDots stays internal to harbordiorama.js) —
+    // wire `ships: built.shipDots` into enterTour()'s build opts to enable it
+    const ships = opts.ships || null;
     // Gunwale (local y=0) rides this far above the waterline. Big enough that the
     // sealed floorboard (FLOOR_Y) stays above the sea sheet through the whole
     // swell, so no water ever shows inside; the outer hull still dips under, so
@@ -489,6 +505,7 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
 
     // tuning
     const THRUST = 2.6, VREF = 3.2, DRAG_LIN = 0.55, DRAG_QUAD = 0.16;
+    const VMAX = 8.94;                         // hard cap: 20 mph, the stepped cruise's ceiling
     const EYE = new THREE.Vector3(0, 0.5, 1.3);   // seat/eye offset, local (aft of centre)
 
     // ----- close-range water: the high-detail patch riding with the boat -----
@@ -517,6 +534,66 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
       w.x = x; w.z = z; w.life = max; w.max = max; w.grow = scale;
       w.mesh.scale.set(scale, scale, scale);
       w.mesh.visible = true;
+    }
+
+    // ----- ambient: airborne spray droplets (paddle catch + bow against swell) -----
+    // one pooled THREE.Points; ballistic arcs integrated with dt, no per-frame allocs.
+    const SPRAY_N = 60;
+    const sprayPos = new Float32Array(SPRAY_N * 3);
+    for (let i = 0; i < SPRAY_N; i++) sprayPos[i * 3 + 1] = -9999;   // park dead drops far below
+    const sprayGeo = new THREE.BufferGeometry();
+    sprayGeo.setAttribute('position', new THREE.BufferAttribute(sprayPos, 3));
+    const sprayMat = new THREE.PointsMaterial({
+      color: 0xeef6f6, size: 0.09, sizeAttenuation: true,
+      transparent: true, opacity: 0.85, depthWrite: false,
+    });
+    const sprayPts = new THREE.Points(sprayGeo, sprayMat);
+    sprayPts.frustumCulled = false;
+    sprayPts.renderOrder = 3;
+    world.add(sprayPts);
+    const spray = [];
+    for (let i = 0; i < SPRAY_N; i++) spray.push({ x: 0, y: -9999, z: 0, vx: 0, vy: 0, vz: 0, life: 0 });
+    let sprayPtr = 0;
+    function emitSpray(x, y, z, n, power, dirx, dirz) {
+      for (let k = 0; k < n; k++) {
+        const p = spray[sprayPtr]; sprayPtr = (sprayPtr + 1) % SPRAY_N;
+        p.x = x; p.y = y; p.z = z;
+        const sp = power * (0.6 + Math.random() * 0.8);
+        p.vx = dirx * sp * 0.6 + (Math.random() - 0.5) * power;
+        p.vz = dirz * sp * 0.6 + (Math.random() - 0.5) * power;
+        p.vy = sp * (0.9 + Math.random() * 0.7);
+        p.life = 0.45 + Math.random() * 0.35;
+      }
+    }
+
+    // ----- ambient: faint mist puffs where the bow slaps into a swell -----
+    // a tiny pooled set of soft sprites; they rise, swell and fade
+    const MIST_N = 5;
+    const mistTex = (() => {
+      const c = document.createElement('canvas');
+      c.width = 32; c.height = 32;
+      const x = c.getContext('2d');
+      const gr = x.createRadialGradient(16, 16, 2, 16, 16, 16);
+      gr.addColorStop(0, 'rgba(255,255,255,0.85)');
+      gr.addColorStop(1, 'rgba(255,255,255,0)');
+      x.fillStyle = gr; x.fillRect(0, 0, 32, 32);
+      return new THREE.CanvasTexture(c);
+    })();
+    const mist = [];
+    for (let i = 0; i < MIST_N; i++) {
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: mistTex, color: 0xeef6f6, transparent: true, opacity: 0, depthWrite: false,
+      }));
+      sp.visible = false;
+      sp.renderOrder = 3;
+      world.add(sp);
+      mist.push({ sp, life: 0, max: 0.8, x: 0, y: 0, z: 0 });
+    }
+    let mistPtr = 0, mistTimer = 0;    // timer keeps the small pool from churning
+    function spawnMist(x, y, z) {
+      const m = mist[mistPtr]; mistPtr = (mistPtr + 1) % MIST_N;
+      m.x = x; m.y = y; m.z = z; m.life = m.max;
+      m.sp.visible = true;
     }
 
     // ----- ambient: fish darting just under the surface -----
@@ -549,13 +626,43 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
     const gulls = [];
     const gullSrc = window.cartaHarborBirds ? window.cartaHarborBirds(THREE) : null;
     for (let i = 0; i < 4; i++) {
-      const gl = (gullSrc && gullSrc.heroGull) ? gullSrc.heroGull()
-        : (gullSrc && gullSrc.gull) ? gullSrc.gull() : buildGull();
-      gl.scale.setScalar(0.5);                 // ~1.5 m span up close
+      const juv = i === 3;                     // one brown first-winter bird
+      const gl = (gullSrc && gullSrc.heroGull) ? gullSrc.heroGull(juv)
+        : (gullSrc && gullSrc.gull) ? gullSrc.gull(juv) : buildGull();
+      gl.scale.setScalar(juv ? 0.46 : 0.5);    // ~1.5 m span up close
       gl.userData._wR = gl.userData.wingR || gl.userData.wR;
       gl.userData._wL = gl.userData.wingL || gl.userData.wL;
       world.add(gl);
-      gulls.push({ mesh: gl, a: i * 1.7, pr: 6 + i * 2.5, alt: 1.8 + i * 1.1, spd: 0.3 * (i % 2 ? -1 : 1), flapF: 3.4 + i * 0.4 });
+      gulls.push({
+        mesh: gl, a: i * 1.7,
+        pr: 12 + i * 6,                    // wild-bird standoff: 12–30 m orbits
+        alt: 3 + i * 2.3,                  // 3–10 m up
+        spd: (0.34 - i * 0.05) * (i === 3 ? -1 : 1),
+        flapF: 2.8 + i * 0.35,             // ~3 Hz
+        fph: i * 2.1,                      // accumulated flap phase (irregular beat)
+        skim: i % 2 === 0,                 // half make low water-skimming fly-bys
+        lander: i === 1 || i === 3,        // these settle on the water now and then
+        hover: i === 2,                    // this one hangs into the wind
+        follow: i === 1 ? 0 : -1,          // gull 1 loosely trails gull 0
+        passer: i === 0,                   // only this one makes the rare close fly-by
+        passT: 0, passK: 0, passTimer: 24, // one close pass every ~20–40 s
+        mode: 0,                           // 0 fly | 1 descend | 2 float | 3 takeoff
+        mTimer: 14 + i * 9,                // seconds until the next landing
+        lx: 0, lz: 0,                      // landing / float spot (world)
+        hdg: 0,                            // heading while on the water
+        fold: 0,                           // 0 spread .. 1 folded (eased)
+        blend: 0,                          // ease from takeoff exit back onto the orbit
+        hoverK: 0,                         // 0 orbit .. 1 hovering into the wind
+        soar: 0,                           // eased 0..1 shoreline-updraft soaring
+        lift: 0,                           // metres gained riding the slope lift
+        flare: 0,                          // eased 0..1 landing flare (final approach)
+        preen: 0,                          // eased 0..1 preen bout while afloat
+        stepN: -1,                         // last surface-patter step index (takeoff)
+        nearOn: false,                     // close-pass audio latch (hysteresis)
+        escortT: 0, escortK: 0,            // boat-pacing escort run (timer + ease)
+        escortTimer: 18 + i * 7,           // rare: re-checked every ~15–30 s
+        escortSide: 1,                     // which beam the escort holds
+      });
     }
 
     // ----- helpers -----
@@ -605,16 +712,20 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
       const applied = dTheta * Math.min(1, turnRate * dt);
       theta += applied;
 
-      // --- speed: rowing/W thrust, S/D reverse, button cruise, else water drag ---
+      // --- speed: rowing/W thrust, S/D reverse, stepped cruise, else water drag ---
+      // The stepped cruise (0..VMAX m/s) is a target the paddling works toward;
+      // mouse/W rowing still adds its surge on top, and drag settles any excess
+      // back to the step. At step 0 the old manual behaviour is untouched.
       const fwd = input.rowing, rev = input.reverse;
+      const cruise = input.cruise || 0;
       if (fwd) v += THRUST * dt;
       else if (rev) v -= THRUST * 0.55 * dt;
-      if (!fwd && !rev && input.cruise > 0) {
-        v += (input.cruise - v) * Math.min(1, dt * 3.0);            // ease toward the set cruise
+      if (!rev && cruise > 0 && v < cruise) {
+        v += (cruise - v) * Math.min(1, dt * 3.0);                  // stroke toward the set step
       } else {
         v -= (DRAG_LIN * v + DRAG_QUAD * v * Math.abs(v)) * dt;     // coast (handles reverse too)
       }
-      if (v > 3.0) v = 3.0; if (v < -1.1) v = -1.1;
+      if (v > VMAX) v = VMAX; if (v < -1.1) v = -1.1;
 
       // --- propose a move along the heading; stay on water ---
       const fx = -Math.sin(theta), fz = -Math.cos(theta);   // forward unit (bow toward −Z at θ=0)
@@ -642,21 +753,71 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
       grass.reseed(px, pz);          // re-scatter the shore tufts as we move
 
       // --- paddle stroke animation ---
+      // The paddler also keeps stroking while a cruise step is set, so the boat
+      // still reads as paddled — cadence rises with the step (and with effort).
       const paddle = rig.userData.paddle;
-      if (input.rowing) {
-        strokePh += dt * 3.4;
+      if (input.rowing || (cruise > 0 && v > 0.05)) {
+        // apparent paddle force: digging hard from a standstill, easing to a
+        // lazy maintenance stroke at speed — cadence and spray follow it
+        const effort = Math.max(0, 1 - v / VMAX);    // 1 at rest → 0 at hull speed
+        strokePh += dt * (2.3 + 1.3 * effort + cruise * 0.22);
         const s = strokePh;
-        paddle.position.set(0.55, 0.05 - 0.12 * Math.max(0, Math.sin(s)), 0.45 - 0.5 * Math.cos(s));
-        paddle.rotation.set(-0.5 * Math.sin(s), 0.25 * Math.cos(s), 0.2, 'XYZ');
-        // catch splash → a quick wake fleck at the blade
-        if (Math.sin(s) > 0.95) {
+        const dip = Math.sin(s);                 // >0 ≈ blade in the water
+        paddle.position.set(0.55, 0.05 - 0.12 * Math.max(0, dip), 0.45 - 0.5 * Math.cos(s));
+        paddle.rotation.set(-0.5 * dip, 0.25 * Math.cos(s), 0.2, 'XYZ');
+        // catch splash → a quick wake fleck plus a burst of airborne droplets
+        if (dip > 0.95) {
           const bx = px + fx * 0.4 - Math.sin(theta + 1.4) * 0.9;
           const bz = pz + fz * 0.4 - Math.cos(theta + 1.4) * 0.9;
-          spawnWake(bx, bz, 0.4, 0.7);
+          spawnWake(bx, bz, 0.25 + 0.2 * effort, 0.7);
+          const sw = waterAt(bx, bz, t);
+          emitSpray(bx, sw.y + 0.05, bz, (2 + 4 * effort) | 0, 0.6 + 0.9 * effort,
+                    -Math.sin(theta + 1.4), -Math.cos(theta + 1.4));
+          // audio: one splash at the instant of the catch (not every frame of it)
+          if (prevDip <= 0.95) {
+            window.cartaHarborAudio && cartaHarborAudio.splash
+              && cartaHarborAudio.splash(Math.min(1, Math.max(0, effort)));
+          }
         }
+        // exit drips: as the blade lifts clear, a weak trail of droplets falls
+        // off it (low power, lobbed slightly forward with the recovery)
+        if (prevDip > 0.12 && dip <= 0.12) {
+          const bx = px + fx * 0.4 - Math.sin(theta + 1.4) * 0.95;
+          const bz = pz + fz * 0.4 - Math.cos(theta + 1.4) * 0.95;
+          const sw = waterAt(bx, bz, t);
+          emitSpray(bx, sw.y + 0.3, bz, (1 + 3 * effort) | 0, 0.25 + 0.3 * effort, fx * 0.4, fz * 0.4);
+        }
+        prevDip = dip;
       } else {
         paddle.position.lerp(_seat.set(0, 0.02, 0.45), Math.min(1, dt * 4));
         paddle.rotation.set(0, 0, 0.05, 'XYZ');
+        prevDip = 0;
+      }
+
+      // --- audio: water lapping the hull, once a second-ish, scaled by way on ---
+      lapTimer -= dt;
+      if (lapTimer <= 0) {
+        lapTimer = 1.1;
+        window.cartaHarborAudio && cartaHarborAudio.lap
+          && cartaHarborAudio.lap(Math.min(1, Math.abs(v) / 3.0));
+      }
+      // --- audio: rigging creak drifting over from an anchored ship (only if
+      //     the host passed ship positions; see `ships` above) ---
+      if (ships && ships.length) {
+        creakTimer -= dt;
+        if (creakTimer <= 0) {
+          creakTimer = 1.3;
+          let best2 = 1e12;
+          for (let i = 0; i < ships.length; i++) {
+            const ddx = ships[i].x - px, ddz = ships[i].z - pz;
+            const dd = ddx * ddx + ddz * ddz;
+            if (dd < best2) best2 = dd;
+          }
+          if (best2 < 3600) {                        // within 60 m of the nearest hull
+            window.cartaHarborAudio && cartaHarborAudio.creak
+              && cartaHarborAudio.creak(Math.sqrt(best2));
+          }
+        }
       }
 
       // --- seat the camera: position from the rig, orientation from the look ---
@@ -674,7 +835,20 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
         wakeTimer = 0.07;
         const sxw = px - fx * (LEN / 2), szw = pz - fz * (LEN / 2);
         spawnWake(sxw + (Math.random() - 0.5) * 0.6, szw + (Math.random() - 0.5) * 0.6, 0.5 + v * 0.15, 1.1);
+        // a little foam fleck on the centreline of the run for a frothier wake
+        spawnWake(sxw + fx * 0.7, szw + fz * 0.7, 0.3 + v * 0.08, 0.8);
         if (input.rowing) spawnWake(px + fx * (LEN / 2), pz + fz * (LEN / 2), 0.3, 0.5); // bow moustache
+        // bow spray: only when driving against a rising swell at the bow
+        const bx = px + fx * (LEN / 2), bz = pz + fz * (LEN / 2);
+        const bw = waterAt(bx, bz, t);
+        const into = bw.nx * fx + bw.nz * fz;        // swell face tilting toward the bow
+        if (v > 1.3 && into > 0.05) {
+          emitSpray(bx, bw.y + 0.06, bz, 3, 0.7 + (v - 1.3) * 0.5 + into * 1.2, fx, fz);
+          if (mistTimer <= 0) {                        // the faint blown-back haze
+            spawnMist(bx + fx * 0.4, bw.y + 0.35, bz + fz * 0.4);
+            mistTimer = 0.28;
+          }
+        }
       }
       for (const wk of wake) {
         if (wk.life <= 0) { if (wk.mesh.visible) wk.mesh.visible = false; continue; }
@@ -685,6 +859,31 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
         const sc = wk.grow * (1 + (1 - k) * 2.2);
         wk.mesh.scale.set(sc, sc, sc);
         wk.mesh.material.opacity = 0.5 * k;
+      }
+
+      // --- spray droplets: ballistic arcs, parked far below once spent ---
+      for (let i = 0; i < SPRAY_N; i++) {
+        const p = spray[i];
+        if (p.life <= 0) { sprayPos[i * 3 + 1] = -9999; continue; }
+        p.life -= dt;
+        p.vy -= 9.8 * dt;                 // gravity
+        p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
+        if (p.y < waterAt(p.x, p.z, t).y) { p.life = 0; sprayPos[i * 3 + 1] = -9999; continue; }
+        sprayPos[i * 3] = p.x; sprayPos[i * 3 + 1] = p.y; sprayPos[i * 3 + 2] = p.z;
+      }
+      sprayGeo.attributes.position.needsUpdate = true;   // 180 floats/frame, negligible
+
+      // --- mist puffs: rise, swell and fade ---
+      mistTimer -= dt;
+      for (const m of mist) {
+        if (m.life <= 0) { if (m.sp.visible) m.sp.visible = false; continue; }
+        m.life -= dt;
+        const k = m.life / m.max;
+        m.y += 0.35 * dt;
+        m.sp.position.set(m.x, m.y, m.z);
+        const sc = 0.7 + (1 - k) * 1.1;
+        m.sp.scale.set(sc, sc * 0.7, 1);
+        m.sp.material.opacity = 0.22 * k;
       }
 
       // --- fish: lazy circles near the boat, occasional jump ---
@@ -706,25 +905,277 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
         fl.mesh.rotation.x = fl.baseX + fw.nz * 0.6;
       }
 
-      // --- low gulls wheeling near the boat ---
+      // --- low gulls near the boat: wheeling passes, water-skims, an
+      //     occasional hover into the wind, and — the landers — settling onto
+      //     the swell beside the canoe, floating a while, then taking off ---
       for (const g of gulls) {
-        g.a += g.spd * dt;
-        const gx = px + Math.cos(g.a) * g.pr, gz = pz + Math.sin(g.a) * g.pr;
-        const gy = waterAt(gx, gz, t).y + g.alt + Math.sin(g.a * 2) * 0.4;
-        g.mesh.position.set(gx, gy, gz);
-        // lookAt points +Z at the target and the nose is −Z: look at the
-        // mirror of the next circle point so the beak leads
-        const tx = px + Math.cos(g.a + 0.1 * Math.sign(g.spd)) * g.pr;
-        const tz = pz + Math.sin(g.a + 0.1 * Math.sign(g.spd)) * g.pr;
-        g.mesh.lookAt(2 * gx - tx, gy, 2 * gz - tz);
-        const flap = Math.sin(t * g.flapF) * 0.6;
-        g.mesh.userData._wR.rotation.z = -flap;
-        g.mesh.userData._wL.rotation.z = flap;
-        // the hero wings have an outer joint that follows with a lag — a real
-        // gull's wrist-flick, not a paper hinge
-        const lag = Math.sin(t * g.flapF - 0.7) * 0.5;
-        if (g.mesh.userData._wR.userData.outer) g.mesh.userData._wR.userData.outer.rotation.z = -lag;
-        if (g.mesh.userData._wL.userData.outer) g.mesh.userData._wL.userData.outer.rotation.z = lag;
+        const mesh = g.mesh;
+        const wR = mesh.userData._wR, wL = mesh.userData._wL;
+        const oR = wR.userData.outer, oL = wL.userData.outer;
+        const tail = mesh.userData.tail, head = mesh.userData.head;
+        let flapAmp = 0, glide = 0, flapMul = 1, doFlap = true;
+
+        if (g.mode === 2) {
+          // FLOAT: sit on the swell, wings folded, weathervaning and drifting
+          g.fold = Math.min(1, g.fold + dt * 2.2);
+          // weathervane bow-on INTO the dominant swell (with a small hunt
+          // either side) and drift slowly down-wave — not a heading on rails
+          let dh = SWELL_HDG - g.hdg;
+          while (dh > Math.PI) dh -= 2 * Math.PI;
+          while (dh < -Math.PI) dh += 2 * Math.PI;
+          g.hdg += dh * Math.min(1, dt * 0.5) + Math.sin(t * 0.34 + g.a) * 0.1 * dt;
+          g.lx += (SWELL_DX * 0.07 + Math.sin(t * 0.2 + g.a) * 0.03) * dt;
+          g.lz += (SWELL_DZ * 0.07 + Math.cos(t * 0.26 + g.a) * 0.03) * dt;
+          const fw = waterAt(g.lx, g.lz, t);
+          const ffx = -Math.sin(g.hdg), ffz = -Math.cos(g.hdg);
+          mesh.position.set(g.lx, fw.y + 0.1, g.lz);
+          mesh.rotation.set((fw.nx * ffx + fw.nz * ffz) * 0.6, g.hdg,
+                            (fw.nx * -ffz + fw.nz * ffx) * 0.6, 'YXZ');
+          doFlap = false;
+          if (tail) { tail.rotation.x = 0.04; tail.rotation.z = 0; }
+          // occasional preen bout: the head sweeps back and down toward a
+          // wing, nuzzles a moment, then comes back up (slow eased gate)
+          const pg = Math.sin(t * 0.21 + g.a * 4.1) > 0.8 ? 1 : 0;
+          g.preen += (pg - g.preen) * Math.min(1, dt * 2.5);
+          if (head) {
+            const side = Math.sin(g.a * 9.7) > 0 ? 1 : -1;
+            head.rotation.y = side * 1.05 * g.preen;
+            head.rotation.x = 0.06 * Math.sin(t * 1.7 + g.a)
+                            + (0.42 + 0.08 * Math.sin(t * 5.0)) * g.preen;
+            head.rotation.z = 0;
+          }
+          g.mTimer -= dt;
+          // flush early if the canoe bears down within ~8 m (never run one over)
+          const dcx = g.lx - px, dcz = g.lz - pz;
+          const flushed = dcx * dcx + dcz * dcz < 64;
+          if (g.mTimer <= 0 || flushed) {            // up and away
+            if (flushed) g.hdg = Math.atan2(-dcx, -dcz);   // climb out AWAY from the boat
+            g.mode = 3; g.mTimer = 0; g.stepN = -1; g.preen = 0;
+            spawnWake(g.lx, g.lz, 0.45, 0.8);
+            emitSpray(g.lx, fw.y + 0.06, g.lz, 4, 0.9, -Math.sin(g.hdg), -Math.cos(g.hdg));
+            // audio: wings off the water right beside the canoe
+            window.cartaHarborAudio && cartaHarborAudio.gullNear && cartaHarborAudio.gullNear();
+          }
+        } else if (g.mode === 3) {
+          // TAKEOFF: flap hard, run along the surface pattering, climb out
+          g.mTimer += dt;
+          g.fold = Math.max(0, g.fold - dt * 3);
+          const k = g.mTimer;
+          const ffx = -Math.sin(g.hdg), ffz = -Math.cos(g.hdg);
+          mesh.position.x += ffx * (1.6 + k * 2.4) * dt;
+          mesh.position.z += ffz * (1.6 + k * 2.4) * dt;
+          mesh.position.y += (0.35 + k * 1.5) * dt;
+          mesh.rotation.set(0.25 * Math.min(1, k * 2), g.hdg, 0, 'YXZ');  // nose up
+          const wyT = waterAt(mesh.position.x, mesh.position.z, t).y;
+          if (mesh.position.y - wyT < 0.45) {
+            // 2-3 discrete surface-patter STEPS on a fixed cadence — each one
+            // a synced spray fleck + wake ring as a foot slaps the water
+            const stepN = (k * 4.2) | 0;
+            if (stepN !== g.stepN && stepN >= 1 && stepN <= 3) {
+              g.stepN = stepN;
+              emitSpray(mesh.position.x, wyT + 0.05, mesh.position.z, 2, 0.6, ffx, ffz);
+              spawnWake(mesh.position.x, mesh.position.z, 0.28, 0.45);
+            }
+          }
+          flapAmp = 0.95; flapMul = 1.35;
+          if (mesh.position.y - wyT > g.alt + 0.5 || k > 3.2) {
+            g.mode = 0; g.mTimer = 26 + (0.5 + 0.5 * Math.sin(g.a * 5.1)) * 18; g.blend = 1;
+            g.a = Math.atan2(mesh.position.z - pz, mesh.position.x - px);
+          }
+        } else if (g.mode === 1) {
+          // DESCEND: set-winged glide down onto the chosen patch of water —
+          // unless the canoe has closed on the spot, in which case wave off
+          const dlx = g.lx - px, dlz = g.lz - pz;
+          if (dlx * dlx + dlz * dlz < 81) {
+            g.mode = 0; g.blend = 1; g.mTimer = 18;
+            g.a = Math.atan2(mesh.position.z - pz, mesh.position.x - px);
+            flapAmp = 0.6;
+          } else {
+          const twy = waterAt(g.lx, g.lz, t).y + 0.1;
+          const ddx = g.lx - mesh.position.x, ddy = twy - mesh.position.y,
+                ddz = g.lz - mesh.position.z;
+          const d = Math.hypot(ddx, ddy, ddz);
+          const step = Math.min(1, (2.6 * dt) / Math.max(0.001, d));
+          mesh.position.x += ddx * step;
+          mesh.position.y += ddy * step;
+          mesh.position.z += ddz * step;
+          // beak is −Z, so look at the mirror of the travel direction
+          mesh.lookAt(mesh.position.x - ddx, mesh.position.y - ddy * 0.4, mesh.position.z - ddz);
+          // landing flare: inside ~3 m the bird rocks nose-up, brakes with
+          // deep strokes, fans the tail harder and drops its feet to the water
+          g.flare += ((d < 3 ? 1 : 0) - g.flare) * Math.min(1, dt * 3.0);
+          mesh.rotateX(0.45 * g.flare);              // nose-up rock (beak is −Z)
+          flapAmp = 0.1 + 0.55 * g.flare;
+          glide = 1 - 0.65 * g.flare;
+          if (tail) { tail.rotation.x = 0.35 + 0.25 * g.flare; tail.rotation.z = 0; }
+          if (d < 0.18) {                            // touchdown splash
+            g.mode = 2; g.mTimer = 6 + (0.5 + 0.5 * Math.sin(g.a * 3.3)) * 5;
+            g.hdg = Math.atan2(-ddx, -ddz);          // carry the approach heading
+            spawnWake(g.lx, g.lz, 0.55, 0.9);
+            emitSpray(g.lx, twy, g.lz, 5, 0.8, 0, 0);
+          }
+          }
+        } else {
+          // FLY: the wheeling pass (with the hover bird hanging into the wind,
+          // high and off to the side — never parked over the bow)
+          if (g.hover) {
+            const ahead = fx * Math.cos(g.a) + fz * Math.sin(g.a);
+            const gate = (Math.sin(t * 0.05 + 2.1) > 0.86 && ahead < 0.6) ? 1 : 0;
+            g.hoverK += (gate - g.hoverK) * Math.min(1, dt * 1.2);
+          }
+          const hk = g.hoverK;
+          // the rare close fly-by: every ~20–40 s the passer swings in for one
+          // skim run, never nearer than ~7 m, then eases back out to standoff
+          if (g.passer) {
+            if (g.passT > 0) { g.passT -= dt; g.passK = Math.min(1, g.passK + dt * 1.2); }
+            else {
+              g.passK = Math.max(0, g.passK - dt * 0.8);
+              g.passTimer -= dt;
+              if (g.passTimer <= 0) {
+                if (g.escortK <= 0 && g.escortT <= 0) g.passT = 4.5;  // never mid-escort
+                g.passTimer = 20 + 20 * (0.5 + 0.5 * Math.sin(g.a * 7.3 + t));
+              }
+            }
+            // boat-pacing escort: when the canoe is running fast this bird
+            // occasionally swings in and matches speed alongside for a few
+            // seconds — the way gulls pace a moving boat. Checked rarely,
+            // fired only above ~5 m/s, and it peels away if the boat slows.
+            if (g.escortT > 0) {
+              g.escortT -= dt;
+              g.escortK = Math.min(1, g.escortK + dt * 0.9);
+              if (v < 4.0) g.escortT = 0;            // boat slowed — peel away
+            } else {
+              g.escortK = Math.max(0, g.escortK - dt * 0.6);
+              g.escortTimer -= dt;
+              if (g.escortTimer <= 0) {
+                if (v > 5.0 && g.passT <= 0 && g.passK <= 0) {
+                  g.escortT = 3 + 2 * (0.5 + 0.5 * Math.sin(g.a * 4.9 + t));  // 3–5 s
+                  g.escortSide = Math.sin(t * 0.7 + g.a) > 0 ? 1 : -1;
+                }
+                g.escortTimer = 14 + 14 * (0.5 + 0.5 * Math.sin(g.a * 6.1 + t * 0.13));
+              }
+            }
+          }
+          const pk = g.passK * g.passK * (3 - 2 * g.passK);   // smoothstep ease
+          const ek = g.escortK * g.escortK * (3 - 2 * g.escortK);
+          g.a += g.spd * dt * (1 - 0.96 * hk) * (1 + 0.8 * pk); // quick through the pass
+          const sg = Math.sign(g.spd) || 1;
+          // a slow tide on the radius so the orbits never read as fixed circles
+          let pr = g.pr * (0.82 + 0.30 * (0.5 + 0.5 * Math.sin(t * 0.11 + g.a * 0.5)));
+          pr += (7.0 - pr) * pk;                     // the close pass bottoms out ~7 m
+          let gx = px + Math.cos(g.a) * pr, gz = pz + Math.sin(g.a) * pr;
+          const wy = waterAt(gx, gz, t).y;
+          // skimmers drop almost to the water on part of the loop; others bob;
+          // the close pass hugs the water like a real skim run
+          const lowMix = g.skim ? (0.5 + 0.5 * Math.sin(g.a)) : 1;
+          let gy = wy + (0.5 + (g.alt - 0.5) * lowMix) * (1 - 0.85 * pk) + 0.6 * pk
+                 + Math.sin(g.a * 2) * 0.3 + hk * 2.5;
+          // look at the mirror of the next point so the beak leads (nose is −Z)
+          let tx = px + Math.cos(g.a + 0.1 * sg) * pr;
+          let tz = pz + Math.sin(g.a + 0.1 * sg) * pr;
+          if (g.follow >= 0) {
+            // gulls rarely fly alone: shadow the leader from a loose trailing
+            // offset (behind and above its tangent, wandering — not formation)
+            const L = gulls[g.follow];
+            if (L.mode === 0) {
+              const lp = L.mesh.position;
+              const lsg = Math.sign(L.spd) || 1;
+              const fx2 = lp.x + Math.sin(L.a) * lsg * 5.5 + Math.sin(t * 0.23 + g.a) * 2.0;
+              const fz2 = lp.z - Math.cos(L.a) * lsg * 5.5 + Math.cos(t * 0.31 + g.a) * 2.0;
+              const fy2 = lp.y + 1.2 + Math.sin(t * 0.4 + g.a) * 0.8;
+              gx += (fx2 - gx) * 0.7; gy += (fy2 - gy) * 0.7; gz += (fz2 - gz) * 0.7;
+              tx += (lp.x - tx) * 0.7; tz += (lp.z - tz) * 0.7;   // head where the leader is
+            }
+          }
+          if (ek > 0) {
+            // hold station abeam at 10–15 m, slightly ahead of the seat, beak
+            // on the boat's track — boat-relative, so the speed match is exact
+            const eD = (12.5 + 2.5 * Math.sin(t * 0.5 + g.a)) * g.escortSide;
+            const lead = 3 + Math.sin(t * 0.8 + g.a) * 2;
+            const ex = px + sx * eD + fx * lead, ez = pz + sz * eD + fz * lead;
+            const ey = waterAt(ex, ez, t).y + 2.0 + Math.sin(t * 1.3 + g.a) * 0.5;
+            gx += (ex - gx) * ek; gy += (ey - gy) * ek; gz += (ez - gz) * ek;
+            tx += (gx + fx * 5 - tx) * ek; tz += (gz + fz * 5 - tz) * ek;
+          }
+          if (g.blend > 0) {                         // ease back in after a takeoff
+            g.blend = Math.max(0, g.blend - dt * 0.6);
+            gx += (mesh.position.x - gx) * g.blend;
+            gy += (mesh.position.y - gy) * g.blend;
+            gz += (mesh.position.z - gz) * g.blend;
+          }
+          mesh.position.set(gx, gy, gz);
+          mesh.lookAt(2 * gx - tx, gy, 2 * gz - tz);
+
+          // glide low (skimming into wind), flap when climbing; never in hover
+          // an escorting bird works to hold the pace: mostly flapping, level
+          glide = (0.5 - 0.5 * Math.tanh(Math.cos(g.a) * 1.6) * (g.skim ? 1 : 0.4)) * (1 - hk) * (1 - 0.7 * ek);
+          flapAmp = 0.7 * (1 - 0.85 * glide) * (1 + 0.45 * hk + 0.15 * ek);
+          // bank tracks the actual turn: the tighter the radius, the steeper
+          // the bank — so wander and close passes stay turn-correlated
+          const bank = -sg * Math.min(0.45, 0.10 + 2.2 / pr) * (1 - hk) * (1 - 0.85 * ek);
+          mesh.rotateZ(bank);
+          mesh.rotateX(0.32 * hk);
+          if (tail) { tail.rotation.x = 0.10 + 0.20 * glide + 0.35 * hk; tail.rotation.z = bank * 0.5; }
+          if (head) head.rotation.z = -bank * 0.7;   // gaze stays level through the bank
+          if (g.lander && g.blend <= 0) {
+            g.mTimer -= dt;
+            if (g.mTimer <= 0) {
+              // settle on open water well off the canoe — a wild bird's standoff
+              const la = g.a + 0.5 * sg;
+              const ld = 10 + 15 * (0.5 + 0.5 * Math.sin(g.a * 3.7));
+              g.lx = px + Math.cos(la) * ld;
+              g.lz = pz + Math.sin(la) * ld;
+              if (heightAt(g.lx, g.lz) < seaLevel - 0.35) g.mode = 1;
+              else g.mTimer = 6;                     // shore below — try again soon
+            }
+          }
+        }
+
+        // wings, shared across the airborne modes: skewed-sine flap (fast
+        // downstroke), lagging wrist, washout twist, glide dihedral + droop
+        if (doFlap) {
+          // irregular beat: the phase is accumulated, and now and then a bird
+          // throws in a quick double-beat or holds the wings a moment
+          const irr = Math.sin(t * 0.6 + g.flapF * 11.7);
+          const rate = irr > 0.93 ? 1.8 : (irr < -0.95 ? 0.12 : 1.0);
+          g.fph += dt * g.flapF * flapMul * rate;
+          const ph = g.fph;
+          let fc = Math.sin(ph);
+          fc = fc >= 0 ? Math.pow(fc, 0.65) : -Math.pow(-fc, 1.5);
+          const inner = 0.10 + 0.43 * glide + fc * flapAmp;
+          wR.rotation.z = -inner;
+          wL.rotation.z = inner;
+          // wing-load bend: the wrist lag deepens through a full flap (the
+          // outer wing rotates later on the loaded downstroke) and flattens
+          // back out in a glide
+          let lc = Math.sin(ph - (0.7 + 0.45 * (1 - glide)));
+          lc = lc >= 0 ? Math.pow(lc, 0.65) : -Math.pow(-lc, 1.5);
+          const outer = lc * flapAmp * (0.7 + 0.12 * (1 - glide)) - 0.31 * glide;
+          const wash = 0.15 * Math.cos(ph) * (1 - glide);
+          if (oR) { oR.rotation.z = -outer; oR.rotation.x = wash; }
+          if (oL) { oL.rotation.z = outer; oL.rotation.x = wash; }
+          if (head && g.mode === 0) head.rotation.x = -0.05 * fc * (1 - glide);
+        } else {
+          wR.rotation.z = -0.1;                      // tucked against the body
+          wL.rotation.z = 0.1;
+          if (oR) { oR.rotation.z = -0.06; oR.rotation.x = 0; }
+          if (oL) { oL.rotation.z = 0.06; oL.rotation.x = 0; }
+        }
+        // fold sweep: arms and hands swing back along the body on the water,
+        // easing out again through the takeoff run (0 in normal flight)
+        wR.rotation.y = -0.8 * g.fold;
+        wL.rotation.y = 0.8 * g.fold;
+        if (oR) oR.rotation.y = -1.5 * g.fold;
+        if (oL) oL.rotation.y = 1.5 * g.fold;
+        // feet: tucked in flight (base pose rot.x = 0.22), dropped through the
+        // landing flare; outside the descent the flare eases back to tucked
+        if (g.mode !== 1) g.flare = Math.max(0, g.flare - dt * 2.5);
+        const feet = mesh.userData.feet;
+        if (feet) {
+          const fr = 0.22 - 1.25 * g.flare;
+          feet[0].rotation.x = fr;
+          feet[1].rotation.x = fr;
+        }
       }
     }
 

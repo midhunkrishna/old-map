@@ -6,6 +6,10 @@
   const map = carta.map;
   const IDS = ['nassau', 'port-royal', 'tortuga', 'havana', 'charleston',
     'cartagena', 'bridgetown', 'batavia'];
+  // The roads multiplier: each harbour's anchorage fills out to roughly this
+  // × the charted ship count, the extras being small craft placed around the
+  // charted marks (3D diorama only — the engraved chart stays as surveyed).
+  const ROADS_SHIPS_MULT = 1.8;
 
   const { SEA, INK, INK_SOFT, MADDER, MADDER_D: MADDER_DEEP, PAPER } = carta.COLORS;
   const LAND = '#ddc89f', SHOAL = '#d9c69e'; // harbor-plan pigments, used nowhere else
@@ -215,17 +219,20 @@
         });
       }
 
+      const chartedShips = []; // this plan's surveyed marks, seeds for the roads
       for (const f of plan.features) {
         const k = f.properties.kind;
         f.properties.harbor = id;
         if (k === 'street' && f.properties.name) makeStreetLabel(f);
         if (k === 'ship') {
-          ships3d.push({
+          const entry = {
             lngLat: f.geometry.coordinates,
             heading: f.properties.heading || 0,
             type: f.properties.type || 'sloop',
             harbor: id,
-          });
+          };
+          ships3d.push(entry);
+          chartedShips.push(entry);
         }
         if (k === 'church' || k === 'building' || k === 'battery' || k === 'gallows') {
           structures.points.push({ kind: k, lngLat: f.geometry.coordinates, harbor: id });
@@ -240,6 +247,7 @@
         if (PT_KINDS.includes(k)) { makeMarker(f, title); continue; }
         (byKind[k] = byKind[k] || []).push(f);
       }
+      addRoadsVessels(plan, id, chartedShips);
       const box = blanketBoxes.find((b) => b.id === id);
       if (box) placeFurniture(plan, box);
     }
@@ -580,6 +588,64 @@
     }
     return inside;
   }
+  /* ---------- the crowded roads: extra vessels riding at anchor ----------
+     The chart marks only the notable ships; the living harbour fills the
+     anchorage out to ~ROADS_SHIPS_MULT× with small craft — sloops, fishing
+     boats, the odd brigantine or trader — clustered about the charted marks.
+     Placement is deterministic (FNV hash of the harbour id), kept off the
+     land and shoal rings, spaced for swinging room, headings loosely on the
+     same tide as the parent mark. These join carta.harborShips for the
+     diorama only; no engraved marker is made for them. */
+  function hash01(id, n) {
+    let h = 2166136261;
+    for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
+    h = Math.imul(h ^ (n + 1), 2654435761);
+    h ^= h >>> 13; h = Math.imul(h, 1274126177); h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
+  }
+  const ROADS_TYPES = ['sloop', 'sloop', 'sloop', 'canoe', 'brigantine', 'brigantine', 'merchantman'];
+  function addRoadsVessels(plan, id, charted) {
+    const anchors = charted.filter((s) => s.type !== 'canoe');
+    if (!anchors.length) return;
+    const solid = []; // land + shoal rings — anywhere a hull cannot swing
+    for (const f of plan.features) {
+      const k = f.properties.kind;
+      if (k !== 'land' && k !== 'shoal') continue;
+      const g = f.geometry;
+      if (g.type === 'Polygon') solid.push(g.coordinates[0]);
+      else if (g.type === 'MultiPolygon') for (const p of g.coordinates) solid.push(p[0]);
+    }
+    const mLng = 111320 * Math.cos(anchors[0].lngLat[1] * Math.PI / 180);
+    const placed = charted.map((s) => s.lngLat);
+    // lively, not crowded: the roads fill toward the multiplier but the whole
+    // harbour is capped at 13 hulls, charted marks included
+    const want = Math.min(
+      Math.round(charted.length * (ROADS_SHIPS_MULT - 1)),
+      Math.max(0, 13 - charted.length));
+    let made = 0;
+    for (let k = 0; made < want && k < want * 8; k++) {
+      const b = k * 5;
+      const parent = anchors[(hash01(id, b) * anchors.length) | 0];
+      // 45–180 m off a charted mark: the longer throws (with the land/shoal
+      // check rejecting anything inshore) spread the extras toward the outer
+      // road instead of packing the inner anchorage
+      const dist = 45 + hash01(id, b + 1) * 135;
+      const ang = hash01(id, b + 2) * Math.PI * 2;
+      const lng = parent.lngLat[0] + (dist * Math.sin(ang)) / mLng;
+      const lat = parent.lngLat[1] + (dist * Math.cos(ang)) / 111320;
+      if (solid.some((r) => inRing(lng, lat, r))) continue;   // she must stay afloat
+      if (placed.some(([px, py]) => {
+        const dx = (lng - px) * mLng, dy = (lat - py) * 111320;
+        return dx * dx + dy * dy < 40 * 40;                   // swinging room
+      })) continue;
+      const type = ROADS_TYPES[(hash01(id, b + 3) * ROADS_TYPES.length) | 0];
+      const heading = ((parent.heading + (hash01(id, b + 4) - 0.5) * 40) % 360 + 360) % 360;
+      ships3d.push({ lngLat: [lng, lat], heading, type, harbor: id });
+      placed.push([lng, lat]);
+      made++;
+    }
+  }
+
   function placeFurniture(plan, box) {
     const rings = landRings(plan);
     const ix = (box.e - box.w) * 0.16, iy = (box.n - box.s) * 0.16;

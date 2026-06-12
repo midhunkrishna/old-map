@@ -12,3 +12,7 @@
   Cache-Control: public, max-age=86400
 /data/*
   Cache-Control: public, max-age=86400
+
+# Diorama ambience recordings (CC0, see /audio/CREDITS.md) change only on deploy.
+/audio/*
+  Cache-Control: public, max-age=86400

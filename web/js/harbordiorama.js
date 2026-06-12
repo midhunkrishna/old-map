@@ -40,7 +40,9 @@
   let lastT = 0;           // for per-frame dt
   let camYaw = 0, camPitch = 0, rowing = false;  // look + row input, from the mouse
   let fwdKey = false, revKey = false;            // W forward, S/D reverse
-  let cruiseKmh = 0;                             // button/scroll cruise speed (0–6 km/h)
+  let cruiseStep = 0;                            // stepped cruise: 0 (coast) .. CRUISE_STEPS (20 mph)
+  const CRUISE_STEPS = 8;                        // even increments up to the cap
+  const CRUISE_MAX_MS = 8.94;                    // 20 mph ≈ 8.94 m/s ≈ 32.2 km/h
 
   const carDio = { active: false, open, close };
   window.cartaDiorama = carDio;
@@ -123,14 +125,32 @@
 }
 #carta-diorama.touring.paused .dio-pausehint { display: block; }
 #carta-diorama .dio-speed {
-  position: absolute; right: 22px; bottom: 26px; z-index: 5; display: none;
-  align-items: center; gap: 8px; pointer-events: auto;
+  position: absolute; right: 22px; bottom: 70px; z-index: 5; display: none;
+  flex-direction: column; align-items: center; gap: 7px; pointer-events: auto;
   font-family: 'IM Fell English SC', 'IM Fell English', serif;
 }
 #carta-diorama.touring .dio-speed { display: flex; }
 #carta-diorama .dio-spd-read {
   min-width: 70px; text-align: center; font-size: 12px; letter-spacing: 0.5px;
   color: #efe3c6; text-shadow: 0 1px 4px rgba(0,0,0,0.75);
+}
+#carta-diorama .dio-spd-btn {
+  cursor: pointer; user-select: none; text-align: center;
+  width: 36px; font-size: 12px; line-height: 1; color: #2a1d0e;
+  padding: 6px 0 7px; background: rgba(231,220,192,0.82);
+  border: 1.5px solid #2a1d0e; outline: 1px solid #2a1d0e; outline-offset: 2px;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+#carta-diorama .dio-spd-btn:hover { background: #f3ead0; }
+#carta-diorama .dio-spd-btn.spd-ok {
+  background: #aad084; box-shadow: 0 0 14px rgba(96,176,60,0.95); transition: none;
+}
+#carta-diorama .dio-spd-btn.spd-bad {
+  background: #dd8d7a; box-shadow: 0 0 14px rgba(196,58,38,0.95); transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  #carta-diorama .dio-spd-btn { transition: none; }
+  #carta-diorama .dio-spd-btn.spd-ok, #carta-diorama .dio-spd-btn.spd-bad { box-shadow: none; }
 }
 #carta-diorama .dio-minimap {
   position: absolute; left: 22px; bottom: 22px; z-index: 5; display: none;
@@ -194,13 +214,22 @@
     const pauseHint = document.createElement('div');
     pauseHint.className = 'dio-pausehint';
     pauseHint.innerHTML = 'View released — click to look around again, or step back below';
-    // speed readout: cruise is set from the keyboard (↑ faster · ↓ slower, ×1.5
-    // steps, 0–6 km/h) or the scroll wheel — no buttons to mouse for mid-sail
+    // speed column: ↑/↓ (keys, wheel, or these buttons) step the cruise through
+    // CRUISE_STEPS even increments up to 20 mph; each press flashes the matching
+    // chevron green (accepted) or red (already at the limit)
     const speedBox = document.createElement('div');
     speedBox.className = 'dio-speed';
+    const spdUp = document.createElement('div');
+    spdUp.className = 'dio-spd-btn'; spdUp.textContent = '▲'; spdUp.title = 'faster (↑)';
+    spdUp.addEventListener('click', () => stepCruise(1));
     const speedRead = document.createElement('span'); speedRead.className = 'dio-spd-read'; speedRead.textContent = '0.0 km/h';
-    speedBox.append(speedRead);
+    const spdDown = document.createElement('div');
+    spdDown.className = 'dio-spd-btn'; spdDown.textContent = '▼'; spdDown.title = 'slower (↓)';
+    spdDown.addEventListener('click', () => stepCruise(-1));
+    speedBox.append(spdUp, speedRead, spdDown);
     host._speedRead = speedRead;
+    host._spdUp = spdUp;
+    host._spdDown = spdDown;
     const hint = document.createElement('div');
     hint.className = 'dio-hint';
     hint.innerHTML = 'Drag to turn the harbour · Right-drag to pan · Scroll to zoom in';
@@ -239,14 +268,14 @@
       host.classList.toggle('paused', !on);
     });
     // W forward · S reverse (the gaze still steers); ↑/↓ step the cruise speed
-    // ×1.5 either way (0–6 km/h); the scroll wheel does the same
+    // one even increment either way (0–20 mph); the scroll wheel does the same
     window.addEventListener('keydown', (e) => {
       if (mode !== 'tour') return;
       const k = e.key.toLowerCase();
       if (k === 'w') fwdKey = true;
       else if (k === 's') revKey = true;
-      else if (e.key === 'ArrowUp') { e.preventDefault(); nudgeCruise(1.5); }
-      else if (e.key === 'ArrowDown') { e.preventDefault(); nudgeCruise(1 / 1.5); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); stepCruise(1); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); stepCruise(-1); }
     });
     window.addEventListener('keyup', (e) => {
       const k = e.key.toLowerCase();
@@ -256,7 +285,7 @@
     canvas.addEventListener('wheel', (e) => {
       if (mode !== 'tour') return;
       e.preventDefault();
-      nudgeCruise(e.deltaY < 0 ? 1.5 : 1 / 1.5);
+      stepCruise(e.deltaY < 0 ? 1 : -1);
     }, { passive: false });
 
     window.addEventListener('resize', onResize);
@@ -786,12 +815,35 @@
     return n ? { x: sx / n, z: sz / n } : null;
   }
 
-  // −/+ (and the scroll wheel) scale a cruise speed by ×1.5, clamped 0–6 km/h.
-  function nudgeCruise(factor) {
-    const MAX = 6;
-    if (factor > 1) cruiseKmh = Math.min(MAX, cruiseKmh < 0.6 ? 1.2 : cruiseKmh * factor);
-    else cruiseKmh = (cruiseKmh * factor < 0.5) ? 0 : cruiseKmh * factor;
-    if (host && host._speedRead) host._speedRead.textContent = cruiseKmh.toFixed(1) + ' km/h';
+  // Stepped cruise: ↑/↓ (keys, wheel, or buttons) move one even increment between
+  // 0 (coast) and 20 mph. Every press flashes the matching chevron — green when
+  // the step is taken, red when the limit (top or bottom) is already reached.
+  function cruiseMs() { return (cruiseStep / CRUISE_STEPS) * CRUISE_MAX_MS; }
+
+  function updateSpeedRead() {
+    if (host && host._speedRead) host._speedRead.textContent = (cruiseMs() * 3.6).toFixed(1) + ' km/h';
+  }
+
+  function flashSpd(btn, ok) {
+    if (!btn) return;
+    btn.classList.remove('spd-ok', 'spd-bad');
+    void btn.offsetWidth;                          // restart on rapid presses
+    btn.classList.add(ok ? 'spd-ok' : 'spd-bad');
+    clearTimeout(btn._flashT);
+    btn._flashT = setTimeout(() => btn.classList.remove('spd-ok', 'spd-bad'), 250);
+  }
+
+  function stepCruise(dir) {
+    if (dir > 0) {
+      const ok = cruiseStep < CRUISE_STEPS;
+      if (ok) cruiseStep++;
+      flashSpd(host && host._spdUp, ok);
+    } else {
+      const ok = cruiseStep > 0;
+      if (ok) cruiseStep--;
+      flashSpd(host && host._spdDown, ok);
+    }
+    updateSpeedRead();
   }
 
   function enterTour() {
@@ -811,7 +863,7 @@
     scene.add(canoe.group);
     camYaw = canoe.spawn();      // heading faces the harbour; look starts there too
     camPitch = 0; rowing = false; fwdKey = false; revKey = false;
-    cruiseKmh = 0; nudgeCruise(1 / 1.5);   // reset the readout to 0.0 km/h
+    cruiseStep = 0; updateSpeedRead();     // reset the readout to 0.0 km/h
     tween = null;
     controls.enabled = false;
     camera.fov = 70;
@@ -823,6 +875,7 @@
     if (host._hint) host._hint.classList.remove('show');
     drawMiniBase();                    // the engraved thumbnail behind the canoe arrow
     mode = 'tour';
+    try { if (window.cartaHarborAudio) window.cartaHarborAudio.setMode('tour'); } catch (e) { /* ignore */ }
     // a quick veil flash to cover the cut down to the waterline
     overlay.style.transition = 'opacity 0.32s ease';
     overlay.style.opacity = '0.85';
@@ -833,6 +886,7 @@
   function exitTour() {
     if (mode !== 'tour') return;
     mode = 'overview';          // set first so the pointer-lock-change re-entry is a no-op
+    try { if (window.cartaHarborAudio) window.cartaHarborAudio.setMode('overview'); } catch (e) { /* ignore */ }
     rowing = false;
     if (document.pointerLockElement === canvas && document.exitPointerLock) document.exitPointerLock();
     if (canoe) { scene.remove(canoe.group); canoe.dispose(); canoe = null; }
@@ -877,6 +931,8 @@
     carDio.active = true;
     t0 = performance.now();
     lastT = 0;
+    // ambience rides along; a failure here must never break the diorama
+    try { if (window.cartaHarborAudio) window.cartaHarborAudio.start(id); } catch (e) { /* ignore */ }
 
     // a brief controls hint (pan isn't otherwise discoverable)
     if (host._hint) {
@@ -901,6 +957,7 @@
   function close() {
     if (!carDio.active) return;
     if (mode === 'tour') exitTour();   // release pointer lock + dispose the canoe first
+    try { if (window.cartaHarborAudio) window.cartaHarborAudio.stop(); } catch (e) { /* ignore */ }
     overlay.style.opacity = '1';
     const finish = () => {
       carDio.active = false;
@@ -934,7 +991,7 @@
     if (tween) tween(now);
     if (mode === 'tour' && canoe) {
       // first person: the canoe owns the camera (seat + look); orbit is paused
-      canoe.update(dt, t, { camYaw, camPitch, rowing: rowing || fwdKey, reverse: revKey, cruise: cruiseKmh / 3.6 }, camera);
+      canoe.update(dt, t, { camYaw, camPitch, rowing: rowing || fwdKey, reverse: revKey, cruise: cruiseMs() }, camera);
       // keep the foliage at full detail around the boat (trees LOD reads this)
       carDio._camDist = built.radius * 0.18;
       // where the boat is, for proximity detail (HD ships, hero birds)
@@ -954,6 +1011,7 @@
       carDio._camDist = camera.position.distanceTo(controls.target);
     }
     carDio._cam = camera;
+    try { if (window.cartaHarborAudio) window.cartaHarborAudio.frame(dt); } catch (e) { /* ignore */ }
     for (const a of built.animated) { try { a.update(t, camera); } catch (e) { /* ignore */ } }
     // Studio light routes through the bloom composer (the sun glitter & bright
     // sails glow); matte mode renders straight, with no post cost.
