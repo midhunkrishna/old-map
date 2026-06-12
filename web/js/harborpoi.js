@@ -13,10 +13,18 @@ window.cartaHarborPOI = function cartaHarborPOI(THREE) {
   const KIND_GLYPH = {
     fort: '✪', church: '✝', building: '⌂', battery: '▤', gallows: '†',
     green: '❧', wharf: '⚓', ship: '⛵',
+    chapel: '✟', convent: '✠', meeting: '◇', tavern: '♨', shipwright: '⚙',
+    smithy: '⚒', provisioner: '⛁', counting: '⚖', boarding: '☖', tent: '⛺',
+    brothel: '♥', gambling: '⚄', governor: '⚜', prison: '▦',
   };
   const KIND_LABEL = {
     fort: 'Fort', church: 'Church', building: 'Public building', battery: 'Battery',
     gallows: 'Gallows', green: 'Plaza', wharf: 'Wharf', ship: 'Ship at anchor',
+    chapel: 'Chapel', convent: 'Convent', meeting: 'Meeting house', tavern: 'Tavern',
+    shipwright: "Shipwright's yard", smithy: 'Smithy', provisioner: 'Provisioner',
+    counting: 'Counting house', boarding: 'Boarding house', tent: 'Encampment',
+    brothel: 'Bawdy house', gambling: 'Gaming house', governor: "Governor's house",
+    prison: 'Gaol',
   };
   const SHIP_NAME = {
     'man-of-war': 'Man-of-war', merchantman: 'Merchantman',
@@ -45,8 +53,13 @@ window.cartaHarborPOI = function cartaHarborPOI(THREE) {
     return SHIP_SPECS[type] || SHIP_SPECS.merchantman;
   }
 
-  const yearOf = () => (window.cartaTime ? window.cartaTime.year : 1730);
-  const alive = (p) => ((p.year_built || 0) <= yearOf()) && ((p.year_destroyed || 99999) > yearOf());
+  /* The diorama town is built once as the 1730 snapshot (harbortown.js
+     filters its landmarks against 1730 and never rebuilds on the timeline),
+     so the labels must judge life and death by the same fixed year — a
+     timeline year would float labels over buildings that are not there. */
+  const SNAPSHOT_YEAR = 1730;
+  const alive = (p) => ((p.year_built || 0) <= SNAPSHOT_YEAR)
+    && ((p.year_destroyed || 99999) > SNAPSHOT_YEAR);
 
   function centroidLngLat(f) {
     const g = f.geometry;

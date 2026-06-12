@@ -1417,7 +1417,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "governor",
     "name": "Government House (within the Kasteel)",
     "note": "The Governor-General Diederik Durven keeps state here in 1730"
    },
@@ -1432,7 +1432,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "counting",
     "name": "De Waag (weigh-house)",
     "note": "By the fish bridge on the Kali Besar"
    },
@@ -1552,6 +1552,66 @@
       106.811,
       -6.134
      ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "provisioner",
+    "name": "Pakhuis De Walvis",
+    "note": "VOC victualling warehouse; rice and arrack swung up by the hoist beam (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.81045,
+     -6.12892
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "provisioner",
+    "name": "Pakhuis Het Anker",
+    "note": "Company stores under red pantiles by the Kali Besar quay (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.81235,
+     -6.13437
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "tavern",
+    "name": "Herberg De Gouden Leeuw",
+    "note": "Punch-house for Company sailors and free burghers alike (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.8164,
+     -6.12877
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "gambling",
+    "name": "Speelhuis van de Chineesche kamp",
+    "note": "Gaming tables of the Chinese quarter, shuttered close by day (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.81383,
+     -6.14823
     ]
    }
   },

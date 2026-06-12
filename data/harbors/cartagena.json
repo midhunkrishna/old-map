@@ -1588,7 +1588,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "church",
+    "kind": "convent",
     "name": "Convento de la Popa",
     "year_built": 1607,
     "note": "On the high hill landward: Nuestra Se\u00f1ora de la Candelaria, the seamark of Cartagena"
@@ -1619,7 +1619,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "counting",
     "name": "Casa de la Aduana",
     "note": "The English asiento's factors land their human cargo here under the customs house arches"
    },
@@ -1688,6 +1688,51 @@
       -75.544,
       10.4168
      ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "tavern",
+    "name": "Pulper\u00eda de la Media Luna",
+    "note": "Wine, aguardiente and small goods sold at the gate of Getseman\u00ed (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.54685,
+     10.41657
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "smithy",
+    "name": "Herrer\u00eda del Arsenal",
+    "note": "Forge serving the careenage; iron-work for the galleons (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.54565,
+     10.41819
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "boarding",
+    "name": "Mes\u00f3n de Getseman\u00ed",
+    "note": "Beds and stabling for muleteers and fleet passengers (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -75.54721,
+     10.41587
     ]
    }
   },

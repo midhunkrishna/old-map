@@ -1437,7 +1437,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "church",
+    "kind": "meeting",
     "name": "White Meeting House",
     "year_built": 1681,
     "note": "The dissenters' meeting that names Meeting Street"
@@ -1453,7 +1453,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "church",
+    "kind": "meeting",
     "name": "French Huguenot Church",
     "year_built": 1687,
     "note": "The refugees' church; services timed to the ebb for the Santee planters' boats"
@@ -1469,7 +1469,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "church",
+    "kind": "meeting",
     "name": "Quaker Meeting",
     "year_built": 1696,
     "note": "On King Street lot (modest wooden meeting)"
@@ -1501,7 +1501,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "prison",
     "name": "The Watch House",
     "note": "Corner of Broad and the Bay"
    },
@@ -1516,7 +1516,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "tavern",
     "name": "Shepheard's Tavern",
     "year_built": 1720,
     "note": "Broad and Church corner; courts, lodges and the post all meet over its punch"
@@ -1657,6 +1657,81 @@
        32.7698
       ]
      ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shipwright",
+    "name": "The Bay shipyard",
+    "note": "Ribs of a new sloop on the stocks above the Cooper River mud (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.92516,
+     32.78321
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "counting",
+    "name": "Wragg's counting house",
+    "note": "Rice and indigo reckoned for the London ships (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.92657,
+     32.77698
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "counting",
+    "name": "Rhett's counting house",
+    "note": "Counting room of Colonel Rhett's wharves (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.92695,
+     32.77351
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "provisioner",
+    "name": "The Market wharf provision store",
+    "note": "Salt provisions, biscuit and naval stores for ships fitting out (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.92778,
+     32.7833
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "brothel",
+    "name": "The Chalmers Alley house",
+    "note": "A discreet house behind the tavern row (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.92755,
+     32.77753
     ]
    }
   },

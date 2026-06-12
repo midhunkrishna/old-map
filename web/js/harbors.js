@@ -167,7 +167,11 @@
   }
 
   /* ---------- load & assemble ---------- */
-  const PT_KINDS = ['battery', 'church', 'building', 'gallows', 'ship', 'label'];
+  // Point kinds carried into the 3D town (harbortown.js landmark factories).
+  const POINT3D = ['church', 'chapel', 'convent', 'meeting', 'building', 'battery',
+    'gallows', 'tavern', 'shipwright', 'smithy', 'provisioner', 'counting',
+    'boarding', 'tent', 'brothel', 'gambling', 'governor', 'prison'];
+  const PT_KINDS = POINT3D.concat(['ship', 'label']);
   const markers = []; // { el, iconEl, nameEl, kind, lngLat, yearBuilt, yearDestroyed }
   const blanketBoxes = []; // { id, title, basis, w, s, e, n } (un-margined land bbox)
   const ships3d = []; // { lngLat, heading, type, harbor } for the living harbour
@@ -234,8 +238,14 @@
           ships3d.push(entry);
           chartedShips.push(entry);
         }
-        if (k === 'church' || k === 'building' || k === 'battery' || k === 'gallows') {
-          structures.points.push({ kind: k, lngLat: f.geometry.coordinates, harbor: id });
+        if (POINT3D.includes(k)) {
+          structures.points.push({
+            kind: k, lngLat: f.geometry.coordinates, harbor: id,
+            name: f.properties.name || '', note: f.properties.note || '',
+            year_built: f.properties.year_built || 0,
+            year_destroyed: f.properties.year_destroyed || Infinity,
+            guns: f.properties.guns || 0,
+          });
         }
         if (k === 'block') structures.blocks.push(f);
         if (k === 'fort') structures.forts.push(f);
@@ -474,6 +484,11 @@
   /* ---------- DOM markers ---------- */
   const KIND_NAMES = {
     battery: 'Battery', church: 'Church', building: 'Building', gallows: 'Gallows',
+    chapel: 'Chapel', convent: 'Convent', meeting: 'Meeting house', tavern: 'Tavern',
+    shipwright: "Shipwright's yard", smithy: 'Smithy', provisioner: 'Provisioner',
+    counting: 'Counting house', boarding: 'Boarding house', tent: 'Encampment',
+    brothel: 'Bawdy house', gambling: 'Gaming house', governor: "Governor's house",
+    prison: 'Gaol',
   };
   const SHIP_NAMES = {
     canoe: 'Canoe', sloop: 'Sloop', brigantine: 'Brigantine',

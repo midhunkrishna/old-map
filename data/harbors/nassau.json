@@ -1334,7 +1334,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "governor",
     "name": "Government House (Mount Fitzwilliam)",
     "year_built": 1737,
     "note": "POST-1730: built 1737; in 1730 Woodes Rogers keeps house in a repaired lodging by the fort"
@@ -1365,7 +1365,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "tavern",
     "name": "The Wheel of Fortune tavern",
     "note": "One of the punch-houses of pirate days, still pouring (name from period accounts of Nassau's taverns)"
    },
@@ -1424,6 +1424,81 @@
        25.0776
       ]
      ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shipwright",
+    "name": "Pinder's ship yard",
+    "note": "Sloops hauled up on the hard for graving and new floors; the smell of pitch all down the shore (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -77.3305,
+     25.07835
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "tent",
+    "name": "Tents on the eastern beach",
+    "note": "Driftwood and sailcloth shelters of the poorer sort, the rump of the old pirate camp (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -77.3185,
+     25.07765
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "tent",
+    "name": "Driftwood hovels",
+    "note": "Huts of palmetto thatch and ships' timbers strung along the east beach (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -77.314,
+     25.07745
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "brothel",
+    "name": "Mother Pratt's house",
+    "note": "A disorderly house of the old days, kept on behind madder-red shutters (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -77.34524,
+     25.07678
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "smithy",
+    "name": "The Bay Street forge",
+    "note": "Anchor-smith and farrier; the ring of the anvil heard the length of the waterfront (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -77.3385,
+     25.07833
     ]
    }
   },

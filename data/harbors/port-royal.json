@@ -1072,7 +1072,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "tavern",
     "name": "The Jamaica Coffee House",
     "note": "Tavern by the wherry stairs (plausible; the point kept a dozen licensed houses even after 1722)"
    },
@@ -1177,6 +1177,81 @@
        17.9354
       ]
      ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shipwright",
+    "name": "Chocolata Hole careening yard",
+    "note": "Hulls hove down and breamed where the pirates once careened; pitch-kettles smoking on the strand (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.84586,
+     17.94001
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "counting",
+    "name": "Galdy & Son, counting house",
+    "note": "Ledgers of the sugar fleet kept behind barred windows on Thames Street (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.84425,
+     17.93903
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "brothel",
+    "name": "The Sign of the Mermaid",
+    "note": "A bawdy house surviving from the wicked city's great days (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.84148,
+     17.93962
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "gambling",
+    "name": "The Three Crowns gaming house",
+    "note": "Dice and hazard played till the morning gun (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.84293,
+     17.93818
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "smithy",
+    "name": "Tower Street forge",
+    "note": "Ship-smith's open bay, chain-plates and crows of iron wrought to order (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -76.84313,
+     17.93738
     ]
    }
   },
@@ -1740,7 +1815,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "governor",
     "name": "The King's House",
     "note": "The governor's lodging of the old city, by Thames Street; it went down bodily with the waterfront on 7 June 1692 (site approximate)",
     "year_destroyed": 1692

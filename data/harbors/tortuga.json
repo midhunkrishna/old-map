@@ -536,7 +536,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "church",
+    "kind": "chapel",
     "name": "Chapelle de la Basse-Terre",
     "year_built": 1670,
     "note": "The parish kept (irregularly) since d'Ogeron's time; a priest comes from Port-de-Paix"
@@ -552,7 +552,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "governor",
     "name": "Maison du Gouvernement (old)",
     "note": "D'Ogeron's and de Cussy's old seat; the governor of the coast now sits at Port-de-Paix across the channel"
    },
@@ -567,7 +567,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "tavern",
     "name": "Tavern of the Boucaniers",
     "note": "Cayonne's last punch-house (plausible)"
    },
@@ -597,6 +597,51 @@
       -72.791,
       20.0515
      ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "tent",
+    "name": "Boucan of the hunters",
+    "note": "Smoking-frames and hide shelters of the boucaniers, down from the hills to trade (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.78245,
+     20.04453
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "tent",
+    "name": "Boucan on the strand",
+    "note": "A driftwood hovel and green-wood smoke where wild meat is cured for the ships (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.78395,
+     20.04703
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "boarding",
+    "name": "Auberge du Flibustier",
+    "note": "Lodging house for masterless men between voyages (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -72.7867,
+     20.05096
     ]
    }
   },

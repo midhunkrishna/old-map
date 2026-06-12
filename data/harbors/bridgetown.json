@@ -1048,7 +1048,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "prison",
     "name": "The Cage",
     "note": "Lock-up for runaways and disorderly seamen, by the bridge"
    },
@@ -1078,7 +1078,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "provisioner",
     "name": "The Royal Navy victualling office",
     "note": "Carlisle Bay being the fleet's rendezvous for the windward station (plausible siting)"
    },
@@ -1093,7 +1093,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "tavern",
     "name": "The Globe tavern",
     "note": "Broad Street ordinary (plausible; the street kept a dozen)"
    },
@@ -1182,6 +1182,66 @@
        13.079
       ]
      ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "shipwright",
+    "name": "The Careenage shipwright's yard",
+    "note": "Droghers and sloops hove down on the Careenage mud at low water (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.61051,
+     13.09665
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "counting",
+    "name": "Walker's counting house",
+    "note": "Sugar consignments reckoned and bills drawn on London (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.61799,
+     13.09753
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "smithy",
+    "name": "Cheapside forge",
+    "note": "Farrier and wheel-smith at the western edge of the town (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.62166,
+     13.09845
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "brothel",
+    "name": "The Marhill bawdy house",
+    "note": "A discreet house above the wharves, lanterns cased in red (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -59.61246,
+     13.09746
     ]
    }
   },

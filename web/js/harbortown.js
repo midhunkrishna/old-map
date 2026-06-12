@@ -103,8 +103,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   // Facade with windows, doors, framing — painted neutral parchment; the
   // instanceColor lays on the wall tint. 192px so the casements survive
   // the close zoom the chart now allows.
-  function facadeTexture(style, stories) {
-    return canvasTex('facade-' + style + stories, 192, 192, (x) => {
+  function facadeTexture(style, stories, type) {
+    return canvasTex('facade-' + style + stories + (type || ''), 192, 192, (x) => {
       x.fillStyle = '#ddd2b4';
       x.fillRect(0, 0, 192, 192);
       // weathering streaks
@@ -114,7 +114,10 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         x.fillRect(sx, Math.random() * 60, 2 + Math.random() * 5, 60 + Math.random() * 130);
       }
       const rowH = 192 / stories;
+      const wins = [];          // every painted casement, for the trade deltas below
+      let curStory = 0;
       const win = (wx, wy, ww, wh, arched) => {
+        wins.push({ wx, wy, ww, wh, s: curStory });
         x.fillStyle = '#f4ecd8';
         x.fillRect(wx - 3, wy - 3, ww + 6, wh + 6);            // surround
         x.fillStyle = 'rgba(61,47,30,0.55)';
@@ -137,6 +140,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         }
       };
       for (let s = 0; s < stories; s++) {
+        curStory = s;
         const yTop = 192 - (s + 1) * rowH;
         const wy = yTop + rowH * 0.24, wh = rowH * 0.46;
         if (style === 'spanish') {
@@ -216,6 +220,125 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       }
       x.fillStyle = 'rgba(61,47,30,0.32)';                     // cornice
       x.fillRect(0, 0, 192, 6);
+      /* ----- the promoted trades repaint their ground floor -----
+         Small deltas over the base facade, so each type stays in the
+         street's idiom; all deterministic (no random in the deltas). */
+      if (type) {
+        const ground = wins.filter((w2) => w2.s === 0);
+        if (type === 'tavern') {              // amber light behind the casements
+          for (const w2 of ground) {
+            const glow = x.createLinearGradient(0, w2.wy, 0, w2.wy + w2.wh);
+            glow.addColorStop(0, '#f2c468');         // candle-bright at the head
+            glow.addColorStop(1, '#c98334');         // ember-warm down at the sill
+            x.fillStyle = glow;
+            x.fillRect(w2.wx, w2.wy, w2.ww, w2.wh);
+            x.strokeStyle = 'rgba(110,70,25,0.6)';   // bars dark against the glow
+            x.lineWidth = 1.6;
+            x.beginPath();
+            x.moveTo(w2.wx + w2.ww / 2, w2.wy); x.lineTo(w2.wx + w2.ww / 2, w2.wy + w2.wh);
+            x.moveTo(w2.wx, w2.wy + w2.wh / 2); x.lineTo(w2.wx + w2.ww, w2.wy + w2.wh / 2);
+            x.stroke();
+            x.fillStyle = 'rgba(226,168,78,0.16)';   // lamplight spills below the sill
+            x.fillRect(w2.wx - 4, w2.wy + w2.wh + 3, w2.ww + 8, 9);
+          }
+        } else if (type === 'gambling') {     // shuttered tight against curious eyes
+          for (const w2 of ground) {
+            x.fillStyle = '#5e4430';
+            x.fillRect(w2.wx - 2, w2.wy - 2, w2.ww + 4, w2.wh + 4);
+            x.strokeStyle = 'rgba(30,22,14,0.55)';
+            x.lineWidth = 1;
+            for (let ly = w2.wy + 2; ly < w2.wy + w2.wh; ly += 4) {
+              x.beginPath(); x.moveTo(w2.wx - 1, ly); x.lineTo(w2.wx + w2.ww + 1, ly); x.stroke();
+            }
+            x.fillStyle = 'rgba(30,22,14,0.7)';      // the centre seam
+            x.fillRect(w2.wx + w2.ww / 2 - 1, w2.wy - 2, 2, w2.wh + 4);
+          }
+          const cm = ground[0];
+          if (cm) {                           // a chalk tally scrawled on one shutter
+            x.strokeStyle = 'rgba(235,228,210,0.75)';
+            x.lineWidth = 1.2;
+            x.beginPath();
+            for (let t = 0; t < 4; t++) {
+              x.moveTo(cm.wx + 4 + t * 3, cm.wy + 5); x.lineTo(cm.wx + 4 + t * 3, cm.wy + 12);
+            }
+            x.moveTo(cm.wx + 2, cm.wy + 12); x.lineTo(cm.wx + 15, cm.wy + 5);  // the cross-stroke
+            x.stroke();
+          }
+        } else if (type === 'counting') {     // iron bars over the ground lights
+          for (const w2 of ground) {
+            for (let gx = w2.wx + 3; gx < w2.wx + w2.ww; gx += 6) {
+              x.strokeStyle = 'rgba(25,20,14,0.85)';
+              x.lineWidth = 2;
+              x.beginPath(); x.moveTo(gx, w2.wy); x.lineTo(gx, w2.wy + w2.wh); x.stroke();
+              x.strokeStyle = 'rgba(0,0,0,0.3)';     // each bar casts its thin shadow
+              x.lineWidth = 1;
+              x.beginPath(); x.moveTo(gx + 2, w2.wy + 1); x.lineTo(gx + 2, w2.wy + w2.wh); x.stroke();
+            }
+          }
+        } else if (type === 'brothel') {      // madder-dyed shutters thrown wide
+          for (const w2 of ground) {
+            x.fillStyle = '#963b4a';
+            x.fillRect(w2.wx - 12, w2.wy, 9, w2.wh);
+            x.fillRect(w2.wx + w2.ww + 3, w2.wy, 9, w2.wh);
+            x.strokeStyle = 'rgba(40,20,22,0.45)';
+            x.lineWidth = 1;
+            for (const sx2 of [w2.wx - 12, w2.wx + w2.ww + 3]) {
+              for (let ly = w2.wy + 3; ly < w2.wy + w2.wh; ly += 4) {
+                x.beginPath(); x.moveTo(sx2 + 1, ly); x.lineTo(sx2 + 8, ly); x.stroke();
+              }
+            }
+          }
+        } else if (type === 'boarding') {     // meaner, smaller lights on every floor
+          for (const w2 of wins) {
+            x.fillStyle = '#cdc1a0';
+            x.fillRect(w2.wx - 4, w2.wy - 6, w2.ww + 8, w2.wh + 10);
+            x.fillStyle = '#322a1e';
+            x.fillRect(w2.wx + w2.ww * 0.22, w2.wy + w2.wh * 0.18, w2.ww * 0.56, w2.wh * 0.6);
+          }
+          const ck = wins[1] || wins[0];
+          if (ck) {                           // one pane gone to a crack, never mended
+            const cx2 = ck.wx + ck.ww * 0.5, cy2 = ck.wy + ck.wh * 0.45;
+            x.strokeStyle = 'rgba(205,193,160,0.7)';
+            x.lineWidth = 1;
+            x.beginPath();
+            x.moveTo(cx2 - 4, cy2 - 5); x.lineTo(cx2, cy2); x.lineTo(cx2 + 5, cy2 + 2);
+            x.moveTo(cx2, cy2); x.lineTo(cx2 - 2, cy2 + 5);
+            x.stroke();
+          }
+        } else if (type === 'provisioner') {  // blank stores below, hoist loft above
+          for (const w2 of ground) {
+            x.fillStyle = '#ddd2b4';
+            x.fillRect(w2.wx - 6, w2.wy - 7, w2.ww + 12, w2.wh + 12);
+          }
+          x.fillStyle = '#3a2e1f';            // small high lights
+          x.fillRect(24, 192 - rowH + 8, 16, 12);
+          x.fillRect(152, 192 - rowH + 8, 16, 12);
+          x.fillStyle = '#33281b';            // the big double cart-door
+          x.fillRect(66, 192 - rowH * 0.78, 60, rowH * 0.78);
+          x.strokeStyle = 'rgba(244,236,216,0.5)';
+          x.lineWidth = 2;
+          x.beginPath(); x.moveTo(96, 194 - rowH * 0.78); x.lineTo(96, 190); x.stroke();
+          x.fillStyle = '#4a3826';            // loft door under the hoist beam
+          x.fillRect(82, 10, 28, 30);
+          x.strokeStyle = '#f4ecd8';
+          x.strokeRect(82, 10, 28, 30);
+          x.fillStyle = '#2e2a26';            // the hoist wheel above the loft door
+          x.beginPath(); x.arc(96, 7, 3, 0, Math.PI * 2); x.fill();
+          x.fillStyle = '#cdc1a0';
+          x.fillRect(95.2, 6.2, 1.6, 1.6);    // its worn wooden hub
+        } else if (type === 'smithy') {       // the wide bay stands open and black
+          const bayY = 192 - rowH * 0.8;
+          x.fillStyle = '#171310';
+          x.fillRect(34, bayY, 124, rowH * 0.8);
+          const forge = x.createLinearGradient(34, 0, 72, 0);  // the forge glows deep at one side
+          forge.addColorStop(0, 'rgba(214,108,40,0.55)');
+          forge.addColorStop(1, 'rgba(214,108,40,0)');
+          x.fillStyle = forge;
+          x.fillRect(34, bayY + rowH * 0.25, 38, rowH * 0.55);
+          x.fillStyle = 'rgba(91,70,54,0.95)';     // the lintel beam over it
+          x.fillRect(30, bayY - 6, 132, 6);
+        }
+      }
     });
   }
 
@@ -569,9 +692,15 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
     build(S, fr) {
       frame = fr || null;       // metric (diorama) when provided, else legacy mercator
       const m = shipMats;
+      /* the two material sets differ: harbor3d's symbolic set carries ink &
+         port, the diorama's HD shipwright set (harborshiphd.js) does not —
+         without these fallbacks the fort guns and crane stays render in
+         three.js's default white materials in the diorama */
+      const inkMat = m.ink || new THREE.LineBasicMaterial({ color: 0x3d2f1e, transparent: true, opacity: 0.55 });
+      const ironGunMat = m.port || new THREE.MeshLambertMaterial({ color: 0x23211e });
       const group = new THREE.Group();
       const lod = [];
-      const stats = { houses: 0, streets: S ? S.streets.length : 0, byGroup: {}, streets3d: 0, palms: 0, fortWalls: 0, wharves: 0, jetties: 0 };
+      const stats = { houses: 0, streets: S ? S.streets.length : 0, byGroup: {}, streets3d: 0, palms: 0, fortWalls: 0, wharves: 0, jetties: 0, landmarks: 0, promoted: 0, byType: {} };
       if (!S) return { group, lod, stats };
 
       const wallGeo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
@@ -857,7 +986,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         crane.add(jib);
         const stay = new THREE.BufferGeometry().setAttribute('position',
           new THREE.Float32BufferAttribute([0, 7.2, 0, 4.3, 7.4, 0, 4.3, 7.4, 0, 4.3, 2.2, 0], 3));
-        crane.add(new THREE.LineSegments(stay, m.ink));
+        crane.add(new THREE.LineSegments(stay, inkMat));
         crane.matrixAutoUpdate = false;
         crane.matrix.copy(groundMatrix(toLL(head[0], head[1]), ang).multiply(localM(1, 1, 1, 0.7)));
         group.add(crane);
@@ -1104,6 +1233,100 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
 
       /* ===== the houses, in the nation's manner ===== */
 
+      // the shared metric frame, used by candidates, shores and streets alike
+      const llM = (lng, lat) => [lng * M_PER_DEG_LAT * Math.cos(lat * D2RAD), lat * M_PER_DEG_LAT];
+
+      // shoreline polylines per harbour, in the same shared metric frame —
+      // for telling the shore-front houses (they hang their nets to dry)
+      const shoreL = {};
+      for (const f of S.lands) {
+        const rings = f.geometry.type === 'MultiPolygon'
+          ? f.geometry.coordinates.map((p) => p[0]) : [f.geometry.coordinates[0]];
+        const arr = (shoreL[f.properties.harbor] = shoreL[f.properties.harbor] || []);
+        for (const ring of rings) if (ring && ring.length >= 4) arr.push(ring.map(([x, y]) => llM(x, y)));
+      }
+      const nearShore = (h) => {
+        const ss = shoreL[h.harbor];
+        if (!ss) return false;
+        const [px, py] = llM(h.lngLat[0], h.lngLat[1]);
+        for (const ln of ss) if (distToLine(ln, px, py) < 45) return true;
+        return false;
+      };
+
+      /* the landmarks claim their ground: no row-house candidate stands
+         within 14 m of a surviving 1730 point, so slipways and garden
+         courts keep clear. Same year filter as the landmark pass below. */
+      const landmarkPts = {};
+      for (const p of S.points) {
+        if ((p.year_built || 0) > 1730) continue;
+        if ((p.year_destroyed == null ? Infinity : p.year_destroyed) <= 1730) continue;
+        (landmarkPts[p.harbor] = landmarkPts[p.harbor] || []).push(llM(p.lngLat[0], p.lngLat[1]));
+      }
+      const nearLandmark = (harbor, lon, lat) => {
+        const list = landmarkPts[harbor];
+        if (!list) return false;
+        const [px, py] = llM(lon, lat);
+        for (const [qx, qy] of list) {
+          if ((px - qx) * (px - qx) + (py - qy) * (py - qy) < 196) return true;
+        }
+        return false;
+      };
+
+      // where does the house stand? by the water, on the square, or back
+      // in the lanes — the trades sort themselves accordingly
+      function classifyHouse(harbor, lon, lat) {
+        const [px, py] = llM(lon, lat);
+        const ss = shoreL[harbor];
+        if (ss) for (const ln of ss) if (distToLine(ln, px, py) < 45) return 'waterfront';
+        for (const wp of wellPositions) {
+          if (wp.harbor !== harbor) continue;
+          const [qx, qy] = llM(wp.ll[0], wp.ll[1]);
+          if ((px - qx) * (px - qx) + (py - qy) * (py - qy) < 3025) return 'plaza';
+        }
+        return 'back';
+      }
+
+      /* per-port promotion weights: a row-house may be raised to a trade
+         by location class. Vice ports run hot (~20-25% of frontage),
+         trade ports cooler (~10-15%), Tortuga tiny but tavern-heavy. */
+      /* the tavern leads everywhere a sailor drinks: back lanes carry a
+         tavern weight too (Port Royal's "one house in four a bar"), with
+         brothel/gambling trimmed below it; class sums are unchanged, so
+         each port's overall trade fraction stays where it was. Tavern is
+         listed first in every table so the hash walk favours it. */
+      const PORT_PROMO = {
+        'nassau': { waterfront: { tavern: 0.10, provisioner: 0.04, smithy: 0.03, counting: 0.02 },
+          plaza: { tavern: 0.08, counting: 0.04, smithy: 0.03 },
+          back: { tavern: 0.07, boarding: 0.05, brothel: 0.03, gambling: 0.03 } },
+        'port-royal': { waterfront: { tavern: 0.10, provisioner: 0.05, smithy: 0.03, counting: 0.04 },
+          plaza: { tavern: 0.08, counting: 0.05, gambling: 0.03 },
+          back: { tavern: 0.08, boarding: 0.05, brothel: 0.04, gambling: 0.03 } },
+        'tortuga': { waterfront: { tavern: 0.12, smithy: 0.02 },
+          plaza: { tavern: 0.10 },
+          back: { tavern: 0.05, boarding: 0.03, brothel: 0.01 } },
+        'batavia': { waterfront: { provisioner: 0.08, counting: 0.04, tavern: 0.03, smithy: 0.02 },
+          plaza: { counting: 0.05, tavern: 0.03 },
+          back: { tavern: 0.025, boarding: 0.025, gambling: 0.01 } },
+        'bridgetown': { waterfront: { provisioner: 0.06, tavern: 0.04, counting: 0.03, smithy: 0.02 },
+          plaza: { tavern: 0.04, counting: 0.03 },
+          back: { tavern: 0.025, boarding: 0.025, brothel: 0.01 } },
+        'cartagena': { waterfront: { provisioner: 0.05, tavern: 0.03, counting: 0.03, smithy: 0.02 },
+          plaza: { counting: 0.04, tavern: 0.03 },
+          back: { tavern: 0.02, boarding: 0.02 } },
+        'charleston': { waterfront: { provisioner: 0.06, counting: 0.04, tavern: 0.04, smithy: 0.02 },
+          plaza: { tavern: 0.03, counting: 0.03 },
+          back: { tavern: 0.02, boarding: 0.02 } },
+        'havana': { waterfront: { provisioner: 0.06, tavern: 0.05, counting: 0.03, smithy: 0.03 },
+          plaza: { tavern: 0.04, counting: 0.04 },
+          back: { tavern: 0.035, boarding: 0.03, gambling: 0.015, brothel: 0.01 } },
+      };
+      const TYPE_SIGN = { tavern: 1, brothel: 1, gambling: 1, counting: 1 };
+      const typeStories = (type, style) => {
+        if (type === 'smithy') return 1;
+        if (type === 'boarding') return (style === 'english' || style === 'dutch') ? 3 : 2;
+        return 2;   // tavern, brothel, gambling, counting, provisioner
+      };
+
       function pickStories(style, harbor) {
         if (style === 'english') {
           let s = 1 + (Math.random() < 0.55 ? 1 : 0) + (Math.random() < 0.22 ? 1 : 0);
@@ -1118,12 +1341,32 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const groups = {};
       const chimneys = [], balconies = [];
       const perHarbor = {};
+      const classTot = {}, classPromo = {};   // promotion bookkeeping per harbor|class
       let total = 0;
 
       function pushHouse(style, harbor, lon, lat, ang, w, d) {
         perHarbor[harbor] = (perHarbor[harbor] || 0) + 1;
         if (perHarbor[harbor] > 520) return;
-        const stories = pickStories(style, harbor);
+        /* promotion: a positional hash walks the port's weight table for
+           the house's location class — the same house is always the same
+           trade. Empty string means an ordinary dwelling. */
+        let type = '';
+        const promo = PORT_PROMO[harbor];
+        if (promo) {
+          const cls = classifyHouse(harbor, lon, lat);
+          const tw = promo[cls];
+          if (tw) {
+            const ck = harbor + '|' + cls;
+            classTot[ck] = (classTot[ck] || 0) + 1;
+            const r = dhash(lon, lat, 201);
+            let acc = 0;
+            for (const t in tw) { acc += tw[t]; if (r < acc) { type = t; break; } }
+            // defensive cap: no street class runs past 35% trades (vs weight typos)
+            if (type && (classPromo[ck] || 0) + 1 > Math.ceil(classTot[ck] * 0.35)) type = '';
+            if (type) classPromo[ck] = (classPromo[ck] || 0) + 1;
+          }
+        }
+        const stories = type ? typeStories(type, style) : pickStories(style, harbor);
         anchorAt(harbor, [lon, lat]);
         const h = {
           harbor,
@@ -1137,17 +1380,27 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             : 2.4 + Math.random() * 0.8,
           tint: (Math.random() * 3) | 0,
           stories,
+          type,
           dormer: (style === 'english' || style === 'dutch') && stories >= 2 && Math.random() < 0.45,
           stoop: Math.random() < 0.6,
-          sign: style === 'english' && stories >= 2 && Math.random() < 0.1,
+          sign: type ? !!TYPE_SIGN[type]
+            : style === 'english' && stories >= 2 && Math.random() < 0.1,
         };
-        (groups[style + '|' + stories] = groups[style + '|' + stories] || []).push(h);
+        const key = style + '|' + stories + (type ? '|' + type : '');
+        (groups[key] = groups[key] || []).push(h);
         total++;
-        if ((style === 'english' && Math.random() < 0.6) || (style === 'french' && Math.random() < 0.35)) {
+        if (type === 'smithy' || type === 'tavern') {
+          // the forge and the taproom hearth never go cold
+          chimneys.push({ h, end: dhash(lon, lat, 202) < 0.5 ? -1 : 1, lit: true });
+        } else if ((style === 'english' && Math.random() < 0.6) || (style === 'french' && Math.random() < 0.35)) {
           chimneys.push({ h, end: Math.random() < 0.5 ? -1 : 1 });
         }
         if (harbor === 'cartagena' && stories >= 2 && Math.random() < 0.55) {
           balconies.push(h);
+        }
+        if (type) {
+          stats.promoted++;
+          stats.byType[type] = (stats.byType[type] || 0) + 1;
         }
       }
 
@@ -1182,8 +1435,10 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
                 if (Math.random() < 0.45) plantTree(harbor, style, [clon + px / mx, clat + py / M_PER_DEG_LAT]);
                 continue;
               }
+              const cLon = clon + px / mx, cLat = clat + py / M_PER_DEG_LAT;
+              if (nearLandmark(harbor, cLon, cLat)) continue;   // the landmark keeps its ground
               (streetCand[harbor] = streetCand[harbor] || []).push([
-                style, harbor, clon + px / mx, clat + py / M_PER_DEG_LAT,
+                style, harbor, cLon, cLat,
                 Math.atan2(ey, ex) / D2RAD, wBase - 1 + Math.random() * 2.4, d,
               ]);
             }
@@ -1201,7 +1456,6 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
 
       // Street segments per harbour, in a common metric frame, so block-infill
       // houses can face the nearest road (else clusters ignore the streetlines).
-      const llM = (lng, lat) => [lng * M_PER_DEG_LAT * Math.cos(lat * D2RAD), lat * M_PER_DEG_LAT];
       const streetSegs = {};
       const streetLines = [];      // per street, lon/lat + metric, for the signposts
       for (const f of S.streets) {
@@ -1260,23 +1514,6 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         }
       });
 
-      // shoreline polylines per harbour, in the same shared metric frame —
-      // for telling the shore-front houses (they hang their nets to dry)
-      const shoreL = {};
-      for (const f of S.lands) {
-        const rings = f.geometry.type === 'MultiPolygon'
-          ? f.geometry.coordinates.map((p) => p[0]) : [f.geometry.coordinates[0]];
-        const arr = (shoreL[f.properties.harbor] = shoreL[f.properties.harbor] || []);
-        for (const ring of rings) if (ring && ring.length >= 4) arr.push(ring.map(([x, y]) => llM(x, y)));
-      }
-      const nearShore = (h) => {
-        const ss = shoreL[h.harbor];
-        if (!ss) return false;
-        const [px, py] = llM(h.lngLat[0], h.lngLat[1]);
-        for (const ln of ss) if (distToLine(ln, px, py) < 45) return true;
-        return false;
-      };
-
       for (const f of S.blocks) {
         const ring = f.geometry.coordinates[0];
         if (!ring || ring.length < 4 || total > 4000) continue;
@@ -1304,8 +1541,10 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
               }
               continue;
             }
+            const cLon = clon + px / mx, cLat = clat + py / M_PER_DEG_LAT;
+            if (nearLandmark(f.properties.harbor, cLon, cLat)) continue;
             pushHouse(style, f.properties.harbor,
-              clon + px / mx, clat + py / M_PER_DEG_LAT, Math.atan2(ey, ex) / D2RAD,
+              cLon, cLat, Math.atan2(ey, ex) / D2RAD,
               Math.min(wBase - 0.5 + Math.random() * 2.6, len / n - 1.2), d);
           }
         }
@@ -1339,6 +1578,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
               [clon + px / mx, clat + py / M_PER_DEG_LAT]);
           } else {
             const lng = clon + px / mx, lat = clat + py / M_PER_DEG_LAT;
+            if (nearLandmark(f.properties.harbor, lng, lat)) { placed++; continue; }
             // face the nearest street, so the block reads as fronting its roads
             const ang = nearestStreetAngle(f.properties.harbor, lng, lat, mainAng) + (Math.random() - 0.5) * 6;
             pushHouse(style, f.properties.harbor, lng, lat, ang,
@@ -1349,6 +1589,13 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       }
 
       const dormerWallS = [], dormerRoofS = [], stoopS = [], signArmS = [], signPlateS = [];
+      // the promoted trades: painted signboards per type, and their props
+      const typedPlateS = {};                  // type → plate specs (own painted material)
+      const lanternS = [], forgeYardS = [], hoistSackS = [], strongboxS = [];
+      const LANTERN_WHITE = new THREE.Color(0xffffff), LANTERN_RED = new THREE.Color(0xc04038);
+      /* roofs and plinths keep batching by style|stories alone — the type
+         only changes the facade map — so the trades add no roof draws */
+      const roofAcc = {}, plinthAcc = {};
       // yard clutter about the houses, close-zoom tier (one instanced draw
       // per kind per harbour): flowering shrubs, kitchen gardens, firewood,
       // benches, rain barrels, leaning planks, rock piles, ground litter
@@ -1362,18 +1609,20 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const doorWoodS = [], bootScrapeS = [], shutterS = [], fruitTreeS = []; // street life; walled-yard green
       const WHITEWASH = new THREE.Color(0xf2ead8);
       for (const [key, list] of Object.entries(groups)) {
-        const [style, storiesStr] = key.split('|');
+        const keyParts = key.split('|');
+        const style = keyParts[0], storiesStr = keyParts[1], type = keyParts[2] || '';
         const stories = +storiesStr;
-        const roofKind = (style === 'spanish' || style === 'french') ? 'hip' : 'gable';
-        const wallMat = new THREE.MeshLambertMaterial({ color: 0xffffff, map: facadeTexture(style, stories) });
-        const roofMat = new THREE.MeshLambertMaterial({ color: 0xffffff, map: roofTexture(style), side: THREE.DoubleSide });
+        const wallMat = new THREE.MeshLambertMaterial({ color: 0xffffff, map: facadeTexture(style, stories, type) });
         const wallTints = WALL_TINTS[style].map((c) => new THREE.Color(c));
         const roofTints = ROOF_TINTS[style].map((c) => new THREE.Color(c));
         // facade window centres in texture px (192 wide), outermost casements —
         // for hanging propped-open shutters on the prosperous houses. The
         // French facade paints its own; the Spanish upper rows carry rejas.
         const winSlots = { english: [36, 156], dutch: [29, 161] }[style];
-        const wallS = [], plinthS = [], roofS = [];
+        const baseKey = style + '|' + stories;
+        const wallS = [];
+        const plinthS = (plinthAcc[baseKey] = plinthAcc[baseKey] || []);
+        const roofS = (roofAcc[baseKey] = roofAcc[baseKey] || []);
         for (const h of list) {
           const g = groundMatrix(h.lngLat, h.ang);
           /* prosperity, hashed from the house position: the tidy house wears
@@ -1383,7 +1632,9 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             const s = Math.sin(h.lngLat[0] * 9173.51 + h.lngLat[1] * 7841.33 + n * 74.77) * 43758.5453;
             return s - Math.floor(s);
           };
-          const pros = yr(60);
+          let pros = yr(60);
+          if (h.type === 'counting') pros = Math.max(pros, 0.75);          // money keeps the whitewash fresh
+          else if (h.type === 'boarding' || h.type === 'brothel') pros = Math.min(pros, 0.3);
           let wallC = wallTints[h.tint], roofC = roofTints[h.tint];
           if (pros > 0.72) wallC = wallC.clone().lerp(WHITEWASH, 0.45);
           else if (pros < 0.22) {
@@ -1407,14 +1658,19 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
                 .multiply(localM(1.7, 0.4, 0.9, 0)),
             });
           }
-          if (h.sign) {             // the tavern sign, hung out over the way
+          if (h.sign) {             // the trade sign, hung out over the way
             const base = g.clone().multiply(new THREE.Matrix4().makeTranslation(h.w * 0.28, h.hw * 0.7, h.d / 2));
             signArmS.push({ harbor: h.harbor, m: base.clone().multiply(localM(0.12, 0.12, 1.3, 0)) });
-            signPlateS.push({
+            const plate = {
               harbor: h.harbor,
               m: base.multiply(new THREE.Matrix4().makeTranslation(0, -0.55, 0.95))
                 .multiply(localM(0.9, 0.7, 0.08, 0)),
-            });
+            };
+            if (h.type && TYPE_SIGN[h.type]) {  // a painted board names the trade
+              (typedPlateS[h.type] = typedPlateS[h.type] || []).push(plate);
+            } else {
+              signPlateS.push(plate);
+            }
           }
           /* ----- the yard: the lived-in ground about the house -----
              Deterministically hashed from the house position, so the same
@@ -1432,7 +1688,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             (yr(50) < 0.5 ? yardShrubS : yardShrub2S).push({ harbor: h.harbor,  // hash picks the blossom hue
               m: yardAt(sideX * (h.w / 2 + 0.8), (yr(2) - 0.5) * h.d * 0.6, yr(3) * 360, 0.75 + yr(4) * 0.5) });
           }
-          if (pros > 0.12 && yr(5) < (pros > 0.7 ? 0.3 : 0.16)) {  // a kitchen-garden out back — the tidy house keeps a fuller one
+          if (!h.type && pros > 0.12 && yr(5) < (pros > 0.7 ? 0.3 : 0.16)) {  // a kitchen-garden out back — the tidy house keeps a fuller one
             yardGardenS.push({ harbor: h.harbor,
               m: yardAt((yr(6) - 0.5) * h.w * 0.5, backZ - 1.5, (yr(7) - 0.5) * 14, 0.85 + yr(8) * 0.3) });
           }
@@ -1445,7 +1701,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             yardWoodS.push({ harbor: h.harbor,
               m: yardAt(-sideX * (h.w / 2 + 0.5), (yr(10) - 0.5) * h.d * 0.5, 90, 0.85 + yr(11) * 0.35) });
           }
-          if (yr(12) < 0.18) {      // a bench by the door, off to the corner
+          if (!h.type && yr(12) < 0.18) {  // a bench by the door, off to the corner
             yardBenchS.push({ harbor: h.harbor,
               m: yardAt(sideX * h.w * 0.33, h.d / 2 + 0.8, 180 + (yr(13) - 0.5) * 16) });
           }
@@ -1492,13 +1748,37 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             hitchS.push({ harbor: h.harbor,
               m: yardAt(h.w * 0.42, h.d / 2 + 1.3, (yr(52) - 0.5) * 20) });
           }
-          if (yr(46) < 0.05) {      // a bee skep in the back yard, rare
+          if (!h.type && yr(46) < 0.05) {  // a bee skep in the back yard, rare
             skepS.push({ harbor: h.harbor,
               m: yardAt((yr(47) - 0.5) * h.w * 0.5, backZ - 0.7, yr(48) * 360, 0.9 + yr(49) * 0.35) });
           }
-          if (h.sign) {             // tavern trade spills out: a table and stools,
-            tavernS.push({ harbor: h.harbor,   // set beside the door, never in it
-              m: yardAt(-h.w * 0.3, h.d / 2 + 1.6, yr(38) * 360) });
+          if (h.sign && (!h.type || h.type === 'tavern' || h.type === 'gambling')) {
+            tavernS.push({ harbor: h.harbor,   // trade spills out: a table and stools,
+              m: yardAt(-h.w * 0.3, h.d / 2 + 1.6, yr(38) * 360) });   // beside the door, never in it
+          }
+          /* ----- the promoted trades set out their props ----- */
+          if (h.type === 'tavern' || h.type === 'gambling' || h.type === 'brothel') {
+            /* a lantern hung on the wall beside the door — its top loop reads
+               as the hook; base at 1.8 m puts the light just over head height.
+               The brothel's burns red. */
+            lanternS.push({ harbor: h.harbor,
+              m: g.clone().multiply(new THREE.Matrix4().makeTranslation(-h.w * 0.18, 1.8, h.d / 2 + 0.14)),
+              color: h.type === 'brothel' ? LANTERN_RED : LANTERN_WHITE });
+          }
+          if (h.type === 'smithy') {           // the forge yard to one side of the open bay,
+            forgeYardS.push({ harbor: h.harbor,                  // clear of the bay's centre line
+              m: yardAt(sideX * h.w * 0.28, h.d / 2 + 2.1, yr(120) * 40 - 20) });
+          }
+          if (h.type === 'provisioner') {
+            /* the hoist and its dangling sack: the kit's beam sits at local
+               y 3.4 with the wall plane at z 0, so lifting it by hw-3.5 lays
+               the beam just under the eave, the sack swinging at the loft door */
+            hoistSackS.push({ harbor: h.harbor,
+              m: g.clone().multiply(new THREE.Matrix4().makeTranslation(0, Math.max(0, h.hw - 3.5), h.d / 2)) });
+          }
+          if (h.type === 'counting') {         // the strongbox by the counting-house door
+            strongboxS.push({ harbor: h.harbor,
+              m: yardAt(h.w * 0.3, h.d / 2 + 1.0, yr(121) * 30 - 15, 0.9) });
           }
           if (yr(39) < 0.13) {      // washing strung out to dry behind the house
             clothesS.push({ harbor: h.harbor,
@@ -1528,7 +1808,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
           } else if (pros > 0.45 && yr(64) < 0.18) {  // a low stone wall between yards
             boundaryS.push({ harbor: h.harbor,
               m: yardAt(sideX * (h.w / 2 + 1.7), 0, 90).multiply(localM(h.d + 1.6, 0.55, 0.32, 0)) });
-            if (yr(106) < 0.4) {    // and within the walled yard, a small fruit tree
+            if (!h.type && yr(106) < 0.4) {  // and within the walled yard, a small fruit tree
               fruitTreeS.push({ harbor: h.harbor,
                 m: yardAt(sideX * (h.w / 2 + 1.0), backZ - 0.6 - yr(107), yr(108) * 360, 0.8 + yr(109) * 0.45) });
             }
@@ -1566,9 +1846,16 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
           }
         }
         addInst(wallGeo, wallMat, wallS);
-        addInst(wallGeo, stoneMat, plinthS);
-        addInst(roofGeos[roofKind], roofMat, roofS);
         stats.byGroup[key] = list.length;
+      }
+      // roofs and plinths flush once per style|stories — the trade types
+      // share these draws, so promotion adds no roof or plinth batches
+      for (const list of Object.values(plinthAcc)) addInst(wallGeo, stoneMat, list);
+      for (const [baseKey, list] of Object.entries(roofAcc)) {
+        const style = baseKey.split('|')[0];
+        const roofKind = (style === 'spanish' || style === 'french') ? 'hip' : 'gable';
+        const roofMat = new THREE.MeshLambertMaterial({ color: 0xffffff, map: roofTexture(style), side: THREE.DoubleSide });
+        addInst(roofGeos[roofKind], roofMat, list);
       }
       stats.houses = total;
 
@@ -1589,6 +1876,70 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       addInst(wallGeo, stoneMat, stoopS, { lod: true });
       addInst(wallGeo, woodMat, signArmS, { lod: true });
       addInst(wallGeo, new THREE.MeshLambertMaterial({ color: 0x8a3b2e }), signPlateS, { lod: true });
+      /* painted boards for the promoted trades: a small glyph per type,
+         one extra instanced draw per type per harbour, only when present */
+      const signBoard = (x, base, border) => { // the weathered board every glyph hangs on
+        x.fillStyle = base; x.fillRect(0, 0, 32, 32);
+        x.strokeStyle = 'rgba(0,0,0,0.14)';    // plank seams across the grain
+        x.lineWidth = 1;
+        for (const gy of [8, 16, 24]) {
+          x.beginPath(); x.moveTo(0, gy); x.lineTo(32, gy); x.stroke();
+        }
+        x.fillStyle = 'rgba(0,0,0,0.16)';      // rain-darkened along the foot
+        x.fillRect(0, 28, 32, 4);
+        x.strokeStyle = border; x.lineWidth = 2;  // the painted border, gone thin
+        x.strokeRect(2, 2, 28, 28);
+      };
+      const SIGN_GLYPHS = {
+        tavern: (x) => {                       // the tankard
+          signBoard(x, '#7a4a26', '#f0e2c0');
+          x.fillStyle = '#f0e2c0'; x.fillRect(10, 9, 10, 15);
+          x.fillRect(8, 9, 14, 3);             // the head of foam
+          x.strokeStyle = '#f0e2c0'; x.lineWidth = 2.5;
+          x.beginPath(); x.arc(22, 16, 4.5, -Math.PI / 2, Math.PI / 2); x.stroke();
+        },
+        gambling: (x) => {                     // the pair of dice
+          signBoard(x, '#3b3b4a', '#ece6d4');
+          x.fillStyle = '#ece6d4'; x.fillRect(5, 6, 10, 10); x.fillRect(17, 16, 10, 10);
+          x.fillStyle = '#2a2a36';
+          for (const [px2, py2] of [[8, 9], [12, 13], [20, 19], [24, 19], [20, 23], [24, 23]]) {
+            x.fillRect(px2, py2, 2, 2);
+          }
+        },
+        counting: (x) => {                     // the merchant's balance
+          signBoard(x, '#ece4cc', '#3a2e1f');
+          x.strokeStyle = '#3a2e1f'; x.lineWidth = 2;
+          x.beginPath();
+          x.moveTo(16, 6); x.lineTo(16, 24);   // the post
+          x.moveTo(6, 9); x.lineTo(26, 9);     // the beam
+          x.moveTo(6, 9); x.lineTo(6, 16); x.moveTo(26, 9); x.lineTo(26, 16);
+          x.stroke();
+          x.fillStyle = '#3a2e1f';             // the pans
+          x.beginPath(); x.arc(6, 17, 4, 0, Math.PI); x.fill();
+          x.beginPath(); x.arc(26, 17, 4, 0, Math.PI); x.fill();
+        },
+        brothel: (x) => {                      // the bunch of grapes — the period's quiet word for it
+          signBoard(x, '#564238', '#8a6a4a');
+          x.strokeStyle = '#5e6a3c'; x.lineWidth = 1.5;
+          x.beginPath(); x.moveTo(17, 5); x.lineTo(15.5, 10); x.stroke();   // the stalk
+          x.fillStyle = '#5e6a3c';             // a single leaf at the stalk
+          x.beginPath(); x.ellipse(20.5, 7.5, 3.2, 1.8, 0.5, 0, Math.PI * 2); x.fill();
+          x.fillStyle = '#6a4460';             // the bunch, tapering down
+          for (const [gx2, gy2] of [[11.5, 13], [16, 12.5], [20.5, 13], [13.5, 17], [18, 17], [16, 21], [16, 25]]) {
+            x.beginPath(); x.arc(gx2, gy2, 2.6, 0, Math.PI * 2); x.fill();
+          }
+          x.fillStyle = '#8a5c80';             // the light catches two grapes
+          x.beginPath(); x.arc(15.2, 12, 0.9, 0, Math.PI * 2); x.fill();
+          x.beginPath(); x.arc(15.2, 20.3, 0.9, 0, Math.PI * 2); x.fill();
+        },
+      };
+      for (const [t, list] of Object.entries(typedPlateS)) {
+        if (!list.length || !SIGN_GLYPHS[t]) continue;
+        const plateMat = new THREE.MeshLambertMaterial({
+          color: 0xffffff, map: canvasTex('sign-' + t, 32, 32, SIGN_GLYPHS[t]),
+        });
+        addInst(wallGeo, plateMat, list, { lod: true });
+      }
 
       /* ----- yard clutter: shared geometry, instanced per harbour -----
          Each kind is a single two-tone geometry (colours baked per vertex,
@@ -2005,10 +2356,10 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         return g2;
       })();
       const smokeMat = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false });
-      for (const { h, end } of chimneys) {     // a quarter of the hearths are lit
+      for (const { h, end, lit } of chimneys) {  // a quarter of the hearths are lit —
         const r2 = dhash(h.lngLat[0], h.lngLat[1], 81);
-        if (r2 > 0.27) continue;
-        const sc2 = 0.8 + r2 * 1.5;
+        if (!lit && r2 > 0.27) continue;         // but forge and taproom always smoke
+        const sc2 = 0.8 + Math.min(r2, 0.27) * 1.5;
         smokeS.push({ harbor: h.harbor,
           m: groundMatrix(h.lngLat, h.ang)
             .multiply(new THREE.Matrix4().makeTranslation(end * (h.w / 2 - 0.7), h.hw + h.hr + 1.2, 0))
@@ -2075,7 +2426,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       addInst(ropeCoilGeo, clutterMat, ropeCoilS, { lod: true });
       addInst(new THREE.BoxGeometry(0.95, 0.6, 0.12), woodMat, fenderS, { lod: true });
       addInst(careenGeo, clutterMat, careenS, { lod: true });
-      addInst(smokeGeo, smokeMat, smokeS, { lod: true });
+      // (smokeS flushes after the landmark pass below, so the building
+      //  factories can emit smoke into the same shared instanced draw)
       stats.clutter = yardShrubS.length + yardGardenS.length + yardWoodS.length + yardBenchS.length
         + yardPlankS.length + yardScrapS.length + yardBarrelS.length
         + yardFlowerS.length + tavernS.length + fishRackS.length + dinghyS.length
@@ -2084,7 +2436,6 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         + yardShrub2S.length + yardFlower2S.length + hitchS.length + skepS.length
         + signpostS.length + troughS.length;
       stats.stalls = stallAS.length + stallBS.length + tripodS.length;
-      stats.smoke = smokeS.length;
       stats.filler = leanToS.length + privyS.length + shingleS.length + boundaryS.length;
       stats.debris = middenS.length + brokenBarrelS.length + wheelS.length
         + shardS.length + brambleS.length + fenceBrokenS.length;
@@ -2170,7 +2521,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       addInst(wallGeo, masonMat, merlonSpec);
       const gunGeo = new THREE.CylinderGeometry(0.18, 0.3, 3.4, 6)
         .rotateZ(-Math.PI / 2 + 0.05).translate(0.8, WALL_H + 0.45, 0); // muzzle out over the parapet
-      addInst(gunGeo, m.port, cannonSpec);
+      addInst(gunGeo, ironGunMat, cannonSpec);
       const liftLL = (s, y) => ({
         harbor: s.harbor,
         m: groundMatrix(s.ll, 0).multiply(new THREE.Matrix4().makeTranslation(0, y, 0)),
@@ -2212,111 +2563,110 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         }
       };
 
-      function churchOf(style) {
-        const g = new THREE.Group();
-        if (style === 'spanish') {
-          box(g, stoneMat, 17, 0.7, 9, 0);
-          box(g, churchWallMat, 16, 6, 8, 0);
-          buttresses(g, stoneMat, 16, 8, 3.6);
-          roofOn(g, 'gable', tileMat, 16, 2.4, 8, 0, 6);
-          box(g, churchWallMat, 5, 13, 5, 9.6);
-          box(g, churchWallMat, 4.2, 2.8, 4.2, 9.6, 13);
-          const dome = new THREE.Mesh(new THREE.SphereGeometry(2.5, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), tileMat);
-          dome.position.set(9.6, 15.8, 0);
-          g.add(dome);
-          box(g, m.wale, 0.18, 1.8, 0.18, 9.6, 18.3);
-          box(g, m.wale, 1, 0.18, 0.18, 9.6, 18.9);
-        } else if (style === 'dutch') {
-          box(g, stoneMat, 17, 0.7, 8.5, 0);
-          box(g, churchWallMat, 16, 6, 7.5, 0);
-          box(g, churchWallMat, 7.5, 6, 15, 0);
-          roofOn(g, 'gable', tileMat, 16, 2.8, 7.5, 0, 6);
-          const drum = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.4, 4, 8), churchWallMat);
-          drum.position.y = 8;
-          g.add(drum);
-          const dome = new THREE.Mesh(new THREE.SphereGeometry(3.4, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), leadMat);
-          dome.scale.y = 0.75;
-          dome.position.y = 10;
-          g.add(dome);
-          const lantern = new THREE.Mesh(new THREE.ConeGeometry(0.8, 2, 6), leadMat);
-          lantern.position.y = 13.2;
-          g.add(lantern);
-        } else if (style === 'french') {
-          box(g, stoneMat, 13, 0.6, 7, 0);
-          box(g, churchWallMat, 12, 4.5, 6.5, 0);
-          buttresses(g, stoneMat, 12, 6.5, 2.8);
-          roofOn(g, 'gable', shingleMat, 12, 3.4, 6.5, 0, 4.5);
-          box(g, churchWallMat, 1.8, 2.4, 1.8, 3, 7.9);
-          const fl = new THREE.Mesh(new THREE.ConeGeometry(1.4, 2.6, 4), shingleMat);
-          fl.position.set(3, 11.5, 0);
-          g.add(fl);
-        } else {
-          box(g, stoneMat, 16, 0.7, 8.5, 0);
-          box(g, churchWallMat, 15, 5.5, 7.5, 0);
-          buttresses(g, stoneMat, 15, 7.5, 3.4);
-          roofOn(g, 'gable', shingleMat, 15, 2.6, 7.5, 0, 5.5);
-          box(g, churchWallMat, 5.2, 11.5, 5.2, 9.2);
-          for (const cx of [-1, 1]) for (const cz of [-1, 1]) {
-            box(g, stoneMat, 0.9, 8, 0.9, 9.2 + cx * 2.5, 0, cz * 2.5);
-          }
-          box(g, stoneMat, 6, 0.8, 6, 9.2, 11.5);
-          for (const cx of [-1, 1]) for (const cz of [-1, 1]) {
-            const pin = new THREE.Mesh(new THREE.ConeGeometry(0.4, 1.6, 4), stoneMat);
-            pin.position.set(9.2 + cx * 2.6, 13, cz * 2.6);
-            g.add(pin);
-          }
-          const spire = new THREE.Mesh(new THREE.ConeGeometry(2.3, 5, 4), leadMat);
-          spire.position.set(9.2, 14.8, 0);
-          g.add(spire);
-        }
-        return g;
-      }
+      /* The building factories live in web/js/models/*.js, registered on
+         window.cartaBuildingModels. Each factory takes (ctx, spec) and
+         returns a THREE.Group in local metres, origin at ground, +z front.
+         ctx hands them harbortown's materials, painted textures, geometry
+         helpers and emit hooks, so their output is indistinguishable from
+         the geometry that used to be built inline here. */
+      const ctx = {
+        THREE,
+        mats: {
+          stoneMat, masonMat, woodMat, brickMat,
+          churchWallMat, leadMat, tileMat, shingleMat,
+          clutterMat, smokeMat,
+          ink: inkMat, wale: m.wale, port: ironGunMat, flag: m.flag, mast: m.mast,
+        },
+        facadeTexture,
+        roofTexture,
+        canvasTex,
+        box,
+        roofOn,
+        buttresses,
+        mergeColored,
+        lump,
+        dhash,
+        style: (harbor) => HARBOR_STYLE[harbor] || 'english',
+        emit: {
+          // hearth/forge smoke joins the town's shared instanced draw;
+          // m is an absolute ground matrix (groundMatrix-derived)
+          smoke: (harbor, mAbs) => { smokeS.push({ harbor, m: mAbs }); },
+          tree: () => {},   // TODO(step 3): wire to plantTree
+          grass: () => {},  // TODO(step 3): wire to grassSpec
+        },
+      };
 
       // Landmarks read above the rooftops: a touch over true scale, as the
       // chartmakers drew the buildings that mattered.
       const LANDMARK_SCALE = { church: 1.3, building: 1.2 };
-      for (const p of S.points) {
-        const style = HARBOR_STYLE[p.harbor] || 'english';
-        let g;
-        if (p.kind === 'church') {
-          g = churchOf(style);
-        } else if (p.kind === 'building') {
-          g = new THREE.Group();
-          box(g, stoneMat, 15, 0.7, 10, 0);
-          box(g, new THREE.MeshLambertMaterial({ color: 0xe7dcc0, map: facadeTexture(style, 2) }), 14, 6.5, 9, 0);
-          roofOn(g, 'hip', style === 'spanish' ? tileMat : shingleMat, 14, 2.8, 9, 0, 6.5);
-          const cupola = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 1.6, 8), churchWallMat);
-          cupola.position.y = 9.8;
-          g.add(cupola);
-          const cap = new THREE.Mesh(new THREE.ConeGeometry(1.4, 1.4, 8), leadMat);
-          cap.position.y = 11.3;
-          g.add(cap);
-        } else if (p.kind === 'battery') {
-          g = new THREE.Group();
-          box(g, masonMat, 9, 1.5, 5.5, 0);
-          box(g, masonMat, 9, 0.7, 0.8, 0, 1.5, 2.4);
-          for (const off of [-1.4, 1.4]) {
-            const gun = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.34, 3.8, 6), m.port);
-            gun.rotation.z = Math.PI / 2 - 0.06;
-            gun.position.set(2.2, 2.1, off);
-            g.add(gun);
-          }
-        } else { // gallows
-          g = new THREE.Group();
-          for (const off of [-1.1, 1.1]) {
-            const post = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 5, 5), m.wale);
-            post.position.set(off, 2.5, 0);
-            g.add(post);
-          }
-          const beam = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.3, 0.3), m.wale);
-          beam.position.y = 4.9;
-          g.add(beam);
+      const reg = window.cartaBuildingModels;
+
+      /* trade props from the shared kit registry. Kits arrive with the
+         model files and may be missing — every access is guarded; a
+         missing kit simply leaves the trade unpropped. Kit contract:
+         fn(ctx) → vertex-coloured BufferGeometry. */
+      const flushKit = (name, specs) => {
+        if (!specs.length) return;
+        let kitG = null;
+        try {
+          if (reg && reg.kits && typeof reg.kits[name] === 'function') kitG = reg.kits[name](ctx);
+        } catch (err) {
+          console.warn('harbortown: kit "' + name + '" failed', err);
+          kitG = null;
         }
-        const sc = LANDMARK_SCALE[p.kind] || 1;
+        if (!kitG || !kitG.isBufferGeometry) return;
+        addInst(kitG, clutterMat, specs, { lod: true });
+      };
+      flushKit('lantern', lanternS);
+      flushKit('forgeYard', forgeYardS);
+      flushKit('hoistSack', hoistSackS);
+      flushKit('strongbox', strongboxS);
+      // ('stocks' belongs to the prison landmark alone — not flushed here)
+      for (const p of S.points) {
+        // the 1730 snapshot: not yet built, or already lost, stays off the chart
+        if ((p.year_built || 0) > 1730) continue;
+        if ((p.year_destroyed == null ? Infinity : p.year_destroyed) <= 1730) continue;
+        const style = HARBOR_STYLE[p.harbor] || 'english';
+        const spec = {
+          ...p,
+          style,
+          seed: (n) => dhash(p.lngLat[0], p.lngLat[1], n),
+        };
+        const fallback = reg && reg.get('building');
+        let factory = (reg && reg.get(p.kind)) || fallback;
+        if (!factory) continue;
+        let g = null;
+        try {
+          g = factory(ctx, spec);
+        } catch (err) {
+          console.warn('harbortown: factory for kind "' + p.kind + '" failed', err);
+          if (fallback && factory !== fallback) {
+            try { g = fallback(ctx, spec); } catch (e2) { g = null; }
+          }
+        }
+        if (!g) continue;
+        const sc = g.userData.scale || LANDMARK_SCALE[p.kind] || 1;
+        const ang = g.userData.angleFromStreet
+          ? nearestStreetAngle(p.harbor, p.lngLat[0], p.lngLat[1], 0) : 0;
         g.matrixAutoUpdate = false;
-        g.matrix.copy(groundMatrix(p.lngLat, 0).multiply(new THREE.Matrix4().makeScale(sc, sc, sc)));
+        g.matrix.copy(groundMatrix(p.lngLat, ang).multiply(new THREE.Matrix4().makeScale(sc, sc, sc)));
+        /* the smoke convention: a factory lists puffs as local offsets in
+           userData.smoke = [{x,y,z,s}]; composed with the placed matrix
+           they join the town's one shared instanced smoke draw below */
+        if (Array.isArray(g.userData.smoke)) {
+          for (const sp of g.userData.smoke) {
+            const s3 = sp.s || 1;
+            smokeS.push({ harbor: p.harbor,
+              m: g.matrix.clone()
+                .multiply(new THREE.Matrix4().makeTranslation(sp.x || 0, sp.y || 0, sp.z || 0))
+                .multiply(new THREE.Matrix4().makeScale(s3, s3, s3)) });
+          }
+        }
         group.add(g);
+        stats.landmarks++;
       }
+      addInst(smokeGeo, smokeMat, smokeS, { lod: true });
+      stats.smoke = smokeS.length;
 
       /* ===== the land itself =====
          Sculpted relief where geography has it; the gaussian mound is

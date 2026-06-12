@@ -1290,7 +1290,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "church",
+    "kind": "convent",
     "name": "Convento de San Francisco de As\u00eds",
     "year_built": 1591,
     "note": "Rebuilding in the 1720s-30s with its great tower, the tallest in Havana"
@@ -1306,7 +1306,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "church",
+    "kind": "convent",
     "name": "Convento de Santa Clara",
     "year_built": 1644
    },
@@ -1398,7 +1398,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "shipwright",
     "name": "Real Arsenal (shipyard)",
     "year_built": 1722,
     "note": "Building the biggest warships in the Americas from Cuban cedar and mahogany"
@@ -1414,7 +1414,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "governor",
     "name": "Casa del Gobernador",
     "note": "The governor lodges by the Plaza de Armas; the great palace is yet unbuilt"
    },
@@ -1429,7 +1429,7 @@
   {
    "type": "Feature",
    "properties": {
-    "kind": "building",
+    "kind": "counting",
     "name": "Casa de la Contadur\u00eda (royal counting-house)"
    },
    "geometry": {
@@ -1437,6 +1437,51 @@
     "coordinates": [
      -82.348,
      23.1371
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "tavern",
+    "name": "Taberna del Muelle",
+    "note": "Wine-shop at the quay-head where the fleet's people drink (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.34857,
+     23.13903
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "boarding",
+    "name": "Mes\u00f3n de la Muralla",
+    "note": "Beds and stabling for muleteers and passengers of the flota (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.34908,
+     23.13512
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "kind": "smithy",
+    "name": "Herrer\u00eda de Lamparilla",
+    "note": "Forge serving the wharves; anchors rung and braces drawn (plausible)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -82.34982,
+     23.13772
     ]
    }
   },
