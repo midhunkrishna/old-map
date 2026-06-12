@@ -1,0 +1,20 @@
+{
+  "off": {
+    "btnOn": false,
+    "environmentNonNull": false,
+    "hemiIntensity": 0.95,
+    "waterShine": 0
+  },
+  "onA": {
+    "btnOn": true,
+    "environmentNonNull": true,
+    "hemiIntensity": 0.5,
+    "waterShine": 1
+  },
+  "onB": {
+    "btnOn": true,
+    "environmentNonNull": true,
+    "hemiIntensity": 0.5,
+    "waterShine": 1
+  }
+}

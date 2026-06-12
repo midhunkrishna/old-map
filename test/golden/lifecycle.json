@@ -1,0 +1,8 @@
+{
+  "activeAfterClose": false,
+  "activeAfterOpen": true,
+  "busEmits": [
+    "diorama-closed"
+  ],
+  "cancelAnimationFrameCalled": true
+}

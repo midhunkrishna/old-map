@@ -1,0 +1,18 @@
+{
+  "exitRestores": {
+    "farEqualsRadiusX16": true,
+    "fov": 38,
+    "nearEqualsRadiusX0012": true
+  },
+  "overview": {
+    "far": 45944,
+    "fov": 38,
+    "near": 34.458
+  },
+  "radius": 2871.5,
+  "tour": {
+    "farEqualsRadiusX10": true,
+    "fov": 70,
+    "near": 0.1
+  }
+}

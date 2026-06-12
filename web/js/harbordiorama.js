@@ -26,18 +26,17 @@
   let failed = false;
 
   let host = null, canvas = null, overlay = null;
-  let renderer = null, scene = null, camera = null, controls = null;
-  let env = null, hemi = null, envOn = true;   // PMREM image-based lighting, toggleable
+  let eng = null;                              // the rendering engine (window.cartaRenderEngine)
+  let scene = null;                            // the active scene's content (host-owned)
+  let envOn = true;                            // mirrors eng.envOn for the host's UI/render reads
   let poi = null, labelsOn = true;             // POI markers + cards, toggleable
-  let PostFX = null, composer = null, bloomPass = null; // bloom (behind Studio light)
-  let raf = 0, t0 = 0;
+  let PostFX = null;                           // post-fx classes, handed to the engine
   let built = null;        // { dispose } for the current scene's teardown
   let tween = null;        // active camera tween, if any
 
   // first-person canoe tour (a second mode inside the diorama)
   let mode = 'overview';   // 'overview' | 'tour'
   let canoe = null;        // window.cartaHarborCanoe rig, built lazily
-  let lastT = 0;           // for per-frame dt
   let camYaw = 0, camPitch = 0, rowing = false;  // look + row input, from the mouse
   let fwdKey = false, revKey = false;            // W forward, S/D reverse
   let cruiseStep = 0;                            // stepped cruise: 0 (coast) .. CRUISE_STEPS (20 mph)
@@ -318,24 +317,14 @@
         ]);
         PostFX = { EffectComposer, RenderPass, UnrealBloomPass };
       } catch (e) { console.warn('diorama: post-fx unavailable', e); PostFX = null; }
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      if ('outputColorSpace' in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
-      camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 1, 60000);
-      controls = new OrbitControls(camera, canvas);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.11;       // snappier settle
-      controls.enablePan = true;           // pan to a quarter of the town, then dolly right in
-      controls.screenSpacePanning = true;
-      controls.panSpeed = 0.9;
-      controls.minPolarAngle = 0.12 * Math.PI;
-      controls.maxPolarAngle = 0.49 * Math.PI; // never dip under the water
-      controls.rotateSpeed = 0.85;
-      controls.zoomSpeed = 3.0;            // brisk dolly
-      carDio._controls = controls;         // exposed for verification harnesses
-      buildEnv();
+      // the rendering engine owns renderer/camera/controls/env/composer + the loop
+      eng = window.cartaRenderEngine(THREE, canvas, OrbitControls, PostFX);
+      eng.createRenderer();
+      eng.buildEnv();
+      eng.setFrameHook(frameHook);   // audio per frame
+      eng.setPreUpdateHook((dt, t, now) => { if (tween) tween(now); }); // tween runs at the TOP of the loop, before controls.update()
+      eng.setModeHook(modeHook);     // tour/overview camera book-keeping
+      carDio._controls = eng.controls;     // exposed for verification harnesses
       loaded = true;
       return true;
     } catch (e) {
@@ -347,38 +336,18 @@
 
   /* ---------- image-based lighting (PMREM) ---------- */
 
-  // A tiny sky→horizon→parchment gradient, pre-filtered into an environment map.
-  // Standard materials (the terrain) pick up its soft directional ambient.
-  function buildEnv() {
-    if (env || !THREE.PMREMGenerator) return;
-    try {
-      const c = document.createElement('canvas');
-      c.width = 8; c.height = 64;
-      const x = c.getContext('2d');
-      const g = x.createLinearGradient(0, 0, 0, 64);
-      g.addColorStop(0.0, '#caa6c4');    // dusky violet zenith
-      g.addColorStop(0.42, '#e6b98a');   // warm evening sky
-      g.addColorStop(0.52, '#ffcf86');   // golden horizon glow
-      g.addColorStop(1.0, '#7a6240');    // warm ground bounce
-      x.fillStyle = g; x.fillRect(0, 0, 8, 64);
-      const tex = new THREE.CanvasTexture(c);
-      tex.mapping = THREE.EquirectangularReflectionMapping;
-      const pmrem = new THREE.PMREMGenerator(renderer);
-      env = pmrem.fromEquirectangular(tex).texture;
-      pmrem.dispose(); tex.dispose();
-    } catch (e) { console.warn('diorama: env failed', e); env = null; }
-  }
-
   // On: IBL fills the ambient and the hemisphere light backs off, for a softer,
-  // grounded "studio" look. Off: the plain hemisphere + sun.
+  // grounded "studio" look. Off: the plain hemisphere + sun. The engine owns the
+  // env texture + scene.environment + hemi.intensity; the host keeps the water
+  // coupling (reflections + sun glitter ride with the Studio light; bloom too).
   function applyEnv(on) {
-    envOn = on;
-    if (scene) scene.environment = (on && env) ? env : null;
-    if (hemi) hemi.intensity = on ? 0.5 : 0.95;
-    // water reflections + sun glitter ride with the Studio light; bloom too
-    const water = built && built.terrain && built.terrain.water;
-    if (water && water.material.uniforms.uShine) water.material.uniforms.uShine.value = on ? 1 : 0;
-    if (host && host._envBtn) host._envBtn.classList.toggle('on', on);
+    if (!eng) return;
+    eng.setEnv(on, (on2) => {
+      envOn = on2;
+      const water = built && built.terrain && built.terrain.water;
+      if (water && water.material.uniforms.uShine) water.material.uniforms.uShine.value = on2 ? 1 : 0;
+      if (host && host._envBtn) host._envBtn.classList.toggle('on', on2);
+    });
   }
 
   /* ---------- coordinate frame ---------- */
@@ -485,34 +454,12 @@
     const project = makeProject(c);
     const radius = footprintRadius(id, project);
     const frame = { project, heightAt: null, centroid: c, radius };
-    // dolly from right down among the buildings out to a wide establishing shot
-    // (pan-enabled, so you can bring a quarter of the town to the target first)
-    controls.minDistance = Math.max(8, radius * 0.02);
-    controls.maxDistance = radius * 4.5;
-    // tight near/far for the scene kills the depth-precision flicker that showed
-    // at the wide top-down view (the 1 : 60000 range was far too deep)
-    camera.near = Math.max(2, radius * 0.012);
-    camera.far = radius * 16;
-    camera.updateProjectionMatrix();
-
-    // lighting — evening golden hour: a low, warm sun raking across the harbour,
-    // a peach sky fill and a cool-ish ground bounce so shadows read long and warm.
-    hemi = new THREE.HemisphereLight(0xffdca6, 0x6b5d44, 0.95);
-    scene.add(hemi);
-    const sun = new THREE.DirectionalLight(0xffca6a, 2.1);   // deep gold, low in the west
-    sun.position.set(radius * 1.7, radius * 0.62, radius * 0.95); // low angle → long shadows
-    sun.castShadow = true;
-    const sc = sun.shadow.camera;
-    sc.left = -radius * 1.3; sc.right = radius * 1.3;
-    sc.top = radius * 1.3; sc.bottom = -radius * 1.3;
-    sc.near = 1; sc.far = radius * 5;
-    sun.shadow.mapSize.set(2048, 2048);
-    sun.shadow.bias = -0.0006;
-    scene.add(sun);
-    // warm distance haze so the far shore melts into the golden sky
-    scene.fog = new THREE.Fog(0xe6b073, radius * 3.0, radius * 9.0);
+    // the engine holds the active scene, then sizes the control distances, the
+    // camera near/far, and the golden-hour light/sun/shadow/fog rig to the radius.
+    eng.setActiveScene(scene);
+    const { sunDir } = eng.configureForRadius(radius);
     applyEnv(envOn);   // image-based lighting (toggle), set after the lights exist
-    carDio._sunDir = sun.position.clone().normalize();   // handed to the water below
+    carDio._sunDir = sunDir;   // handed to the water below
 
     // terrain (real once Phase 2 lands; placeholder until then)
     const landFs = ((carta.harborStructures && carta.harborStructures.lands) || [])
@@ -648,20 +595,10 @@
     };
 
     // bloom composer (rebuilt per open so its passes track the new scene/camera)
-    buildComposer();
+    eng.setUpdaters(animated);
+    eng.buildComposer();
     applyEnv(envOn);   // sync env + water uShine + composer path now everything exists
     return frame;
-  }
-
-  function buildComposer() {
-    if (!PostFX) return;
-    if (composer) { try { composer.dispose(); } catch (e) { /* ignore */ } }
-    const w = window.innerWidth, h = window.innerHeight;
-    composer = new PostFX.EffectComposer(renderer);
-    composer.setSize(w, h);
-    composer.addPass(new PostFX.RenderPass(scene, camera));
-    bloomPass = new PostFX.UnrealBloomPass(new THREE.Vector2(w, h), 0.72, 0.6, 0.8);
-    composer.addPass(bloomPass);
   }
 
   // Place authored-Y-up geometry on the ground: matches harbortown's frame
@@ -697,6 +634,7 @@
   }
 
   function applySpherical(s) {
+    const camera = eng.camera, controls = eng.controls;
     const sp = new THREE.Spherical(s.radius, s.polar, s.azimuth);
     camera.position.setFromSpherical(sp);
     camera.position.y += built ? built.radius * 0.04 : 0;
@@ -865,11 +803,13 @@
     camPitch = 0; rowing = false; fwdKey = false; revKey = false;
     cruiseStep = 0; updateSpeedRead();     // reset the readout to 0.0 km/h
     tween = null;
+    const camera = eng.camera, controls = eng.controls;
     controls.enabled = false;
     camera.fov = 70;
     camera.near = 0.1;                 // see the canoe floor right under the eye
     camera.far = built.radius * 10;    // fog hides everything past radius*9; tightens depth precision
     camera.updateProjectionMatrix();
+    eng.setMode('tour');
     host.classList.add('touring');
     host.classList.remove('paused');
     if (host._hint) host._hint.classList.remove('show');
@@ -886,11 +826,13 @@
   function exitTour() {
     if (mode !== 'tour') return;
     mode = 'overview';          // set first so the pointer-lock-change re-entry is a no-op
+    eng.setMode('overview');
     try { if (window.cartaHarborAudio) window.cartaHarborAudio.setMode('overview'); } catch (e) { /* ignore */ }
     rowing = false;
     if (document.pointerLockElement === canvas && document.exitPointerLock) document.exitPointerLock();
     if (canoe) { scene.remove(canoe.group); canoe.dispose(); canoe = null; }
     host.classList.remove('touring', 'paused');
+    const camera = eng.camera, controls = eng.controls;
     controls.enabled = true;
     camera.fov = 38;
     camera.near = built ? Math.max(2, built.radius * 0.012) : 1;
@@ -912,7 +854,7 @@
     if (mode === 'tour') exitTour();
     if (canoe) { try { canoe.dispose(); } catch (e) { /* ignore */ } canoe = null; }
     if (built) { built.dispose(); built = null; }
-    mode = 'overview'; host.classList.remove('touring', 'paused');
+    mode = 'overview'; eng.setMode('overview'); host.classList.remove('touring', 'paused');
     const frame = buildScene(id);
     built._id = id;
 
@@ -929,8 +871,7 @@
     overlay.style.transition = 'opacity 0.6s ease';
 
     carDio.active = true;
-    t0 = performance.now();
-    lastT = 0;
+    eng.startClock(performance.now());   // engine owns t0/lastT for the loop
     // ambience rides along; a failure here must never break the diorama
     try { if (window.cartaHarborAudio) window.cartaHarborAudio.start(id); } catch (e) { /* ignore */ }
 
@@ -951,7 +892,7 @@
       requestAnimationFrame(() => { overlay.style.opacity = '0'; });
       tweenCamera(top, rest, 1100);
     }
-    if (!raf) loop();
+    eng.start();
   }
 
   function close() {
@@ -963,7 +904,7 @@
       carDio.active = false;
       host.classList.remove('on');
       host.style.display = 'none';
-      cancelAnimationFrame(raf); raf = 0;
+      eng.stop();
       if (canoe) { try { canoe.dispose(); } catch (e) { /* ignore */ } canoe = null; }
       if (built) { built.dispose(); built = null; }
       scene = null; tween = null;
@@ -980,15 +921,18 @@
     }
   }
 
-  /* ---------- loop & resize ---------- */
+  /* ---------- loop & resize (driven by the engine) ---------- */
 
-  function loop() {
-    raf = requestAnimationFrame(loop);
-    if (!scene || !carDio.active) return;
-    const now = performance.now();
-    const t = (now - t0) / 1000;
-    const dt = Math.min(0.05, t - lastT); lastT = t;
-    if (tween) tween(now);
+  // The host's per-frame work, plugged into the engine loop. The engine computes
+  // dt/t, ticks OrbitControls in overview, runs the updaters, and decides the
+  // render. The host's tween runs via the engine's preUpdateHook (top of the loop,
+  // before controls.update()); modeHook runs the tour/overview camera book-keeping;
+  // frameHook carries the audio. (Faithful move of the original loop ~925-960:
+  // tween → tour|overview branch → carDio._cam → audio → updaters → render.)
+  function modeHook(dt, t, now) {
+    if (!scene || !carDio.active) return;     // matches the original loop's early-out
+    const camera = eng.camera, controls = eng.controls;
+    // tween now runs via the engine's preUpdateHook (TOP of the loop), not here
     if (mode === 'tour' && canoe) {
       // first person: the canoe owns the camera (seat + look); orbit is paused
       canoe.update(dt, t, { camYaw, camPitch, rowing: rowing || fwdKey, reverse: revKey, cruise: cruiseMs() }, camera);
@@ -1000,7 +944,7 @@
       if (t - lastMiniT > 0.15) { lastMiniT = t; drawMini(carDio._tourPos); }
     } else {
       carDio._tourPos = null;
-      controls.update();
+      // engine has already ticked controls.update() this frame (overview owner);
       // keep panning useful: don't let the target wander off the island
       if (built) {
         const R = built.radius * 1.15, tg = controls.target;
@@ -1011,20 +955,13 @@
       carDio._camDist = camera.position.distanceTo(controls.target);
     }
     carDio._cam = camera;
+  }
+
+  function frameHook(dt) {
     try { if (window.cartaHarborAudio) window.cartaHarborAudio.frame(dt); } catch (e) { /* ignore */ }
-    for (const a of built.animated) { try { a.update(t, camera); } catch (e) { /* ignore */ } }
-    // Studio light routes through the bloom composer (the sun glitter & bright
-    // sails glow); matte mode renders straight, with no post cost.
-    if (envOn && composer) composer.render();
-    else renderer.render(scene, camera);
   }
 
   function onResize() {
-    if (!renderer) return;
-    const w = window.innerWidth, h = window.innerHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    if (composer) composer.setSize(w, h);
+    eng.onResize();
   }
 });

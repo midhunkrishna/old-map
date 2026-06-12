@@ -1,0 +1,22 @@
+{
+  "bloomParams": [
+    0.72,
+    0.6,
+    0.8
+  ],
+  "bloomResolution": [
+    1280,
+    720
+  ],
+  "composerSize": [
+    1280,
+    720
+  ],
+  "passCount": 2,
+  "passKinds": [
+    "render",
+    "bloom"
+  ],
+  "renderPassCameraIsLive": true,
+  "renderPassSceneIsLive": true
+}

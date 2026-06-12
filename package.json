@@ -1,0 +1,14 @@
+{
+  "name": "oldmap-tests",
+  "private": true,
+  "description": "Characterization + optional headless-gl tests for the harbour diorama. Never shipped (build.sh packages web/ + data/ only).",
+  "scripts": {
+    "test": "node test/run.mjs"
+  },
+  "devDependencies": {
+    "gl": "^8.1.6"
+  },
+  "optionalDependencies": {
+    "gl": "^8.1.6"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "envOff": {
+    "composer": true,
+    "renderer": true
+  },
+  "envOn": {
+    "composer": true,
+    "renderer": true
+  }
+}

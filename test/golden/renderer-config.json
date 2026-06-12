@@ -1,0 +1,15 @@
+{
+  "alpha": false,
+  "antialias": true,
+  "cameraConstruct": {
+    "aspect": 1.77778,
+    "far": 60000,
+    "fov": 38,
+    "near": 1
+  },
+  "cameraFov": 38,
+  "outputColorSpace": "srgb",
+  "pixelRatio": 1.8,
+  "shadowMapEnabled": true,
+  "shadowMapType": 2
+}
