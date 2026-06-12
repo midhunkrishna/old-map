@@ -24,8 +24,9 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   const frame = metric ? arg : null;
   const map = metric ? null : arg;
   let NEAR = 280, MID = 780, FAR = 2400;              // distance bands, metres
+  const ULTRA = 130;                                  // hero band: max-poly trees (diorama/tour)
   const CAP = metric
-    ? { near: 2500, mid: 16000, far: 60000 }          // near is high-poly → tighter cap
+    ? { ultra: 400, near: 2500, mid: 16000, far: 60000 } // near is high-poly → tighter cap
     : { near: 3000, mid: 7000, far: 20000 };          // per-band visible budget
   // The diorama camera orbits well back from the island, so scale the bands to
   // its footprint: the whole wood reads as billboards at rest, near trees turn
@@ -132,44 +133,161 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
      Near tier built Y-up (stood upright by the ground matrix). Billboards
      built standing in X (width) × Z (height) at Y≈0, normal along Y. */
   function taggedTrunk(g) { g.userData.trunk = true; return g; }
-  // hi = the close-up, higher-poly build (more sides, fronds/branches, denser
-  // crown). Only a tightly-capped, frustum-culled handful are ever near the
-  // camera, so the vertex budget stays bounded and the frame rate holds.
-  function nearGeo(kind, hi) {
-    if (kind === 'palm') {
-      const sides = hi ? 10 : 6;
-      const trunk = new THREE.CylinderGeometry(0.16, 0.30, 5.4, sides).translate(0, 2.7, 0);
-      trunk.rotateZ(-0.08);
-      if (!hi) {
-        const crown = new THREE.ConeGeometry(2.4, 1.7, 8).translate(0.45, 5.6, 0);
-        return mergeGeos([taggedTrunk(trunk), crown]);
+
+  /* ---------- the variant wood ----------
+     Nine silhouettes instead of three lollipops, mimicking how a real shore
+     wood reads: coconut and royal palms, a broadleaf, a tiered canopy giant,
+     a wide spreading acacia, a narrow column cypress, the odd dead snag, and
+     two scrub forms. Each tree picks its variant from a stable position hash,
+     so the mix is spread evenly and never flickers. `u` = the ultra (hero)
+     build for the band right around the camera. */
+  const VARIANTS = {
+    palm: ['palmCoco', 'palmRoyal'],
+    leaf: ['leafBroad', 'leafCanopy', 'leafSpread', 'leafColumn', 'leafSnag'],
+    scrub: ['scrubBush', 'scrubMound'],
+  };
+  const VARNAMES = [].concat(VARIANTS.palm, VARIANTS.leaf, VARIANTS.scrub);
+  function pickVariant(kind, r) {
+    if (kind === 'palm') return r < 0.6 ? 'palmCoco' : 'palmRoyal';
+    if (kind === 'scrub') return r < 0.55 ? 'scrubBush' : 'scrubMound';
+    return r < 0.32 ? 'leafBroad' : r < 0.55 ? 'leafCanopy' : r < 0.76 ? 'leafSpread'
+      : r < 0.92 ? 'leafColumn' : 'leafSnag';
+  }
+
+  function clump(r, sx, sy, sz, x, y, z, u, hiSeg) {
+    return new THREE.SphereGeometry(r, u ? (hiSeg || 11) : 8, u ? 8 : 6)
+      .scale(sx, sy, sz).translate(x, y, z);
+  }
+
+  function variantGeo(name, u) {
+    const parts = [];
+    if (name === 'palmCoco') {
+      // a leaning coconut palm: curved trunk, two tiers of drooping fronds
+      let px = 0;
+      for (let s = 0; s < 3; s++) {
+        const seg = new THREE.CylinderGeometry(0.3 - s * 0.05, 0.34 - s * 0.05, 1.9, u ? 12 : 7)
+          .translate(0, 0.95, 0).rotateZ(-0.07 - s * 0.05).translate(px, s * 1.8, 0);
+        px += (0.13 + s * 0.09);
+        parts.push(taggedTrunk(seg));
       }
-      const parts = [taggedTrunk(trunk)];     // a spray of individual fronds
-      for (let i = 0; i < 8; i++) {
-        const fr = new THREE.ConeGeometry(0.34, 3.0, 4).translate(0, 1.5, 0);
-        fr.rotateX(Math.PI / 2.3);
-        fr.rotateY((i / 8) * Math.PI * 2);
-        fr.translate(0.45, 5.5, 0);
+      const cx = px + 0.1, cy = 5.5;
+      const nFr = u ? 12 : 8;
+      for (let i = 0; i < nFr; i++) {
+        const fr = new THREE.ConeGeometry(0.42, u ? 3.6 : 3.0, u ? 6 : 4)
+          .scale(1, 1, 0.3).translate(0, 1.8, 0);
+        fr.rotateX(Math.PI / (i % 2 ? 2.05 : 2.55));
+        fr.rotateY((i / nFr) * Math.PI * 2);
+        fr.translate(cx, cy, 0);
         parts.push(fr);
       }
-      return mergeGeos(parts);
-    }
-    if (kind === 'scrub') {
-      return mergeGeos([new THREE.SphereGeometry(1.0, hi ? 10 : 7, hi ? 7 : 5).scale(1.2, 0.7, 1.2).translate(0, 0.6, 0)]);
-    }
-    const sides = hi ? 9 : 6;
-    const trunk = new THREE.CylinderGeometry(0.16, 0.26, 3.0, sides).translate(0, 1.5, 0);
-    const crown = new THREE.SphereGeometry(2.0, hi ? 12 : 8, hi ? 9 : 6).scale(1, 0.88, 1).translate(0, 4.0, 0);
-    const parts = [taggedTrunk(trunk), crown];
-    if (hi) {                                  // a couple of boughs and a second clump
-      for (const s of [-1, 1]) {
-        const b = new THREE.CylinderGeometry(0.07, 0.12, 1.8, 5).translate(0, 0.9, 0);
-        b.rotateZ(s * 0.7); b.translate(s * 0.5, 2.6, 0);
-        parts.push(taggedTrunk(b));
-        parts.push(new THREE.SphereGeometry(1.0, 8, 6).scale(1, 0.85, 1).translate(s * 1.2, 3.6, 0));
+      if (u) {
+        for (let i = 0; i < 4; i++) {
+          parts.push(taggedTrunk(new THREE.SphereGeometry(0.17, 8, 6)
+            .translate(cx + Math.cos(i * 1.9) * 0.3, cy - 0.32, Math.sin(i * 1.9) * 0.3)));
+        }
+        parts.push(taggedTrunk(new THREE.CylinderGeometry(0.34, 0.22, 0.5, 9).translate(cx, cy - 0.2, 0)));
       }
+    } else if (name === 'palmRoyal') {
+      // a royal palm: tall straight pale trunk, green crownshaft, upswept crown
+      parts.push(taggedTrunk(new THREE.CylinderGeometry(0.17, 0.3, 6.6, u ? 12 : 8, u ? 3 : 1).translate(0, 3.3, 0)));
+      parts.push(new THREE.CylinderGeometry(0.14, 0.18, 1.0, u ? 10 : 7).translate(0, 7.0, 0)); // crownshaft, tinted
+      const nFr = u ? 10 : 7;
+      for (let i = 0; i < nFr; i++) {
+        const fr = new THREE.ConeGeometry(0.38, u ? 3.2 : 2.7, u ? 6 : 4).scale(1, 1, 0.28).translate(0, 1.5, 0);
+        fr.rotateX(Math.PI / (i % 2 ? 2.5 : 3.1));    // held higher than the coco
+        fr.rotateY((i / nFr) * Math.PI * 2 + 0.3);
+        fr.translate(0, 7.5, 0);
+        parts.push(fr);
+      }
+    } else if (name === 'leafBroad') {
+      // a broadleaf: stout trunk, boughs, an IRREGULAR clustered crown
+      parts.push(taggedTrunk(new THREE.CylinderGeometry(0.17, 0.3, 2.8, u ? 12 : 7, u ? 3 : 1).translate(0, 1.4, 0)));
+      const arms = u ? [-1, 1, -0.45, 0.6] : [-1, 1];
+      for (const s of arms) {
+        const b = new THREE.CylinderGeometry(0.07, 0.13, 1.9, u ? 7 : 5).translate(0, 0.95, 0);
+        b.rotateZ(s * 0.7); b.rotateY(s * 1.3); b.translate(s * 0.4, 2.4, 0);
+        parts.push(taggedTrunk(b));
+      }
+      parts.push(clump(1.5, 1, 0.85, 1, 0.2, 4.1, 0.1, u, 13));
+      parts.push(clump(1.1, 1, 0.8, 1, -1.2, 3.5, 0.5, u));
+      parts.push(clump(1.0, 1, 0.85, 1, 1.3, 3.4, -0.5, u));
+      parts.push(clump(0.9, 1, 0.8, 1, 0.1, 3.2, -1.1, u));
+      if (u) {
+        parts.push(clump(0.8, 1, 0.8, 1, -0.5, 4.7, -0.4, u));
+        parts.push(taggedTrunk(new THREE.CylinderGeometry(0.28, 0.46, 0.5, 9).translate(0, 0.25, 0)));
+      }
+    } else if (name === 'leafCanopy') {
+      // a canopy giant (ceiba-like): tall clear trunk, flat stacked tiers
+      parts.push(taggedTrunk(new THREE.CylinderGeometry(0.2, 0.42, 4.6, u ? 12 : 8, u ? 3 : 1).translate(0, 2.3, 0)));
+      if (u) {                                       // buttress roots
+        for (let i = 0; i < 4; i++) {
+          const root = new THREE.CylinderGeometry(0.05, 0.3, 1.1, 5).translate(0, 0.5, 0)
+            .rotateZ(0.5).rotateY(i * 1.57 + 0.4).translate(0, 0, 0);
+          parts.push(taggedTrunk(root));
+        }
+      }
+      parts.push(clump(2.6, 1, 0.3, 1, 0, 4.6, 0, u, 14));
+      parts.push(clump(2.0, 1, 0.32, 1, 0.5, 5.5, 0.3, u));
+      parts.push(clump(1.3, 1, 0.35, 1, -0.3, 6.3, -0.2, u));
+    } else if (name === 'leafSpread') {
+      // a spreading acacia: short forked trunk, one wide flat-topped crown
+      parts.push(taggedTrunk(new THREE.CylinderGeometry(0.16, 0.3, 2.0, u ? 10 : 7).translate(0, 1.0, 0)));
+      for (const s of [-1, 1]) {
+        const limb = new THREE.CylinderGeometry(0.08, 0.15, 1.9, u ? 7 : 5).translate(0, 0.95, 0);
+        limb.rotateZ(s * 0.85); limb.translate(s * 0.15, 1.9, 0);
+        parts.push(taggedTrunk(limb));
+      }
+      parts.push(clump(1.9, 1.45, 0.42, 1.1, 0, 3.4, 0, u, 13));
+      parts.push(clump(1.3, 1.3, 0.45, 1, -1.8, 3.1, 0.3, u));
+      parts.push(clump(1.3, 1.3, 0.45, 1, 1.8, 3.15, -0.3, u));
+      if (u) parts.push(clump(0.9, 1.2, 0.5, 1, 0.2, 3.0, 1.3, u));
+    } else if (name === 'leafColumn') {
+      // a column cypress: stacked narrowing cones, barely any trunk showing
+      parts.push(taggedTrunk(new THREE.CylinderGeometry(0.1, 0.18, 0.9, u ? 9 : 6).translate(0, 0.45, 0)));
+      const tiers = u ? 4 : 3;
+      for (let i = 0; i < tiers; i++) {
+        const r = 1.25 - i * (0.75 / tiers), h = 2.1, y = 0.8 + i * 1.45;
+        parts.push(new THREE.ConeGeometry(r, h, u ? 10 : 7).translate(0, y + h / 2, 0));
+      }
+    } else if (name === 'leafSnag') {
+      // a dead snag: bare silvered trunk and reaching branches, no crown
+      parts.push(taggedTrunk(new THREE.CylinderGeometry(0.08, 0.26, 3.6, u ? 9 : 6, u ? 3 : 1).translate(0, 1.8, 0)));
+      const nB = u ? 5 : 3;
+      for (let i = 0; i < nB; i++) {
+        const b = new THREE.CylinderGeometry(0.03, 0.08, 1.5 - i * 0.15, 5).translate(0, 0.7, 0);
+        b.rotateZ(0.7 + (i % 2) * 0.4); b.rotateY(i * 2.2);
+        b.translate(0, 1.6 + i * 0.5, 0);
+        parts.push(taggedTrunk(b));
+      }
+    } else if (name === 'scrubMound') {
+      // sea-grape mounds: several low domes hugging the sand
+      parts.push(clump(1.0, 1.35, 0.55, 1.35, 0, 0.45, 0, u, 12));
+      parts.push(clump(0.75, 1.25, 0.6, 1.25, 1.15, 0.38, 0.4, u));
+      parts.push(clump(0.6, 1.2, 0.6, 1.2, -1.0, 0.32, -0.4, u));
+      if (u) parts.push(clump(0.5, 1.2, 0.65, 1.2, 0.2, 0.3, 1.2, u));
+    } else {                                          // scrubBush
+      parts.push(clump(1.0, 1.2, 0.7, 1.2, 0, 0.6, 0, u, 12));
+      parts.push(clump(0.7, 1.1, 0.75, 1.1, 0.8, 0.45, 0.35, u));
+      if (u) parts.push(clump(0.55, 1.1, 0.8, 1.1, -0.7, 0.4, -0.3, u));
+      if (u) parts.push(taggedTrunk(new THREE.CylinderGeometry(0.05, 0.09, 0.5, 5).translate(0.1, 0.2, 0)));
     }
     return mergeGeos(parts);
+  }
+
+  // the legacy low build for the map-embedded (non-metric) path
+  function nearGeo(kind) {
+    if (kind === 'palm') {
+      const trunk = new THREE.CylinderGeometry(0.16, 0.30, 5.4, 6).translate(0, 2.7, 0);
+      trunk.rotateZ(-0.08);
+      const crown = new THREE.ConeGeometry(2.4, 1.7, 8).translate(0.45, 5.6, 0);
+      return mergeGeos([taggedTrunk(trunk), crown]);
+    }
+    if (kind === 'scrub') {
+      return mergeGeos([new THREE.SphereGeometry(1.0, 7, 5).scale(1.2, 0.7, 1.2).translate(0, 0.6, 0)]);
+    }
+    const trunk = new THREE.CylinderGeometry(0.16, 0.26, 3.0, 6).translate(0, 1.5, 0);
+    const crown = new THREE.SphereGeometry(2.0, 8, 6).scale(1, 0.88, 1).translate(0, 4.0, 0);
+    return mergeGeos([taggedTrunk(trunk), crown]);
   }
   function billboardGeo(cross) {
     const make = () => {
@@ -237,7 +355,8 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   const group = new THREE.Group();
   group.matrixAutoUpdate = false;
   const KINDS = ['palm', 'leaf', 'scrub'];
-  const tiers = { near: {}, mid: {}, far: {} };
+  const tiers = { ultra: {}, near: {}, mid: {}, far: {} };
+  const BANDS = metric ? ['ultra', 'near', 'mid', 'far'] : ['near', 'mid', 'far'];
   let trees = [];
 
   function makeTier(name, geo, mat, cap) {
@@ -252,12 +371,19 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
 
   function init(field) {
     const sprites = { palm: spriteTex('palm'), leaf: spriteTex('leaf'), scrub: spriteTex('scrub') };
-    for (const k of KINDS) {
-      tiers.near[k] = makeTier('near', nearGeo(k, metric), foliageMat(null), CAP.near);
-      if (metric) {
+    if (metric) {
+      // geometry tiers per VARIANT (nine silhouettes); billboards per base kind
+      for (const v of VARNAMES) {
+        tiers.near[v] = makeTier('near', variantGeo(v, false), foliageMat(null), CAP.near);
+        tiers.ultra[v] = makeTier('ultra', variantGeo(v, true), foliageMat(null), CAP.ultra);
+      }
+      for (const k of KINDS) {
         tiers.mid[k] = makeTier('mid', billboardQuad(), billboardMat(sprites[k]), CAP.mid);
         tiers.far[k] = makeTier('far', billboardQuad(), billboardMat(sprites[k]), CAP.far);
-      } else {
+      }
+    } else {
+      for (const k of KINDS) {
+        tiers.near[k] = makeTier('near', nearGeo(k), foliageMat(null), CAP.near);
         tiers.mid[k] = makeTier('mid', billboardGeo(true), foliageMat(sprites[k]), CAP.mid);
         tiers.far[k] = makeTier('far', billboardGeo(false), foliageMat(sprites[k]), CAP.far);
       }
@@ -274,7 +400,12 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
           .multiply(new THREE.Matrix4().makeScale(t.scale, t.scale, t.scale));
         // a stable per-tree rank in [0,1) for distance-gated reveal (#1)
         const rank = (Math.sin(p.x * 12.9898 + p.z * 78.233) * 43758.5453) % 1;
-        return { gm, bm, px: p.x, py: y, pz: p.z, kind, color, rank: rank < 0 ? rank + 1 : rank };
+        // an INDEPENDENT position hash picks the silhouette, so every variant
+        // appears at every reveal distance
+        let vr = (Math.sin(p.x * 7.131 + p.z * 3.713) * 24634.6345) % 1;
+        if (vr < 0) vr += 1;
+        return { gm, bm, px: p.x, py: y, pz: p.z, kind, variant: pickVariant(kind, vr),
+          color, rank: rank < 0 ? rank + 1 : rank };
       }
       const mc = maplibregl.MercatorCoordinate.fromLngLat(t.lngLat, 0);
       const s = mc.meterInMercatorCoordinateUnits();
@@ -297,7 +428,7 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   const _m = new THREE.Matrix4();
   const _rel = new THREE.Matrix4();
   const _sphere = new THREE.Sphere(new THREE.Vector3(), 0);
-  let counts = { near: 0, mid: 0, far: 0 };
+  let counts = { ultra: 0, near: 0, mid: 0, far: 0 };
 
   function update(arg) {
     if (!trees.length) return;
@@ -357,17 +488,15 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
     _m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
     _frustum.setFromProjectionMatrix(_m);
     const cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
-    const near2 = NEAR * NEAR, mid2 = MID * MID, far2 = FAR * FAR;
+    const ultra2 = ULTRA * ULTRA, near2 = NEAR * NEAR, mid2 = MID * MID, far2 = FAR * FAR;
     // #1 — reveal more of the field as the camera comes in: a fraction rising
     // from ~0.45 at the wide view to 1.0 close in, gating each tree by its rank.
     const R = frame.radius || 1500;
     const dCam = camDist || Math.hypot(cx, cy, cz);
     const reveal = Math.max(0.45, Math.min(1, 1 - (dCam - R * 0.4) / (R * 2.2) * 0.55));
-    const idx = {
-      near: { palm: 0, leaf: 0, scrub: 0 },
-      mid: { palm: 0, leaf: 0, scrub: 0 },
-      far: { palm: 0, leaf: 0, scrub: 0 },
-    };
+    const idx = { ultra: {}, near: {}, mid: {}, far: {} };
+    for (const v of VARNAMES) { idx.ultra[v] = 0; idx.near[v] = 0; }
+    for (const k of KINDS) { idx.mid[k] = 0; idx.far[k] = 0; }
     for (const t of trees) {
       if (t.rank > reveal) continue;
       const dx = t.px - cx, dy = t.py - cy, dz = t.pz - cz;
@@ -376,27 +505,29 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
       _sphere.center.set(t.px, t.py + 6, t.pz);
       _sphere.radius = 9;
       if (!_frustum.intersectsSphere(_sphere)) continue;
-      const band = d2 < near2 ? 'near' : d2 < mid2 ? 'mid' : 'far';
-      const i = idx[band][t.kind];
+      // right next to the camera (the canoe gliding past the shore) the tree
+      // takes the hero geometry — max polygon count
+      const band = d2 < ultra2 ? 'ultra' : d2 < near2 ? 'near' : d2 < mid2 ? 'mid' : 'far';
+      const geomBand = band === 'ultra' || band === 'near';
+      const key = geomBand ? t.variant : t.kind;     // geometry per variant, cards per kind
+      const i = idx[band][key];
       if (i >= CAP[band]) continue;
-      const tier = tiers[band][t.kind];
-      tier.setMatrixAt(i, band === 'near' ? t.gm : t.bm);
+      const tier = tiers[band][key];
+      tier.setMatrixAt(i, geomBand ? t.gm : t.bm);
       tier.setColorAt(i, t.color);
-      idx[band][t.kind] = i + 1;
+      idx[band][key] = i + 1;
     }
-    for (const band of ['near', 'mid', 'far']) {
-      for (const k of KINDS) {
+    counts = { ultra: 0, near: 0, mid: 0, far: 0 };
+    for (const band of BANDS) {
+      const keys = (band === 'ultra' || band === 'near') ? VARNAMES : KINDS;
+      for (const k of keys) {
         const tier = tiers[band][k];
         tier.count = idx[band][k];
         tier.instanceMatrix.needsUpdate = true;
         if (tier.instanceColor) tier.instanceColor.needsUpdate = true;
+        counts[band] += idx[band][k];
       }
     }
-    counts = {
-      near: idx.near.palm + idx.near.leaf + idx.near.scrub,
-      mid: idx.mid.palm + idx.mid.leaf + idx.mid.scrub,
-      far: idx.far.palm + idx.far.leaf + idx.far.scrub,
-    };
   }
 
   return {

@@ -117,24 +117,29 @@ window.cartaShipwright = function cartaShipwright(THREE) {
     const rig = []; // rigging line endpoints, pushed in pairs
 
     if (type === 'canoe') {
+      // extrusion runs UP from the mesh origin: keel at y=0 ⇒ position.y = 0
       const hull = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L, W * 1.2), { depth: H, bevelEnabled: false }), m.hull);
       hull.rotation.x = -Math.PI / 2;
-      hull.position.y = H;
+      hull.position.y = 0;
       g.add(hull);
       const hut = new THREE.Mesh(new THREE.BoxGeometry(L * 0.3, H, W * 0.5), m.deck);
-      hut.position.y = H * 1.6;
+      hut.position.y = H * 1.45;
       g.add(hut);
       return g;
     }
 
-    /* hull, wales, deck */
+    /* hull, wales, deck.  The −π/2-rotated extrusion runs UP from the mesh
+       origin, so position.y = 0 puts the keel at the proto's y=0 — the proto's
+       origin IS the keel line, and the diorama sinks it draft-deep into the
+       swell. (The old +H offset here floated every ship one hull-height in
+       the air — glaring once seen from the canoe at water level.) */
     const hull = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L, W), { depth: H, bevelEnabled: false }), m.hull);
     hull.rotation.x = -Math.PI / 2;
-    hull.position.y = H;
+    hull.position.y = 0;
     g.add(hull);
     const edges = new THREE.LineSegments(new THREE.EdgesGeometry(hull.geometry, 30), m.edge);
     edges.rotation.x = -Math.PI / 2;
-    edges.position.y = H;
+    edges.position.y = 0;
     g.add(edges); // the engraver's outline
     for (const wy of [0.5, 0.78]) { // wales: dark strakes proud of the planking
       const wale = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L, W, 1.045), { depth: H * 0.1, bevelEnabled: false }), m.wale);
@@ -150,7 +155,7 @@ window.cartaShipwright = function cartaShipwright(THREE) {
     /* castles: quarterdeck aft (all), forecastle (man-of-war) */
     const qd = new THREE.Mesh(new THREE.ExtrudeGeometry(deckShape(L * 0.62, W * 0.86), { depth: H * 0.62, bevelEnabled: false }), m.castle);
     qd.rotation.x = -Math.PI / 2;
-    qd.position.set(-L * 0.27, H + H * 0.62, 0);
+    qd.position.set(-L * 0.27, H, 0);          // extrusion runs up: base sits on the deck
     g.add(qd);
     if (type === 'man-of-war') {
       const fc = new THREE.Mesh(new THREE.BoxGeometry(L * 0.16, H * 0.45, W * 0.7), m.castle);
@@ -277,9 +282,11 @@ window.cartaShipwright = function cartaShipwright(THREE) {
       lamp.position.set(-L * 0.5, H * 2.1, 0);
       g.add(lamp);
     }
+    // anchor-ripple ring: keel-relative, riding just clear of the waterline once
+    // the diorama sinks the hull draft-deep (draft = 0.22·H at symbolic scale)
     const ring = new THREE.Mesh(new THREE.RingGeometry(L * 0.58, L * 0.64, 28), m.ring);
     ring.rotation.x = -Math.PI / 2;
-    ring.position.y = 0.4;
+    ring.position.y = H * 0.22 + 0.15;
     g.add(ring);
 
     g.add(riggingLines(rig));

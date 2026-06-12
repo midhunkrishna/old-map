@@ -20,6 +20,26 @@ window.cartaTerrain = function cartaTerrain(THREE) {
   // Compact footprints read as hills; height spread over kilometres reads as
   // nothing. (Authoritative relief table — harbortown.js reads it for slope
   // tree-planting; was previously inlined there.)
+  // The swell, in one place: the same trains/amplitude/mean the water vertex
+  // shader uses (makeWater below), exposed as a CPU function so floating things
+  // (anchored ships, the canoe) ride exactly in phase with the visible sheet.
+  const W_UAMP = 0.34, W_UMEAN = -0.42;
+  const W_TRAINS = [[58, 20, 1.1, 0.55], [27, 110, 1.9, 0.30], [13, 65, 3.1, 0.15]].map(
+    ([lam, dir, om, w]) => ({
+      kx: Math.cos(dir * Math.PI / 180) * 2 * Math.PI / lam,
+      kz: Math.sin(dir * Math.PI / 180) * 2 * Math.PI / lam, om, w,
+    }));
+  function waterAt(x, z, t) {
+    let h = 0, dx = 0, dz = 0;
+    for (const k of W_TRAINS) {
+      const ph = x * k.kx + z * k.kz + t * k.om;
+      h += Math.sin(ph) * k.w;
+      dx += Math.cos(ph) * k.w * k.kx;
+      dz += Math.cos(ph) * k.w * k.kz;
+    }
+    return { y: W_UMEAN + W_UAMP * (h - 1.05), nx: -dx * W_UAMP, nz: -dz * W_UAMP };
+  }
+
   const RIM = Math.exp(-2.6);
   function hillProfile(u, v) {                 // 0 at the rim → 1 at the peak
     const r2 = u * u + v * v;
@@ -169,7 +189,7 @@ window.cartaTerrain = function cartaTerrain(THREE) {
     group.add(water, mesh);
 
     return {
-      group, mesh, water, heightAt, seaLevel,
+      group, mesh, water, heightAt, seaLevel, waterAt,
       update(t) { water.material.uniforms.uTime.value = t; },
       dispose() { geo.dispose(); landMat.dispose(); water.geometry.dispose(); water.material.dispose(); },
     };
