@@ -54,6 +54,10 @@ async function ensureServer() {
     if (has('perf')) q.set('perf', '1');
     if (has('tour')) q.set('tour', '1');
     if (has('still')) q.set('still', '1');
+    if (has('facade')) q.set('facade', '1');
+    if (has('nopom')) q.set('nopom', '1');
+    const ps = arg('pomscale', null); if (ps != null && ps !== true) q.set('pomscale', String(ps));
+    const az = arg('az', null); if (az != null && az !== true) q.set('az', String(az));
     const z = arg('zoom', null); if (z != null && z !== true) q.set('zoom', String(z));
 
     const t0 = Date.now();
@@ -74,6 +78,13 @@ async function ensureServer() {
     const perf = await page.evaluate(() => window.__perf || null);
     const dbg = await page.evaluate(() => (window.cartaDiorama && window.cartaDiorama._dbg) || null);
     if (dbg) console.log(`  scene: town=${dbg.town} townKids=${dbg.townKids} ships=${dbg.ships}`);
+    const fac = await page.evaluate(() => {
+      if (!window.__facade) return null;
+      const d = window.cartaDiorama, c = d._cam, t = d._controls.target;
+      return { f: window.__facade, cam: [c.position.x | 0, c.position.y | 0, c.position.z | 0],
+        dist: Math.hypot(c.position.x - t.x, c.position.y - t.y, c.position.z - t.z) | 0 };
+    });
+    if (fac) console.log(`  facade: block (${fac.f.x},${fac.f.z}) az ${fac.f.az}; cam ${JSON.stringify(fac.cam)} dist ${fac.dist}m`);
 
     mkdirSync(dirname(join(ROOT, out)), { recursive: true });
     await page.screenshot({ path: join(ROOT, out) });

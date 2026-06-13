@@ -151,8 +151,9 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   // the close zoom the chart now allows.
   function facadeTexture(style, stories, type) {
     const key = 'facade-' + style + stories + (type || '');
-    const rand = lcg(key);
-    return canvasTex(key, 192, 192, (x) => {
+    // per-trade albedo variants share one relief, except provisioner/smithy (apertures differ)
+    const reliefKey = 'facade-' + style + stories + ((type === 'provisioner' || type === 'smithy') ? type : '') + '-h';
+    return canvasTexR(key, reliefKey, 192, 192, (x, rx, w, h, rand) => {
       x.fillStyle = '#ddd2b4';
       x.fillRect(0, 0, 192, 192);
       // weathering streaks
@@ -166,6 +167,10 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       let curStory = 0;
       const win = (wx, wy, ww, wh, arched) => {
         wins.push({ wx, wy, ww, wh, s: curStory });
+        // relief (POM): the reveal is the hero — proud surround + lintel, deep glass
+        rx.fillStyle = HV(0.65); rx.fillRect(wx - 3, wy - 3, ww + 6, wh + 6);   // surround
+        rx.fillStyle = HV(0.8);  rx.fillRect(wx - 3, wy - 4.5, ww + 6, 2.5);    // lintel proud
+        rx.fillStyle = HV(0.15); rx.fillRect(wx, wy, ww, wh);                   // glass recessed
         x.fillStyle = '#f4ecd8';
         x.fillRect(wx - 3, wy - 3, ww + 6, wh + 6);            // surround
         x.fillStyle = 'rgba(61,47,30,0.55)';
@@ -249,6 +254,9 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       // the door
       x.fillStyle = '#33281b';
       const dw = style === 'spanish' ? 36 : 26, dh = rowH * 0.6;
+      // relief: proud surround, deeply recessed door leaf
+      rx.fillStyle = HV(0.75); rx.fillRect(96 - dw / 2 - 3, 192 - dh - 3, dw + 6, dh + 3);
+      rx.fillStyle = HV(0.1);  rx.fillRect(96 - dw / 2, 192 - dh, dw, dh);
       x.fillRect(96 - dw / 2, 192 - dh, dw, dh);
       x.strokeStyle = 'rgba(244,236,216,0.5)';                 // planked door
       x.lineWidth = 1.4;
@@ -1666,6 +1674,18 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         const style = keyParts[0], storiesStr = keyParts[1], type = keyParts[2] || '';
         const stories = +storiesStr;
         const wallMat = new THREE.MeshLambertMaterial({ color: 0xffffff, map: facadeTexture(style, stories, type) });
+        // Parallax occlusion on the facades (parallax_occulusion.md §5.4): window
+        // reveals + door recesses that shift as the camera orbits. Guarded so the
+        // node harness and non-diorama callers fall back to the flat texture.
+        const POM_ON = !!(carta && carta.gfx && carta.gfx.tier >= 3) && window.cartaPOM;
+        if (POM_ON) {
+          const reliefKey = 'facade-' + style + stories + ((type === 'provisioner' || type === 'smithy') ? type : '') + '-h';
+          if (texCache[reliefKey]) window.cartaPOM.patch(wallMat, {
+            THREE, heightMap: texCache[reliefKey],
+            scale: (window.__POM_SCALE != null ? window.__POM_SCALE : Math.min(0.04 / (0.6 + stories * 3.0), 0.012)),
+            minLayers: 8, maxLayers: 16, fadeStart: 18, fadeEnd: 50, clampUv: true,
+          });
+        }
         const wallTints = WALL_TINTS[style].map((c) => new THREE.Color(c));
         const roofTints = ROOF_TINTS[style].map((c) => new THREE.Color(c));
         // facade window centres in texture px (192 wide), outermost casements —

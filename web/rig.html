@@ -109,6 +109,69 @@ function setZoom(frac) {
 }
 window.__setZoom = setZoom;
 
+// full orbit pose: azimuth/polar degrees, distance fraction, target offset (metres).
+// Lets a close, low, wall-facing facade shot be framed for POM validation.
+function setOrbit(azDeg, polarDeg, frac, tx, tz, ty) {
+  const c = window.cartaDiorama && window.cartaDiorama._controls;
+  const cam = window.cartaDiorama && window.cartaDiorama._cam;
+  if (!c || !cam) return false;
+  const t = c.target;
+  if (tx != null) t.x = tx; if (tz != null) t.z = tz; if (ty != null) t.y = ty;
+  const d = c.minDistance + (c.maxDistance - c.minDistance) * Math.max(0, Math.min(1, frac));
+  const a = azDeg * Math.PI / 180, p = polarDeg * Math.PI / 180;   // polar from vertical
+  cam.position.set(t.x + d * Math.sin(p) * Math.sin(a), t.y + d * Math.cos(p), t.z + d * Math.sin(p) * Math.cos(a));
+  window.__zoom = frac;
+  return true;
+}
+window.__setOrbit = setOrbit;
+
+// Frame a real building close (within the POM fade) for facade validation: pick a
+// prominent structure, project it to world via the diorama frame, and place the
+// camera ~22 m out at eye height, orbitable via az.
+function frameFacade(azDeg) {
+  const dio = window.cartaDiorama;
+  const fr = dio && dio._frame; if (!fr) return false;
+  const S = (window.carta && window.carta.harborStructures) || {};
+  // a town BLOCK footprint near the origin; houses line its perimeter facing the
+  // streets, so an edge's OUTWARD normal points straight at a house front. We frame
+  // the longest edge head-on (POM fades at grazing angles, so face-on is essential).
+  const blocks = [];
+  for (const f of (S.blocks || [])) {
+    const ring0 = f.geometry.coordinates[0]; if (!ring0 || ring0.length < 4) continue;
+    const ring = ring0.map((q) => { const p = fr.project(q[0], q[1]); return [p.x, p.z]; });
+    let cx = 0, cz = 0; for (const p of ring) { cx += p[0]; cz += p[1]; } cx /= ring.length; cz /= ring.length;
+    blocks.push({ ring, cx, cz, d2: cx * cx + cz * cz });
+  }
+  if (!blocks.length) return false;
+  blocks.sort((a, b) => a.d2 - b.d2);
+  const B = blocks[Math.min(blocks.length - 1, (azDeg / 30) | 0)];   // az selects which nearby block
+  // longest edge of the chosen block
+  let best = null;
+  for (let i = 0; i < B.ring.length - 1; i++) {
+    const a = B.ring[i], b = B.ring[i + 1];
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (!best || len > best.len) best = { a, b, len };
+  }
+  const mx = (best.a[0] + best.b[0]) / 2, mz = (best.a[1] + best.b[1]) / 2;
+  let nx = -(best.b[1] - best.a[1]), nz = (best.b[0] - best.a[0]);    // edge normal
+  const nl = Math.hypot(nx, nz) || 1; nx /= nl; nz /= nl;
+  if ((mx - B.cx) * nx + (mz - B.cz) * nz < 0) { nx = -nx; nz = -nz; } // point outward
+  // edge tangent (along the wall)
+  let tx = best.b[0] - best.a[0], tz = best.b[1] - best.a[1];
+  const tl = Math.hypot(tx, tz) || 1; tx /= tl; tz /= tl;
+  const c = dio._controls, cam = dio._cam;
+  c.minDistance = 0.5; c.maxPolarAngle = Math.PI * 0.62;
+  const dist = 8;
+  // view the wall ~45° off its normal — POM shows displacement at oblique angles
+  // (face-on = no lateral shift; grazing = faded out). Blend normal + tangent.
+  const ox = (nx * 0.72 + tx * 0.7), oz = (nz * 0.72 + tz * 0.7);
+  c.target.set(mx, 3, mz);
+  cam.position.set(mx + ox * dist, 3.4, mz + oz * dist);
+  window.__facade = { x: Math.round(mx), z: Math.round(mz), az: azDeg, blocks: blocks.length };
+  return true;
+}
+window.__frameFacade = frameFacade;
+
 function go(port, extra) {
   const q = new URLSearchParams(location.search);
   q.set('port', port); if (extra) for (const k in extra) q.set(k, extra[k]);
@@ -159,12 +222,15 @@ function meter() {
       map: stubMap, bus, showCard() {}, hideCard() {},
     }, data);
     window.carta = carta;   // several modules (harborpoi, harborterrain) read the global
+    if (params.has('nopom')) window.cartaPOM = null;   // A/B: disable the parallax patch
+    if (params.has('pomscale')) window.__POM_SCALE = parseFloat(params.get('pomscale'));   // exaggerate to prove it
     for (const init of (window.cartaInits || [])) { try { init(carta); } catch (e) { console.error('init', e); } }
     await window.cartaDiorama.open(port);
     buildControls();
     requestAnimationFrame(meter);
     // URL-driven pose for screenshots: settle, then dolly to the requested zoom
     if (params.has('zoom')) setTimeout(() => setZoom(parseFloat(params.get('zoom'))), 400);
+    if (params.has('facade')) setTimeout(() => frameFacade(parseFloat(params.get('az') || '35')), 500);
     if (params.has('tour')) setTimeout(() => { const t = document.querySelector('.dio-tour'); if (t) t.click(); }, 600);
     window.__ready = true;
   } catch (e) {
