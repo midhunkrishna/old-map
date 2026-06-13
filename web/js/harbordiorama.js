@@ -35,14 +35,22 @@
   let tween = null;        // active camera tween, if any
   let TIMINGS = {};        // build-phase timings (ms), surfaced to the rig via carDio._timings
 
-  // first-person canoe tour (a second mode inside the diorama)
-  let mode = 'overview';   // 'overview' | 'tour'
+  // first-person canoe tour + on-foot land tour (modes inside the diorama)
+  let mode = 'overview';   // 'overview' | 'tour' | 'walking'
   let canoe = null;        // window.cartaHarborCanoe rig, built lazily
   let camYaw = 0, camPitch = 0, rowing = false;  // look + row input, from the mouse
-  let fwdKey = false, revKey = false;            // W forward, S/D reverse
+  let fwdKey = false, revKey = false;            // W forward, S reverse/back
+  let keyA = false, keyD = false, keyShift = false;  // walking: strafe + run
   let cruiseStep = 0;                            // stepped cruise: 0 (coast) .. CRUISE_STEPS (20 mph)
   const CRUISE_STEPS = 8;                        // even increments up to the cap
   const CRUISE_MAX_MS = 8.94;                    // 20 mph ≈ 8.94 m/s ≈ 32.2 km/h
+
+  // on-foot walking (plan/5): the walker rig, the parked canoe pose, and the
+  // disembark/embark prompt flags. Built lazily on first disembark.
+  let walker = null;       // window.cartaHarborWalker rig
+  let parked = null;       // { x, z, heading } where the canoe waits ashore
+  let landE = false;       // tour: a walkable beach is in front → "E to disembark"
+  let embarkE = false;     // walking: near+facing the parked canoe → "E to embark"
 
   const carDio = { active: false, open, close };
   window.cartaDiorama = carDio;
@@ -139,6 +147,20 @@
   color: #efe3c6; text-shadow: 0 1px 5px rgba(0,0,0,0.7);
 }
 #carta-diorama.touring.paused .dio-pausehint { display: block; }
+/* on foot: reuse the .touring chrome (minimap, hidden buttons) but suppress the
+   canoe-only row hint + cruise box; show the E-prompt instead. */
+#carta-diorama.walking .dio-tourhint,
+#carta-diorama.walking .dio-pausehint,
+#carta-diorama.walking .dio-speed { display: none; }
+#carta-diorama .dio-eprompt {
+  position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%);
+  z-index: 3; pointer-events: none; display: none; text-align: center;
+  font-family: 'IM Fell English', serif; font-size: 15px; letter-spacing: 0.3px;
+  color: #f3ead0; text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+  padding: 5px 14px; border: 1px solid rgba(243,234,208,0.5);
+  border-radius: 3px; background: rgba(30,22,12,0.45);
+}
+#carta-diorama .dio-eprompt.show { display: block; }
 #carta-diorama .dio-speed {
   position: absolute; right: 22px; bottom: 70px; z-index: 5; display: none;
   flex-direction: column; align-items: center; gap: 7px; pointer-events: auto;
@@ -235,7 +257,10 @@
     const returnBtn = document.createElement('div');
     returnBtn.className = 'dio-return';
     returnBtn.textContent = 'Return to overview ⟲';
-    returnBtn.addEventListener('click', exitTour);
+    returnBtn.addEventListener('click', () => { if (mode === 'walking') exitWalk(true); else exitTour(); });
+    const eprompt = document.createElement('div');
+    eprompt.className = 'dio-eprompt';
+    host._eprompt = eprompt;
     const tourHint = document.createElement('div');
     tourHint.className = 'dio-tourhint';
     tourHint.innerHTML = 'Hold left mouse / W to row · S to reverse · Move mouse to look · ↑/↓ or scroll to set cruise · Esc to release';
@@ -271,7 +296,7 @@
     mini.className = 'dio-minimap';
     mini.width = 380; mini.height = 380;        // 2× backing for a crisp engraving
     host._mini = mini;
-    host.append(canvas, vig, overlay, title, closeBtn, envBtn, labelsBtn, tourBtn, returnBtn, tourHint, pauseHint, speedBox, mini, hint, sysreq);
+    host.append(canvas, vig, overlay, title, closeBtn, envBtn, labelsBtn, tourBtn, returnBtn, eprompt, tourHint, pauseHint, speedBox, mini, hint, sysreq);
     // dev-only frame HUD (?perf=1): created here so it sits above the canvas
     if (PERF) {
       const pf = document.createElement('div');
@@ -288,22 +313,23 @@
     // first-person look + row input. Row only fires while the pointer is locked;
     // a click on the canvas while released (paused) re-captures the look.
     const locked = () => document.pointerLockElement === canvas;
+    const firstPerson = () => mode === 'tour' || mode === 'walking';
     canvas.addEventListener('mousedown', (e) => { if (mode === 'tour' && e.button === 0 && locked()) rowing = true; });
     window.addEventListener('mouseup', (e) => { if (e.button === 0) rowing = false; });
-    window.addEventListener('blur', () => { rowing = false; });
+    window.addEventListener('blur', () => { rowing = false; fwdKey = revKey = keyA = keyD = keyShift = false; });
     canvas.addEventListener('click', () => {
-      if (mode === 'tour' && !locked() && canvas.requestPointerLock) canvas.requestPointerLock();
+      if (firstPerson() && !locked() && canvas.requestPointerLock) canvas.requestPointerLock();
     });
     document.addEventListener('mousemove', (e) => {
-      if (mode !== 'tour' || !locked()) return;
+      if (!firstPerson() || !locked()) return;
       const sens = 0.0022;
       camYaw -= e.movementX * sens;
       camPitch = Math.max(-1.55, Math.min(1.55, camPitch - e.movementY * sens));
     });
-    // losing the lock (Esc, or the browser) pauses the tour rather than exiting:
+    // losing the lock (Esc, or the browser) pauses the tour/walk rather than exiting:
     // the cursor returns so the "Return to overview" button becomes clickable.
     document.addEventListener('pointerlockchange', () => {
-      if (mode !== 'tour') return;
+      if (!firstPerson()) return;
       const on = locked();
       if (!on) rowing = false;
       host.classList.toggle('paused', !on);
@@ -311,17 +337,24 @@
     // W forward · S reverse (the gaze still steers); ↑/↓ step the cruise speed
     // one even increment either way (0–20 mph); the scroll wheel does the same
     window.addEventListener('keydown', (e) => {
-      if (mode !== 'tour') return;
+      if (!firstPerson()) return;
       const k = e.key.toLowerCase();
       if (k === 'w') fwdKey = true;
       else if (k === 's') revKey = true;
-      else if (e.key === 'ArrowUp') { e.preventDefault(); stepCruise(1); }
-      else if (e.key === 'ArrowDown') { e.preventDefault(); stepCruise(-1); }
+      else if (k === 'a') keyA = true;
+      else if (k === 'd') keyD = true;
+      else if (k === 'shift') keyShift = true;
+      else if (k === 'e') { if (tween) return; if (mode === 'tour') tryDisembark(); else tryEmbark(); }
+      else if (mode === 'tour' && e.key === 'ArrowUp') { e.preventDefault(); stepCruise(1); }
+      else if (mode === 'tour' && e.key === 'ArrowDown') { e.preventDefault(); stepCruise(-1); }
     });
     window.addEventListener('keyup', (e) => {
       const k = e.key.toLowerCase();
       if (k === 'w') fwdKey = false;
       else if (k === 's') revKey = false;
+      else if (k === 'a') keyA = false;
+      else if (k === 'd') keyD = false;
+      else if (k === 'shift') keyShift = false;
     });
     canvas.addEventListener('wheel', (e) => {
       if (mode !== 'tour') return;
@@ -332,7 +365,10 @@
     window.addEventListener('resize', onResize);
     window.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || !carDio.active) return;
-      if (mode === 'tour') {
+      if (mode === 'walking') {
+        if (tween) return;     // swallow Esc mid-animation; the tween owns the camera
+        exitWalk();            // step back to the canoe (not all the way to overview)
+      } else if (mode === 'tour') {
         // first Esc releases the look (browser exits pointer lock → paused);
         // a second Esc, now unlocked, steps fully back to the overview.
         if (!locked()) exitTour();
@@ -515,6 +551,13 @@
     TIMINGS.terrain = +(performance.now() - _tTerr).toFixed(1);
     frame.heightAt = terrain.heightAt;
     frame.bake = terrain.bake;   // baked heightmap grid (Option 2: trees sample it instead of heightAt)
+    // walk-tour (plan/5): the single height accessor the walker uses for ground-follow,
+    // the cliff gate and the sea boundary. bake.sample is O(1) bilinear; heightAt is the
+    // fallback on devices without a DataTexture (frame.bake === null), where the canoe
+    // tour already runs on heightAt — so walking must too.
+    frame.sampleH = frame.bake
+      ? (x, z) => frame.bake.sample(x, z)
+      : (x, z) => frame.heightAt(x, z);
     scene.add(terrain.group || terrain.mesh);
     if (terrain.water && !terrain.group) scene.add(terrain.water);
     // point the water's sun glitter at the real (low, golden) sun
@@ -733,10 +776,37 @@
       } catch (e) { console.warn('diorama: birds failed', e); }
     }
 
+    // ----- walk-tour collision + surface data, projected into the diorama frame -----
+    // Houses become conservative bounding circles (r ≈ half-diagonal × 1.08, the same
+    // inflation the box-house render applies); streets become segments for the surface
+    // pace test. Tree trunks stay in the trees module (carDio._trees.nearTrunks).
+    const obstacles = { houses: [] };
+    if (town && town.footprints) {
+      for (const f of town.footprints) {
+        const p = project(f.lon, f.lat);
+        obstacles.houses.push({ x: p.x, z: p.z, r: Math.hypot(f.w / 2, f.d / 2) * 1.08 });
+      }
+    }
+    const streetSegs = [];
+    if (town && town.streets) {
+      for (const st of town.streets) {
+        const pc = st.coords.map(([lng, lat]) => project(lng, lat));
+        for (let i = 0; i < pc.length - 1; i++) {
+          streetSegs.push({ x1: pc[i].x, z1: pc[i].z, x2: pc[i + 1].x, z2: pc[i + 1].z, w: st.w });
+        }
+      }
+    }
+    carDio._obstacles = {
+      houses: obstacles.houses.length,
+      streets: streetSegs.length,
+      trunks: (carDio._trees && carDio._trees.stats && carDio._trees.stats.total) || 0,
+    };
+
     carDio._frame = frame;
     carDio._dbg = { id, town: !!town, townKids: town ? town.group.children.length : 0, ships: ships.length, stats: town ? town.stats : null };
     built = {
       _id: id, frame, terrain, radius, animated, town, prewarmShips,
+      obstacles, streets: streetSegs, treesModule: carDio._trees,   // walk-tour collision/surface
       lands: landFs,                                       // for the tour minimap
       shipDots: ships.map((s) => ({ x: s.px, z: s.pz })),  //   "      "      "
       dispose() {
@@ -873,8 +943,19 @@
     const x = host._mini.getContext('2d');
     x.clearRect(0, 0, W, W);
     x.drawImage(miniBase, 0, 0);
+    // walking: a small moored-hull glyph marks where the canoe waits ashore
+    if (parked) {
+      const qx = cx2 + parked.x * miniScale, qy = cx2 + parked.z * miniScale;
+      x.save();
+      x.fillStyle = '#3a2a16'; x.strokeStyle = '#f3ead0'; x.lineWidth = 1.2;
+      x.beginPath();
+      x.ellipse(qx, qy, 6, 2.6, parked.heading || 0, 0, Math.PI * 2);
+      x.fill(); x.stroke();
+      x.restore();
+    }
     const px = cx2 + bp.x * miniScale, py = cx2 + bp.z * miniScale;
-    // the canoe: a red arrow on the heading (θ=0 → bow toward −Z → up-chart)
+    // the canoe (tour) or the walker (on foot): a red arrow on the heading
+    // (θ=0 → bow/face toward −Z → up-chart)
     const fx = -Math.sin(bp.heading || 0), fz = -Math.cos(bp.heading || 0);
     const ang = Math.atan2(fz, fx);
     x.save();
@@ -1004,6 +1085,219 @@
     if (built) applySpherical(restingView(built.radius));
   }
 
+  /* ---------- on-foot land tour (plan/5) ---------- */
+
+  function ensureWalker() {
+    if (walker) return walker;
+    if (!window.cartaHarborWalker || !built) return null;
+    try {
+      walker = window.cartaHarborWalker(THREE).build(built.frame, {
+        seaLevel: built.terrain.seaLevel,
+        obstacles: built.obstacles,
+        streets: built.streets,
+        nearTrunks: built.treesModule ? built.treesModule.nearTrunks : null,
+      });
+    } catch (e) { console.warn('diorama: walker failed', e); walker = null; }
+    carDio._walker = walker;
+    return walker;
+  }
+
+  function walkInput() {
+    return { camYaw, camPitch, fwd: fwdKey, back: revKey, left: keyA, right: keyD, run: keyShift };
+  }
+
+  let _epShown = false, _epText = '';
+  function showEPrompt(text) {
+    if (_epShown && _epText === text) return;
+    _epShown = true; _epText = text;
+    if (host && host._eprompt) { host._eprompt.textContent = text; host._eprompt.classList.add('show'); }
+  }
+  function hideEPrompt() {
+    if (!_epShown) return;
+    _epShown = false; _epText = '';
+    if (host && host._eprompt) host._eprompt.classList.remove('show');
+  }
+
+  // From the canoe's pose, find a walkable landing just inland of the bow. Returns
+  // { x, z, heading } or null (no shore within reach, still awash, or a cliff). The
+  // cliff gate is a height-gain test over 12 m inland — robust to the beach berm,
+  // which a short finite-difference would misread.
+  function disembarkProbe(pose) {
+    const bp = pose || (canoe && canoe.boatPos());
+    if (!bp || !built) return null;
+    const sampleH = built.frame.sampleH, sea = built.terrain.seaLevel;
+    const fx = -Math.sin(bp.heading), fz = -Math.cos(bp.heading);
+    let entry = -1;
+    for (let s = 1; s <= 8; s++) {
+      if (sampleH(bp.x + fx * s, bp.z + fz * s) > sea + 0.1) { entry = s; break; }
+    }
+    if (entry < 0) return null;                       // no shore ahead within ~8 m
+    const lx = bp.x + fx * (entry + 2), lz = bp.z + fz * (entry + 2);
+    if (sampleH(lx, lz) <= sea + 0.1) return null;    // landing still awash
+    if (sampleH(lx + fx * 12, lz + fz * 12) - sampleH(lx, lz) > 3.5) return null;  // cliff/hill seam
+    return { x: lx, z: lz, heading: bp.heading };
+  }
+
+  function tryDisembark() {
+    if (mode !== 'tour' || !landE) return;
+    const L = disembarkProbe();
+    if (L) enterWalk(L, true);
+  }
+
+  function tryEmbark() {
+    if (mode !== 'walking' || !embarkE || !parked) return;
+    startEmbarkTween();
+  }
+
+  // L = { x, z, heading }. `animate` runs the 3→6 ft disembark sweep; the dev/rig
+  // hook snaps in (animate=false).
+  function enterWalk(L, animate) {
+    if (mode !== 'tour' && mode !== 'overview') return;
+    if (!ensureWalker()) return;
+    const camera = eng.camera, controls = eng.controls;
+    const fromPos = camera.position.clone();
+    const fromYaw = camYaw, fromPitch = camPitch;
+    if (mode === 'tour' && canoe) {                    // freeze the canoe where it sits
+      const b = canoe.boatPos();
+      parked = { x: b.x, z: b.z, heading: b.heading };
+    }
+    const yaw0 = (L.heading != null) ? L.heading : Math.atan2(L.x, L.z);
+    walker.spawn(L.x, L.z, yaw0);
+    camYaw = yaw0; camPitch = 0;
+    fwdKey = revKey = keyA = keyD = keyShift = false;
+    landE = false; embarkE = false; hideEPrompt();
+    tween = null;
+    controls.enabled = false;
+    camera.fov = 65; camera.near = 0.08; camera.far = built.radius * 10;
+    camera.updateProjectionMatrix();
+    eng.setMode('walking');
+    host.classList.add('touring', 'walking');          // 'touring' keeps the minimap + hides buttons
+    host.classList.remove('paused');
+    if (host._hint) host._hint.classList.remove('show');
+    mode = 'walking';
+    drawMiniBase();
+    try { if (window.cartaHarborAudio) window.cartaHarborAudio.setMode('tour'); } catch (e) { /* ignore */ }
+    if (canvas.requestPointerLock && document.pointerLockElement !== canvas) canvas.requestPointerLock();
+    if (animate && !reduced()) {
+      const gy = built.frame.sampleH(L.x, L.z);
+      walkCamTween({ pos: fromPos, yaw: fromYaw, pitch: fromPitch },
+                   { pos: new THREE.Vector3(L.x, gy + 1.83, L.z), yaw: yaw0, pitch: 0 }, 720, null);
+    }
+  }
+
+  // toOverview forces the full step-out to overview (the Return button); otherwise
+  // embark/Esc resume the canoe tour from the parked pose (state retained — no spawn).
+  function exitWalk(toOverview) {
+    if (mode !== 'walking') return;
+    cancelWalkTween();
+    const resumeTour = !toOverview && !!(canoe && parked);
+    fwdKey = revKey = keyA = keyD = keyShift = false;
+    embarkE = false; hideEPrompt();
+    host.classList.remove('walking');
+    if (walker) { try { walker.dispose(); } catch (e) { /* ignore */ } walker = null; carDio._walker = null; }
+    const camera = eng.camera, controls = eng.controls;
+    if (resumeTour) {
+      mode = 'tour';
+      eng.setMode('tour');
+      camYaw = parked.heading; camPitch = 0;     // canoe.update reseats the camera next frame
+      controls.enabled = false;
+      camera.fov = 70; camera.near = 0.1; camera.far = built.radius * 10;
+      camera.updateProjectionMatrix();
+      try { if (window.cartaHarborAudio) window.cartaHarborAudio.setMode('tour'); } catch (e) { /* ignore */ }
+    } else {
+      mode = 'overview';
+      eng.setMode('overview');
+      if (document.pointerLockElement === canvas && document.exitPointerLock) document.exitPointerLock();
+      if (canoe) { scene.remove(canoe.group); canoe.dispose(); canoe = null; carDio._canoe = null; }
+      parked = null;
+      host.classList.remove('touring', 'paused');
+      controls.enabled = true;
+      camera.fov = 38;
+      camera.near = built ? Math.max(2, built.radius * 0.012) : 1;
+      camera.far = built ? built.radius * 16 : 60000;
+      camera.updateProjectionMatrix();
+      try { if (window.cartaHarborAudio) window.cartaHarborAudio.setMode('overview'); } catch (e) { /* ignore */ }
+      if (built) applySpherical(restingView(built.radius));
+    }
+  }
+
+  // First-person camera tween (position + quaternion) in the engine's `tween` slot
+  // (preUpdateHook, top of loop). A sin(k·π) roll is the 30° "climb out" tilt that
+  // returns to level as the eye rises. modeHook hands control to the walker once the
+  // slot clears (`tween === null`).
+  function walkCamTween(from, to, ms, done) {
+    const camera = eng.camera;
+    const start = performance.now();
+    const _p = new THREE.Vector3();
+    const _eu = new THREE.Euler(0, 0, 0, 'YXZ');
+    const SWING = 0.42;   // ~24° tilt at the midpoint
+    tween = function (now) {
+      let k = Math.min(1, (now - start) / ms);
+      const ke = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;   // easeInOutQuad
+      _p.copy(from.pos).lerp(to.pos, ke);
+      const yaw = from.yaw + (to.yaw - from.yaw) * ke;
+      const pitch = from.pitch + (to.pitch - from.pitch) * ke;
+      camera.position.copy(_p);
+      _eu.set(pitch, yaw, Math.sin(ke * Math.PI) * SWING, 'YXZ');
+      camera.quaternion.setFromEuler(_eu);
+      if (k >= 1) { tween = null; if (done) done(); }
+    };
+  }
+
+  function startEmbarkTween() {
+    const camera = eng.camera;
+    const wy = built.terrain.waterAt ? built.terrain.waterAt(parked.x, parked.z, 0).y : built.terrain.seaLevel;
+    hideEPrompt();
+    walkCamTween({ pos: camera.position.clone(), yaw: camYaw, pitch: camPitch },
+                 { pos: new THREE.Vector3(parked.x, wy + 1.0, parked.z), yaw: parked.heading, pitch: 0 },
+                 720, () => exitWalk(false));
+  }
+
+  function cancelWalkTween() { tween = null; }   // abandon any sweep; callers restore a coherent camera
+
+  // dev/rig hook: drop straight into walking (no animation). With no (x,z) it
+  // auto-picks a beach landing by marching outward until it crosses onto land. A
+  // parked canoe is ensured so embark is reachable from a cold (overview) entry.
+  carDio._enterWalk = function (x, z, yaw, animate) {
+    if (!carDio.active || !built || !window.cartaHarborWalker) return false;
+    if (mode === 'walking') return true;
+    const sampleH = built.frame.sampleH, sea = built.terrain.seaLevel, R = built.radius;
+    if (x == null || z == null) {
+      let found = null;
+      for (let ang = 0; ang < Math.PI * 2 && !found; ang += Math.PI / 8) {
+        const dx = Math.cos(ang), dz = Math.sin(ang);
+        let wasWater = sampleH(R * 0.05 * dx, R * 0.05 * dz) <= sea + 0.1;
+        for (let r = R * 0.05; r < R * 1.2; r += R * 0.015) {
+          const onLand = sampleH(r * dx, r * dz) > sea + 0.4;
+          if (wasWater && onLand) { found = { x: (r + 6) * dx, z: (r + 6) * dz }; break; }
+          wasWater = !onLand;
+        }
+      }
+      if (!found) return false;
+      x = found.x; z = found.z;
+    }
+    if (yaw == null) yaw = Math.atan2(x, z);   // face inland (toward the centroid)
+    if (mode === 'tour') exitTour();
+    if (!canoe && window.cartaHarborCanoe) {
+      try {
+        canoe = window.cartaHarborCanoe(THREE).build(built.frame, {
+          seaLevel: built.terrain.seaLevel, sunDir: carDio._sunDir,
+          spawnXZ: { x, z }, waterAt: built.terrain.waterAt,
+        });
+        carDio._canoe = canoe; scene.add(canoe.group); canoe.spawn();
+      } catch (e) { /* ignore — embark just won't be available */ }
+    }
+    if (canoe) { const b = canoe.boatPos(); parked = { x: b.x, z: b.z, heading: b.heading }; }
+    mode = 'overview';   // enterWalk requires overview|tour
+    enterWalk({ x, z, heading: yaw }, !!animate);
+    return mode === 'walking';
+  };
+
+  // dev/test accessor: the live walking state for rig assertions (plan/5 §9)
+  carDio._state = () => ({ mode, landE, embarkE, hasWalker: !!walker, hasCanoe: !!canoe, hasParked: !!parked, tweening: !!tween });
+  // dev/test: run the disembark cliff-gate for an arbitrary boat pose → landing | null
+  carDio._probe = (x, z, heading) => disembarkProbe({ x, z, heading: heading || 0 });
+
   /* ---------- open / close ---------- */
 
   async function open(id) {
@@ -1016,10 +1310,13 @@
     if (!(await ensureEngine())) { sleeps(); return; }
     TIMINGS.engine = +(performance.now() - _tEng).toFixed(1);   // Three.js import (first open only) + engine create
 
+    if (mode === 'walking') exitWalk(true);
     if (mode === 'tour') exitTour();
+    if (walker) { try { walker.dispose(); } catch (e) { /* ignore */ } walker = null; carDio._walker = null; }
     if (canoe) { try { canoe.dispose(); } catch (e) { /* ignore */ } canoe = null; }
     if (built) { built.dispose(); built = null; }
-    mode = 'overview'; eng.setMode('overview'); host.classList.remove('touring', 'paused');
+    parked = null; landE = false; embarkE = false; hideEPrompt();
+    mode = 'overview'; eng.setMode('overview'); host.classList.remove('touring', 'paused', 'walking');
     const _tBuild = performance.now();
     const frame = buildScene(id);
     TIMINGS.buildScene = +(performance.now() - _tBuild).toFixed(1);
@@ -1077,7 +1374,9 @@
 
   function close() {
     if (!carDio.active) return;
+    if (mode === 'walking') exitWalk(true);  // step off → overview (disposes the walker + canoe)
     if (mode === 'tour') exitTour();   // release pointer lock + dispose the canoe first
+    hideEPrompt();
     try { if (window.cartaHarborAudio) window.cartaHarborAudio.stop(); } catch (e) { /* ignore */ }
     overlay.style.opacity = '1';
     const finish = () => {
@@ -1123,6 +1422,29 @@
       carDio._tourPos = canoe.boatPos();
       // the minimap arrow tracks at ~7 Hz; the base chart is pre-rendered
       if (t - lastMiniT > 0.15) { lastMiniT = t; drawMini(carDio._tourPos); }
+      // a walkable beach ahead of the bow → offer to step ashore
+      landE = !!disembarkProbe();
+      if (landE) showEPrompt('Press E to step ashore'); else hideEPrompt();
+    } else if (mode === 'walking' && walker) {
+      // on foot: the walker owns the camera — unless a disembark/embark tween is
+      // mid-flight (it owns the camera via the preUpdateHook slot; we early-out).
+      if (!tween) {
+        walker.update(dt, t, walkInput(), camera);
+        if (canoe && canoe.float) canoe.float(dt, t);   // the moored canoe keeps bobbing
+        carDio._camDist = built.radius * 0.18;
+        const wp = walker.pos();
+        carDio._tourPos = wp;
+        // re-embark when near AND roughly facing the parked canoe
+        embarkE = false;
+        if (parked) {
+          const ddx = parked.x - wp.x, ddz = parked.z - wp.z, dist = Math.hypot(ddx, ddz);
+          // near AND facing — but if you're right on top of it, facing is moot
+          const dot = dist < 0.6 ? 1 : (ddx * -Math.sin(wp.heading) + ddz * -Math.cos(wp.heading)) / dist;
+          if (dist < 3.5 && dot > 0.3) embarkE = true;
+        }
+        if (embarkE) showEPrompt('Press E to board the canoe'); else hideEPrompt();
+        if (t - lastMiniT > 0.15) { lastMiniT = t; drawMini(wp); }
+      }
     } else {
       carDio._tourPos = null;
       // engine has already ticked controls.update() this frame (overview owner);

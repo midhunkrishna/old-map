@@ -53,6 +53,12 @@ async function ensureServer() {
     const q = new URLSearchParams({ port });
     if (has('perf')) q.set('perf', '1');
     if (has('tour')) q.set('tour', '1');
+    if (has('walk')) q.set('walk', '1');
+    if (has('walkanim')) q.set('walkanim', '1');
+    if (has('walkembark')) q.set('walkembark', '1');
+    if (has('walkprobe')) q.set('walkprobe', '1');
+    const wx = arg('wx', null); if (wx != null && wx !== true) q.set('wx', String(wx));
+    const wz = arg('wz', null); if (wz != null && wz !== true) q.set('wz', String(wz));
     if (has('still')) q.set('still', '1');
     if (has('facade')) q.set('facade', '1');
     if (has('coast')) q.set('coast', '1');
@@ -81,6 +87,14 @@ async function ensureServer() {
     const perf = await page.evaluate(() => window.__perf || null);
     const dbg = await page.evaluate(() => (window.cartaDiorama && window.cartaDiorama._dbg) || null);
     if (dbg) console.log(`  scene: town=${dbg.town} townKids=${dbg.townKids} ships=${dbg.ships}`);
+    const obs = await page.evaluate(() => (window.cartaDiorama && window.cartaDiorama._obstacles) || null);
+    if (obs) console.log(`  walk obstacles: houses=${obs.houses} streets=${obs.streets} trunks=${obs.trunks}`);
+    const wst = await page.evaluate(() => (window.cartaDiorama && window.cartaDiorama._state && window.cartaDiorama._state()) || null);
+    if (wst && wst.mode === 'walking') console.log(`  walk state: walker=${wst.hasWalker} canoe=${wst.hasCanoe} parked=${wst.hasParked} embarkE=${wst.embarkE} tweening=${wst.tweening}`);
+    const wcyc = await page.evaluate(() => (window.__walkBefore && window.__walkAfter) ? { before: window.__walkBefore, after: window.__walkAfter } : null);
+    if (wcyc) console.log(`  walk cycle: walking(embarkE=${wcyc.before.embarkE}) → E → mode=${wcyc.after.mode} canoe=${wcyc.after.hasCanoe} walker=${wcyc.after.hasWalker}`);
+    const wpr = await page.evaluate(() => window.__probe || null);
+    if (wpr) console.log(`  disembark gate: beach→landing=${wpr.beachLanded} (found=${wpr.beachFound}) · openWater→landing=${wpr.waterLanded} (found=${wpr.waterFound})`);
     const timings = await page.evaluate(() => (window.cartaDiorama && window.cartaDiorama._timings) || window.__dioTimings || null);
     if (timings && Object.keys(timings).length) {
       const order = ['engine', 'terrain_coastbin', 'terrain_bake', 'terrain_hmn', 'terrain', 'town', 'trees', 'ships', 'buildScene', 'openTotal'];

@@ -719,13 +719,13 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
       const fwd = input.rowing, rev = input.reverse;
       const cruise = input.cruise || 0;
       if (fwd) v += THRUST * dt;
-      else if (rev) v -= THRUST * 0.55 * dt;
+      else if (rev) v -= THRUST * 0.9 * dt;            // back-paddle: firm enough to be felt
       if (!rev && cruise > 0 && v < cruise) {
         v += (cruise - v) * Math.min(1, dt * 3.0);                  // stroke toward the set step
       } else {
         v -= (DRAG_LIN * v + DRAG_QUAD * v * Math.abs(v)) * dt;     // coast (handles reverse too)
       }
-      if (v > VMAX) v = VMAX; if (v < -1.1) v = -1.1;
+      if (v > VMAX) v = VMAX; if (v < -2.4) v = -2.4;   // reverse cap ~2.4 m/s (was -1.1, barely moved)
 
       // --- propose a move along the heading; stay on water ---
       const fx = -Math.sin(theta), fz = -Math.cos(theta);   // forward unit (bow toward −Z at θ=0)
@@ -1197,7 +1197,22 @@ window.cartaHarborCanoe = function cartaHarborCanoe(THREE) {
       return _bp;
     }
 
-    return { group, spawn, update, dispose, boatPos };
+    // While the user is ashore (walking mode), the canoe waits moored at its last
+    // position: it keeps bobbing on the swell but never touches the camera or the
+    // paddle. The host calls this instead of update() so the boat reads as parked,
+    // not frozen mid-stroke. px/pz/theta are retained, so resuming update() picks
+    // up exactly where it left off (no spawn(), no teleport).
+    function float(dt, t) {
+      const w = waterAt(px, pz, t);
+      const fx = -Math.sin(theta), fz = -Math.cos(theta);
+      const pitch = (w.nx * fx + w.nz * fz) * 0.8;
+      const sx = -fz, sz = fx;
+      const roll = (w.nx * sx + w.nz * sz) * 0.8;
+      rig.position.set(px, w.y + DRAFT, pz);
+      rig.rotation.set(pitch, theta, roll, 'YXZ');
+    }
+
+    return { group, spawn, update, dispose, boatPos, float };
   }
 
   return { build };

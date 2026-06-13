@@ -44,6 +44,7 @@
 <script src="/js/harborbirds.js"></script>
 <script src="/js/harborpoi.js"></script>
 <script src="/js/harborcanoe.js"></script>
+<script src="/js/harborwalker.js"></script>
 <script src="/js/harboraudio.js"></script>
 <script src="/js/render/lod.js"></script>
 <script src="/js/render/engine.js"></script>
@@ -256,6 +257,37 @@ function meter() {
     if (params.has('facade')) setTimeout(() => frameFacade(parseFloat(params.get('az') || '35')), 500);
     if (params.has('coast')) setTimeout(() => frameCoast(parseFloat(params.get('az') || '35')), 500);
     if (params.has('tour')) setTimeout(() => { const t = document.querySelector('.dio-tour'); if (t) t.click(); }, 600);
+    if (params.has('walkprobe')) setTimeout(() => {
+      const d = window.cartaDiorama, fr = d._frame, sampleH = fr.sampleH, R = fr.radius, sea = 0;
+      let beach = null, water = null;
+      for (let a = 0; a < Math.PI * 2 && !beach; a += Math.PI / 16) {
+        const dx = Math.cos(a), dz = Math.sin(a);
+        let wasWater = sampleH(R * 0.05 * dx, R * 0.05 * dz) <= sea + 0.1;
+        for (let r = R * 0.05; r < R * 1.2; r += R * 0.015) {
+          const h = sampleH(r * dx, r * dz);
+          if (!water && r > R * 0.4 && h < sea - 1) water = { x: r * dx, z: r * dz, heading: Math.atan2(-dx, -dz) };
+          if (wasWater && h > sea + 0.4) {   // a water→land crossing: a beach
+            beach = { x: (r - 2) * dx, z: (r - 2) * dz, heading: Math.atan2(-dx, -dz) };  // boat 2 m seaward, facing inland
+            break;
+          }
+          wasWater = h <= sea + 0.1;
+        }
+      }
+      window.__probe = {
+        beachFound: !!beach, beachLanded: beach ? !!d._probe(beach.x, beach.z, beach.heading) : false,
+        waterFound: !!water, waterLanded: water ? !!d._probe(water.x, water.z, water.heading) : false,
+      };
+    }, 1500);
+    if (params.has('walk')) setTimeout(() => {
+      const wx = params.has('wx') ? parseFloat(params.get('wx')) : null;
+      const wz = params.has('wz') ? parseFloat(params.get('wz')) : null;
+      if (window.cartaDiorama._enterWalk) window.cartaDiorama._enterWalk(wx, wz, undefined, params.has('walkanim'));
+      if (params.has('walkembark')) setTimeout(() => {
+        window.__walkBefore = window.cartaDiorama._state();
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'e' }));   // board the canoe
+        setTimeout(() => { window.__walkAfter = window.cartaDiorama._state(); }, 1100);  // after the ~0.72 s tween
+      }, 500);
+    }, 700);
     window.__ready = true;
   } catch (e) {
     hud.textContent = 'rig error: ' + (e && e.message || e);

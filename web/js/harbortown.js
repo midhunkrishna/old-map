@@ -780,6 +780,11 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const stats = { houses: 0, streets: S ? S.streets.length : 0, byGroup: {}, streets3d: 0, palms: 0, fortWalls: 0, wharves: 0, jetties: 0, landmarks: 0, promoted: 0, byType: {} };
       if (!S) return { group, lod, stats };
 
+      // walk-tour (plan/5): every dwelling, whatever its wealth tier, passes through
+      // pushHouse — so one capture here (raw lng/lat + plot w×d) feeds the on-foot
+      // collision. Projected into the diorama frame by the host (harbordiorama.js).
+      const footprintsRaw = [];
+
       const wallGeo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
       const roofGeos = { gable: gableGeo(), hip: hipGeo() };
       const stoneMat = new THREE.MeshLambertMaterial({ color: 0xaa9c80 });
@@ -1482,6 +1487,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       function pushHouse(style, harbor, lon, lat, ang, w, d) {
         perHarbor[harbor] = (perHarbor[harbor] || 0) + 1;
         if (perHarbor[harbor] > 520) return;
+        footprintsRaw.push({ lon, lat, w, d });   // walk-tour collision — captured before the tier fork
         const cls = classifyHouse(harbor, lon, lat);
 
         // wealth gradient: the poor majority (tiers 1–3) render as instanced humble
@@ -3124,7 +3130,17 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       stats.ground = groundSpec.length;
       stats.trees = treeField.length;
 
-      return { group, lod, stats, treeField };
+      // walk-tour: raw street polylines + cobble width, for the host's surface-pace
+      // test. Kept in lng/lat so the host projects them through the SAME frame.project
+      // the terrain uses (never the internal +lat streetSegs — different frame).
+      const streetsOut = [];
+      for (const f of S.streets) {
+        const cs = f.geometry.coordinates;
+        if (!cs || cs.length < 2) continue;
+        streetsOut.push({ coords: cs, w: STREET_W[HARBOR_STYLE[f.properties.harbor] || 'spanish'] || 5.5 });
+      }
+
+      return { group, lod, stats, treeField, footprints: footprintsRaw, streets: streetsOut };
     },
   };
 };

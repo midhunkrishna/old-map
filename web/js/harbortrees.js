@@ -1149,11 +1149,44 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
     }
   }
 
+  // walk-tour (plan/5): trunk circles for on-foot collision. A dedicated lazy 8 m bin
+  // (NOT the array-form LOD `cells`, which is metric-only and not point-indexable) keeps
+  // nearTrunks() O(1) over a few cells; robust when `cells` is null. Trunk radius is a flat
+  // 0.35 m — the canopy is overhead, only the bole blocks a 6 ft walker.
+  const TRUNK_R = 0.5;   // collision footprint (incl. low branches/roots), not just the bole
+  let _colBin = null;
+  const _colCS = 8;
+  const _binKey = (x, z) => Math.floor(x / _colCS) + ',' + Math.floor(z / _colCS);
+  function buildColBin() {
+    _colBin = new Map();
+    for (const t of trees) {
+      const k = _binKey(t.px, t.pz);
+      let a = _colBin.get(k); if (!a) { a = []; _colBin.set(k, a); }
+      a.push(t);
+    }
+  }
+
   return {
     group,
     init,
     update,
     get stats() { return { total: trees.length, drawn: counts, perf: _stat, cells: cells ? cells.length : 0 }; },
     get tiers() { return tiers; },   // characterization-only accessor (clod.md §8.5)
+    trunks() { return trees.map((t) => ({ x: t.px, z: t.pz, r: TRUNK_R })); },
+    nearTrunks(x, z, rad) {
+      if (!trees.length) return [];
+      if (!_colBin) buildColBin();
+      const out = [];
+      const span = Math.max(1, Math.ceil((rad + TRUNK_R) / _colCS));
+      const cx = Math.floor(x / _colCS), cz = Math.floor(z / _colCS);
+      for (let i = -span; i <= span; i++) {
+        for (let j = -span; j <= span; j++) {
+          const a = _colBin.get((cx + i) + ',' + (cz + j));
+          if (!a) continue;
+          for (const t of a) out.push({ x: t.px, z: t.pz, r: TRUNK_R });
+        }
+      }
+      return out;
+    },
   };
 };

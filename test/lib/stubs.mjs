@@ -709,6 +709,20 @@ export function loadTrees(rec, opts = {}) {
   return { make: win.cartaTreeSystem, THREE, win };
 }
 
+// Evaluate the REAL web/js/harborwalker.js (classic script → window.cartaHarborWalker)
+// over a fake THREE and return the factory. Pure logic — used by the land-tour case
+// to drive ground-follow / collision / boundary / surface-pace headless.
+export function loadWalker() {
+  const win = makeWindow();
+  win.window = win;
+  const THREE = makeThree({});
+  win.THREE = THREE;
+  const context = vm.createContext(win);
+  const SRC = join(REPO_ROOT, 'web', 'js', 'harborwalker.js');
+  new vm.Script(readFileSync(SRC, 'utf8'), { filename: 'harborwalker.js' }).runInContext(context);
+  return { make: win.cartaHarborWalker, THREE };
+}
+
 // Evaluate the REAL web/js/lodfade.js (classic IIFE → window.cartaLodFade) in a
 // bare sandbox and return the published transition-layer module. Pure — used by
 // the fade-maths cases.
