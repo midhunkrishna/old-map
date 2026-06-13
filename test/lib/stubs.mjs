@@ -161,6 +161,7 @@ export function makeWindow() {
 
   win.innerWidth = 1280;
   win.innerHeight = 720;
+  win.__cartaHmRes = 64;   // headless terrain bakes tiny by default (case 24 overrides via opts)
   win.devicePixelRatio = 2; // proves the min(dpr, 1.8) cap
   win.window = win;
   win.globalThis = win;
@@ -466,6 +467,7 @@ export function makeThree(rec) {
     MeshPhongMaterial: function (o) { return { ...o, isMaterial: true, uniforms: {}, dispose() {} }; },
     MeshBasicMaterial: function (o) { return { ...o, isMaterial: true, dispose() {} }; },
     MeshStandardMaterial: function (o) { return { ...o, isMaterial: true, dispose() {} }; },
+    MeshDepthMaterial: function (o) { return { ...o, isMaterial: true, dispose() {} }; },
     // real terrain water uses ShaderMaterial: preserve uniforms verbatim (the seam case 5-real reads)
     ShaderMaterial: function (o) { return { ...o, isMaterial: true, dispose() {} }; },
     PointsMaterial: function (o) { return { ...o, isMaterial: true, dispose() {} }; },
@@ -474,6 +476,7 @@ export function makeThree(rec) {
     SRGBColorSpace: 'srgb',
     LinearSRGBColorSpace: 'srgb-linear',
     PCFSoftShadowMap: 2,
+    RGBADepthPacking: 3201,
     DoubleSide: 2,
     FrontSide: 0,
     BackSide: 1,

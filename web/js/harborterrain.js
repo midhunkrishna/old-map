@@ -154,7 +154,9 @@ window.cartaTerrain = function cartaTerrain(THREE) {
       const B = coastBin;
       const ci = B.gi(px), cj = B.gj(pz);
       let best = Infinity;
-      const seen = new Set();
+      // No per-call dedup Set: a segment spanning two cells is just re-measured (same
+      // segDist), which can't change the running min — and avoiding the allocation
+      // makes the 4.2M-call heightmap bake ~20× faster. Result stays bit-identical.
       for (let rad = 0; rad <= B.n; rad++) {
         if (rad > 0 && (rad - 1) * B.cell > best) break;   // no closer segment possible
         for (let i = ci - rad; i <= ci + rad; i++) {
@@ -162,9 +164,8 @@ window.cartaTerrain = function cartaTerrain(THREE) {
             if (Math.max(Math.abs(i - ci), Math.abs(j - cj)) !== rad) continue;   // ring only
             if (i < 0 || j < 0 || i >= B.n || j >= B.n) continue;
             const arr = B.cells.get(i * B.n + j); if (!arr) continue;
-            for (const s of arr) {
-              if (seen.has(s)) continue; seen.add(s);
-              const g = B.segs[s];
+            for (let k = 0; k < arr.length; k++) {
+              const g = B.segs[arr[k]];
               const dd = segDist(g[0], g[1], g[2], g[3], px, pz);
               if (dd < best) best = dd;
             }
@@ -232,6 +233,60 @@ window.cartaTerrain = function cartaTerrain(THREE) {
     const margin = Math.max(320, Math.max(width, depth) * 0.28);
     const x0 = minX - margin, x1 = maxX + margin, z0 = minZ - margin, z1 = maxZ + margin;
     const W = x1 - x0, D = z1 - z0;
+
+    // ----- heightmap bake (vertex_d_psp.md §3.2): a render-side R32F projection of the
+    // heightAt oracle so the land can be GPU-displaced (and Phase 4 clipmap-refined).
+    // heightAt stays the single source of truth; bakeSample is its exact bilinear twin
+    // (test 24c asserts the drift stays within tolerance). The coast bin keeps this cheap.
+    const HMN = (opts && opts.hmRes) || (typeof window !== 'undefined' && window.__cartaHmRes) || 2048;
+    const hm = new Float32Array(HMN * HMN);
+    for (let j = 0; j < HMN; j++) {
+      const z = z0 + (j / (HMN - 1)) * D;
+      for (let i = 0; i < HMN; i++) hm[j * HMN + i] = heightAt(x0 + (i / (HMN - 1)) * W, z);
+    }
+    let hmTex = null;
+    if (THREE.DataTexture) {
+      hmTex = new THREE.DataTexture(hm, HMN, HMN, THREE.RedFormat, THREE.FloatType);
+      hmTex.minFilter = hmTex.magFilter = THREE.NearestFilter;
+      hmTex.wrapS = hmTex.wrapT = THREE.ClampToEdgeWrapping;
+      hmTex.generateMipmaps = false;
+      hmTex.needsUpdate = true;
+    }
+    function bakeSample(x, z) {
+      const gx = Math.min(Math.max((x - x0) / W, 0), 1) * (HMN - 1);
+      const gz = Math.min(Math.max((z - z0) / D, 0), 1) * (HMN - 1);
+      const i = Math.min(HMN - 2, Math.floor(gx)), j = Math.min(HMN - 2, Math.floor(gz));
+      const fx = gx - i, fz = gz - j;
+      const r0 = j * HMN + i, r1 = r0 + HMN;
+      return (hm[r0] * (1 - fx) + hm[r0 + 1] * fx) * (1 - fz)
+           + (hm[r1] * (1 - fx) + hm[r1 + 1] * fx) * fz;
+    }
+    // GLSL twin of bakeSample, injected into the land + depth materials' vertex stage.
+    const HM_GLSL = [
+      'uniform sampler2D uHm;', 'uniform vec2 uHmMin;', 'uniform vec2 uHmSize;', 'uniform float uHmN;',
+      'float hmTexel(ivec2 c) { return texelFetch(uHm, clamp(c, ivec2(0), ivec2(int(uHmN) - 1)), 0).r; }',
+      'float hmHeight(vec2 wxz) {',
+      '  vec2 g = clamp((wxz - uHmMin) / uHmSize, 0.0, 1.0) * (uHmN - 1.0);',
+      '  ivec2 c = ivec2(min(floor(g), vec2(uHmN - 2.0)));',
+      '  vec2 f = g - vec2(c);',
+      '  float h00 = hmTexel(c), h10 = hmTexel(c + ivec2(1, 0));',
+      '  float h01 = hmTexel(c + ivec2(0, 1)), h11 = hmTexel(c + ivec2(1, 1));',
+      '  return mix(mix(h00, h10, f.x), mix(h01, h11, f.x), f.y);',
+      '}',
+    ].join('\n');
+    // Displaces transformed.y from the heightmap. Runs FIRST in the material patches so
+    // the wet band reads the displaced position. Each replace KEEPS its include so the
+    // wet-band patch can compose on top.
+    function injectDisplacement(sh) {
+      if (!hmTex) return;
+      sh.uniforms.uHm = { value: hmTex };
+      sh.uniforms.uHmMin = { value: new THREE.Vector2(x0, z0) };
+      sh.uniforms.uHmSize = { value: new THREE.Vector2(W, D) };
+      sh.uniforms.uHmN = { value: HMN };
+      sh.vertexShader = sh.vertexShader
+        .replace('#include <common>', HM_GLSL + '\n#include <common>')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\n  transformed.y = hmHeight(transformed.xz);');
+    }
     // Phase 1 density win (vertex_d_psp.md): a ~460² grid (~423k tris, one static
     // draw) so the berm reads in geometry and shoreline facets halve at canoe level.
     // The coast bin pays for the 4× heightAt bake.
@@ -303,6 +358,11 @@ window.cartaTerrain = function cartaTerrain(THREE) {
     }
     geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
 
+    // Phase 2: normals + colours are baked from the real heights above; now flatten the
+    // geometry to Y = 0 and let the vertex shader re-displace from the heightmap. The
+    // surface is identical to Phase 1 within the §3.3 texel tolerance.
+    if (hmTex) { for (let i = 0; i < pos.count; i++) pos.setY(i, 0); pos.needsUpdate = true; }
+
     // Standard material so the diorama's image-based lighting (PMREM) reads on
     // the land — rough, non-metal; the engraved hill cloth is the detail map.
     const landMat = new THREE.MeshStandardMaterial({
@@ -317,11 +377,12 @@ window.cartaTerrain = function cartaTerrain(THREE) {
       `sin(vWetW.x * ${k.kx.toFixed(8)} + vWetW.z * ${k.kz.toFixed(8)} + uWetT * ${k.om.toFixed(4)}) * ${k.w.toFixed(4)}`
     ).join(' + ');
     landMat.onBeforeCompile = (sh) => {
+      injectDisplacement(sh);    // FIRST: displaces transformed.y so vWetW reads the real surface
       sh.uniforms.uWetT = wetT;
       sh.vertexShader = sh.vertexShader
         .replace('#include <common>', 'varying vec3 vWetW;\n#include <common>')
         .replace('#include <begin_vertex>',
-          '#include <begin_vertex>\n  vWetW = (modelMatrix * vec4(position, 1.0)).xyz;');
+          '#include <begin_vertex>\n  vWetW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
       sh.fragmentShader = sh.fragmentShader
         .replace('#include <common>', 'varying vec3 vWetW;\nuniform float uWetT;\n#include <common>')
         .replace('#include <color_fragment>', `#include <color_fragment>
@@ -335,6 +396,15 @@ window.cartaTerrain = function cartaTerrain(THREE) {
     const mesh = new THREE.Mesh(geo, landMat);
     mesh.receiveShadow = true;
     mesh.castShadow = true;
+    if (hmTex) mesh.frustumCulled = false;     // flat geometry bounds would mis-cull the displaced surface
+    // shadows: the displaced surface is invisible to the depth pass unless its depth
+    // material displaces too (else hills self-shadow / cast from the FLAT plane).
+    let depthMat = null;
+    if (hmTex && THREE.MeshDepthMaterial) {
+      depthMat = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking });
+      depthMat.onBeforeCompile = (sh) => injectDisplacement(sh);
+      mesh.customDepthMaterial = depthMat;
+    }
 
     /* ----- shore-distance field: signed metres to the coast, baked ----- */
     // One small texture answers "how far is the beach?" for every water
@@ -937,12 +1007,16 @@ window.cartaTerrain = function cartaTerrain(THREE) {
 
     return {
       group, mesh, water, heightAt, seaLevel, waterAt,
+      // render-side heightmap projection of heightAt (vertex_d_psp.md §3.1); exposed so
+      // tests can measure |bakeSample − heightAt| in Node (it IS the on-GPU drift).
+      bake: hmTex ? { sample: bakeSample, x0, z0, w: W, d: D, n: HMN } : null,
       update(t) {
         water.material.uniforms.uTime.value = t; wetT.value = t; grassT.value = t;
         updateSpray(t);
       },
       dispose() {
         geo.dispose(); landMat.dispose(); water.geometry.dispose(); water.material.dispose();
+        if (hmTex) hmTex.dispose(); if (depthMat) depthMat.dispose();
         shoreTex.dispose(); rockGeo.dispose(); logGeo.dispose(); tuftGeo.dispose(); kelpGeo.dispose();
         potGeo.dispose(); coilGeo.dispose(); hullGeo.dispose(); poolGeo.dispose(); propMat.dispose();
         grassMat.dispose(); ribGeo.dispose(); corkGeo.dispose(); barrelGeo.dispose();
