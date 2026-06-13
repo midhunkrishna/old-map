@@ -55,6 +55,7 @@ async function ensureServer() {
     if (has('tour')) q.set('tour', '1');
     if (has('still')) q.set('still', '1');
     if (has('facade')) q.set('facade', '1');
+    if (has('coast')) q.set('coast', '1');
     if (has('nopom')) q.set('nopom', '1');
     const ps = arg('pomscale', null); if (ps != null && ps !== true) q.set('pomscale', String(ps));
     const az = arg('az', null); if (az != null && az !== true) q.set('az', String(az));

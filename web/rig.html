@@ -172,6 +172,25 @@ function frameFacade(azDeg) {
 }
 window.__frameFacade = frameFacade;
 
+// Frame the nearest shoreline point low (looking down the beach), where the Phase 4
+// fine grid resolves the berm/sand gradient. The fine grid follows the camera, so 30 m
+// out covers it.
+function frameCoast(azDeg) {
+  const dio = window.cartaDiorama; const fr = dio && dio._frame; if (!fr) return false;
+  const land = ((window.carta.harborStructures || {}).lands || [])[0]; if (!land) return false;
+  const ring = land.geometry.coordinates[0]; if (!ring) return false;
+  let best = null;
+  for (const q of ring) { const p = fr.project(q[0], q[1]); const d2 = p.x * p.x + p.z * p.z; if (!best || d2 < best.d2) best = { p, d2 }; }
+  const p = best.p, c = dio._controls, cam = dio._cam;
+  c.minDistance = 0.5; c.maxPolarAngle = Math.PI * 0.62;
+  const a = azDeg * Math.PI / 180, dist = 30;
+  c.target.set(p.x, 0, p.z);
+  cam.position.set(p.x + dist * Math.sin(a), 14, p.z + dist * Math.cos(a));
+  window.__facade = { x: Math.round(p.x), z: Math.round(p.z), az: azDeg };
+  return true;
+}
+window.__frameCoast = frameCoast;
+
 function go(port, extra) {
   const q = new URLSearchParams(location.search);
   q.set('port', port); if (extra) for (const k in extra) q.set(k, extra[k]);
@@ -231,6 +250,7 @@ function meter() {
     // URL-driven pose for screenshots: settle, then dolly to the requested zoom
     if (params.has('zoom')) setTimeout(() => setZoom(parseFloat(params.get('zoom'))), 400);
     if (params.has('facade')) setTimeout(() => frameFacade(parseFloat(params.get('az') || '35')), 500);
+    if (params.has('coast')) setTimeout(() => frameCoast(parseFloat(params.get('az') || '35')), 500);
     if (params.has('tour')) setTimeout(() => { const t = document.querySelector('.dio-tour'); if (t) t.click(); }, 600);
     window.__ready = true;
   } catch (e) {
