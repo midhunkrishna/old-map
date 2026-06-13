@@ -89,6 +89,16 @@ async function ensureServer() {
     }
     const pom = await page.evaluate(() => (window.cartaPOM && window.cartaPOM._patched.length) || 0);
     console.log(`  POM materials patched: ${pom}`);
+    // Re-assert the pose AFTER the intro camera tween (~1.1 s) + settle, else it gets
+    // clobbered back to the resting overview before the shot. Belt-and-suspenders to
+    // the in-page setTimeout (which can fire mid-tween).
+    await page.evaluate(({ facade, coast, zoom, az }) => {
+      if (facade && window.__frameFacade) window.__frameFacade(az);
+      else if (coast && window.__frameCoast) window.__frameCoast(az);
+      else if (zoom != null && window.__setZoom) window.__setZoom(zoom);
+    }, { facade: has('facade'), coast: has('coast'),
+      zoom: (z != null && z !== true) ? parseFloat(z) : null, az: parseFloat((az != null && az !== true) ? az : '35') });
+    await page.waitForTimeout(300);
     const fac = await page.evaluate(() => {
       if (!window.__facade) return null;
       const d = window.cartaDiorama, c = d._cam, t = d._controls.target;

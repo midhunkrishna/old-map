@@ -1430,18 +1430,101 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const chimneys = [], balconies = [];
       const perHarbor = {};
       const classTot = {}, classPromo = {};   // promotion bookkeeping per harbor|class
+      const humbleS = {};                      // wealth pass: per-kit instance specs {harbor,m,color}
       let total = 0;
+
+      /* ---- the wealth gradient (building-variety plan) ----
+         A 1730 port was a social ladder, not one class of townhouse: a poor
+         majority in tents/shacks/cottages, masonry only by the church, fort,
+         governor and plaza. wealthTier maps a dwelling's position → 1..5
+         (1 tent · 2 shack · 3 cottage · 4 house · 5 fine), deterministic via
+         dhash. Tiers 1–3 render as instanced humble KITS (web/js/models/
+         shanties.js); 4–5 stay the existing box house. WEALTH_MIX biases each
+         port's humble fraction — Nassau a shanty town, Havana a masonry core. */
+      const WEALTH_MIX = {
+        'nassau': 0.70, 'tortuga': 0.75, 'port-royal': 0.55, 'charleston': 0.40,
+        'bridgetown': 0.40, 'batavia': 0.35, 'havana': 0.30, 'cartagena': 0.30,
+      };
+      const HUMBLE = (window.cartaBuildingModels && window.cartaBuildingModels.humbleKits) || [];
+
+      // metres to the nearest surviving 1730 landmark (church/fort/governor/…),
+      // the civic core a dwelling's prosperity rises toward. ∞ if the port has none.
+      function landmarkDist(harbor, lon, lat) {
+        const list = landmarkPts[harbor];
+        if (!list || !list.length) return Infinity;
+        const [px, py] = llM(lon, lat);
+        let best = Infinity;
+        for (const [qx, qy] of list) {
+          const dd = (px - qx) * (px - qx) + (py - qy) * (py - qy);
+          if (dd < best) best = dd;
+        }
+        return Math.sqrt(best);
+      }
+
+      function wealthTier(harbor, lon, lat, cls) {
+        const mix = WEALTH_MIX[harbor] != null ? WEALTH_MIX[harbor] : 0.5;
+        let pHumble = mix;
+        if (cls === 'waterfront') pHumble += 0.15;        // the working shore is poorest
+        else if (cls === 'plaza') pHumble -= 0.30;        // the square is the port's face
+        else pHumble += 0.04;                             // back lanes a touch poorer
+        const aD = landmarkDist(harbor, lon, lat);        // nearer the civic core → richer
+        if (aD < 130) pHumble -= 0.38 * (1 - aD / 130);
+        pHumble = pHumble < 0.03 ? 0.03 : pHumble > 0.95 ? 0.95 : pHumble;
+        if (dhash(lon, lat, 211) < pHumble) {
+          const r = dhash(lon, lat, 212);                 // humble: tent / shack / cottage
+          return r < 0.16 ? 1 : r < 0.82 ? 2 : 3;
+        }
+        const fineP = (aD < 150 || cls === 'plaza') ? 0.42 : 0.14;
+        return dhash(lon, lat, 213) < fineP ? 5 : 4;      // respectable house / fine townhouse
+      }
+
+      // choose a humble kit silhouette for a tier+class, deterministic by position.
+      // Waterfront leans to stilt shacks; otherwise prefer kits of exactly this tier,
+      // widening downward so a poor street still mixes tents among the shacks.
+      function pickHumbleKit(tier, cls, lon, lat) {
+        if (cls === 'waterfront' && dhash(lon, lat, 214) < 0.5) {
+          const stilt = HUMBLE.filter((k) => k.wet);
+          if (stilt.length) return stilt[(dhash(lon, lat, 215) * stilt.length) | 0].name;
+        }
+        let c = HUMBLE.filter((k) => !k.wet && k.tier === tier);
+        if (!c.length) c = HUMBLE.filter((k) => !k.wet && k.tier <= tier);
+        if (!c.length) c = HUMBLE.filter((k) => !k.wet);
+        if (!c.length) return null;
+        return c[(dhash(lon, lat, 216) * c.length) | 0].name;
+      }
 
       function pushHouse(style, harbor, lon, lat, ang, w, d) {
         perHarbor[harbor] = (perHarbor[harbor] || 0) + 1;
         if (perHarbor[harbor] > 520) return;
+        const cls = classifyHouse(harbor, lon, lat);
+
+        // wealth gradient: the poor majority (tiers 1–3) render as instanced humble
+        // kits, not the box house. Falls through to the house path when shanties.js
+        // didn't load (HUMBLE empty) or no kit matches, so the town never breaks.
+        const tier = wealthTier(harbor, lon, lat, cls);
+        if (tier <= 3 && HUMBLE.length) {
+          const name = pickHumbleKit(tier, cls, lon, lat);
+          if (name) {
+            anchorAt(harbor, [lon, lat]);
+            const sx = 0.9 + dhash(lon, lat, 219) * 0.3, sy = 0.92 + dhash(lon, lat, 221) * 0.26, sz = 0.9 + dhash(lon, lat, 220) * 0.3;
+            const lean = (dhash(lon, lat, 222) - 0.5) * 0.06;   // a touch of ramshackle tilt
+            const m = groundMatrix([lon, lat], ang).multiply(
+              new THREE.Matrix4().makeRotationZ(lean).multiply(new THREE.Matrix4().makeScale(sx, sy, sz)));
+            const bv = 0.82 + dhash(lon, lat, 217) * 0.26, wv = (dhash(lon, lat, 218) - 0.5) * 0.10;
+            const color = new THREE.Color(bv + wv * 0.5, bv, bv - wv * 0.5);   // weathering jitter
+            (humbleS[name] = humbleS[name] || []).push({ harbor, m, color });
+            total++;
+            stats.humble = (stats.humble || 0) + 1;
+            return;
+          }
+        }
+
         /* promotion: a positional hash walks the port's weight table for
            the house's location class — the same house is always the same
            trade. Empty string means an ordinary dwelling. */
         let type = '';
         const promo = PORT_PROMO[harbor];
         if (promo) {
-          const cls = classifyHouse(harbor, lon, lat);
           const tw = promo[cls];
           if (tw) {
             const ck = harbor + '|' + cls;
@@ -2723,6 +2806,11 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       flushKit('hoistSack', hoistSackS);
       flushKit('strongbox', strongboxS);
       // ('stocks' belongs to the prison landmark alone — not flushed here)
+      // the wealth pass: every humble-dwelling kit, one InstancedMesh per silhouette
+      // (per-instance jitter rode in on each spec's matrix + colour). Same close-zoom
+      // LOD gate as the props, so distant shanty rows drop out cheaply.
+      for (const k of HUMBLE) flushKit(k.name, humbleS[k.name] || []);
+      stats.humbleKits = HUMBLE.length;
       for (const p of S.points) {
         // the 1730 snapshot: not yet built, or already lost, stays off the chart
         if ((p.year_built || 0) > 1730) continue;
