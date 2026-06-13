@@ -28,6 +28,7 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   const map = metric ? null : arg;
   let NEAR = 280, MID = 780, FAR = 2400;              // distance bands, metres
   const ULTRA = 130;                                  // hero band: max-poly trees (diorama/tour)
+  const REF_TAN = Math.tan(19 * Math.PI / 180);       // overview 38° half-angle: the SSE anchor
   const CAP = metric
     ? { ultra: 400, near: 2500, mid: 16000, far: 60000 } // near is high-poly → tighter cap
     : { near: 3000, mid: 7000, far: 20000 };          // per-band visible budget
@@ -867,10 +868,10 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   const _sphere = new THREE.Sphere(new THREE.Vector3(), 0);
   let counts = { ultra: 0, near: 0, mid: 0, far: 0 };
 
-  function update(arg) {
+  function update(arg, camDist, lodCtx) {
     if (!trees.length) return;
     windT.value = performance.now() * 0.001;   // drives the foliage shimmer
-    if (metric) return updateMetric(arg);
+    if (metric) return updateMetric(arg, camDist, lodCtx);
     const matrix = arg;
     _m.fromArray(matrix);
     _frustum.setFromProjectionMatrix(_m);
@@ -922,11 +923,24 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
 
   // Diorama path: bucket by 3-D distance from the orbiting camera, frustum-cull,
   // and write small origin-relative matrices (no centre ride needed).
-  function updateMetric(camera, camDist) {
+  function updateMetric(camera, camDist, lodCtx) {
     _m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
     _frustum.setFromProjectionMatrix(_m);
     const cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
-    const ultra2 = ULTRA * ULTRA, near2 = NEAR * NEAR, mid2 = MID * MID, far2 = FAR * FAR;
+    // Screen-space-error normalization of the metre bands, anchored at the
+    // overview reference (38° fov): k = tan(19°)/tan(fovNow/2), clamped to
+    // [0.5, 2]. In overview k == 1 → bands are exactly today's ULTRA/NEAR/MID/FAR;
+    // in tour (70°) k ≈ 0.49 → geometry yields to cards sooner, since the same
+    // metre distance covers ~half the pixels at the wider fov. No lod context
+    // (legacy map path / stubs) → k = 1, behaviour identical.
+    let k = 1;
+    if (lodCtx && lodCtx.heightPx > 0 && lodCtx.fovScale > 0) {
+      const tanNow = lodCtx.heightPx / (2 * lodCtx.fovScale);   // = tan(fovNow/2)
+      const kk = REF_TAN / tanNow;
+      if (isFinite(kk) && kk > 0) k = Math.max(0.5, Math.min(2, kk));
+    }
+    const uE = ULTRA * k, nE = NEAR * k, mE = MID * k, fE = FAR * k;
+    const ultra2 = uE * uE, near2 = nE * nE, mid2 = mE * mE, far2 = fE * fE;
     // #1 — reveal more of the field as the camera comes in: a fraction rising
     // from ~0.45 at the wide view to 1.0 close in, gating each tree by its rank.
     const R = frame.radius || 1500;

@@ -64,10 +64,13 @@ export default async function () {
   });
 
   // ---- tree system ----
+  // capture the THIRD updater argument (the shared lod context) added in Phase 1;
+  // the tap args stay 2-wide so the 'updater-order' golden is byte-identical.
+  let treesLod = null;
   win.cartaTreeSystem = (THREE, frame) => ({
     init() {},
     group: { traverse() {} },
-    update: (cam, camDist) => tap('trees', [shape(cam), shape(camDist)]),
+    update: (cam, camDist, lodCtx) => { treesLod = lodCtx; tap('trees', [shape(cam), shape(camDist)]); },
   });
 
   // ---- POI ----
@@ -97,4 +100,19 @@ export default async function () {
   for (const s of seq) if (!order.find((o) => o.label === s.label)) order.push(s);
 
   assertSnapshot('updater-order', { order });
+
+  // Additive (no golden): the engine now threads a shared lod context as the
+  // third updater argument. Assert its shape without touching the order golden.
+  if (!treesLod || typeof treesLod !== 'object') {
+    throw new Error('updater-order: trees updater did not receive a lod context (3rd arg)');
+  }
+  for (const key of ['fovScale', 'heightPx']) {
+    if (typeof treesLod[key] !== 'number') throw new Error(`lod context missing numeric ${key}`);
+  }
+  for (const fn of ['pixels', 'distForPixels']) {
+    if (typeof treesLod[fn] !== 'function') throw new Error(`lod context missing ${fn}()`);
+  }
+  if (!(treesLod.fovScale > 0 && treesLod.heightPx > 0)) {
+    throw new Error(`lod context has non-positive fovScale/heightPx: ${treesLod.fovScale}/${treesLod.heightPx}`);
+  }
 }

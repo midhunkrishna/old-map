@@ -62,6 +62,24 @@ window.cartaRenderEngine = function cartaRenderEngine(THREE, canvas, OrbitContro
   let updMs = 0, infoCalls = 0, infoTris = 0, infoGeo = 0;
   const gpuExt = null;   // reserved: EXT_disjoint_timer_query_webgl2 (feature-checked in start())
 
+  /* ---------- shared LOD context (cartaLod policy, per-frame) ---------- */
+  // Computed once per frame and passed as the third updater argument (additive —
+  // legacy updaters ignore it). fovScale = backing-store height / (2·tan(fovY/2)):
+  // the pixels a 1 m feature covers at 1 m, so size·fovScale/dist = on-screen px.
+  const _lod = {
+    t: 0, fovScale: 1, heightPx: 1,
+    pixels(s, d) { return s * this.fovScale / Math.max(d, 1e-3); },
+    distForPixels(s, px) { return s * this.fovScale / Math.max(px, 1e-3); },
+  };
+  function refreshLod(t) {
+    _lod.t = t;
+    const dom = renderer && renderer.domElement;
+    const h = (dom && dom.height) ? dom.height
+      : ((window.innerHeight || 1080) * Math.min(window.devicePixelRatio || 1, 1.8));
+    _lod.heightPx = h;
+    _lod.fovScale = h / (2 * Math.tan(camera.fov * Math.PI / 360));
+  }
+
   /* ---------- renderer + camera + controls ---------- */
 
   function createRenderer() {
@@ -202,8 +220,9 @@ window.cartaRenderEngine = function cartaRenderEngine(THREE, canvas, OrbitContro
     }
     if (modeHook) modeHook(dt, t, now);
     if (frameHook) frameHook(dt);
+    refreshLod(t);
     const u0 = perfOn ? performance.now() : 0;
-    for (const a of updaters) { try { a.update(t, camera); } catch (e) { /* ignore */ } }
+    for (const a of updaters) { try { a.update(t, camera, _lod); } catch (e) { /* ignore */ } }
     if (perfOn) updMs = performance.now() - u0;
     // Studio light routes through the bloom composer (the sun glitter & bright
     // sails glow); matte mode renders straight, with no post cost.

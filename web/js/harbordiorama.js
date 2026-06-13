@@ -538,7 +538,7 @@
         trees.init(town.treeField);
         scene.add(trees.group);
         carDio._trees = trees;
-        animated.push({ update(t, cam) { trees.update(cam, carDio._camDist); } });
+        animated.push({ update(t, cam, lodCtx) { trees.update(cam, carDio._camDist, lodCtx); } });
       } catch (e) { console.warn('diorama: trees failed', e); }
     }
 
@@ -560,16 +560,26 @@
       const mPitch = new THREE.Matrix4(), mRoll = new THREE.Matrix4();
       const waterAt = terrain.waterAt || ((x, z) => ({ y: terrain.seaLevel, nx: 0, nz: 0 }));
       let SWHD = null;   // the detailed shipwright, raised lazily as the canoe nears
-      const HD_IN = 150, HD_OUT = 175, HD_CAP = 3;
-      animated.push({ update(t) {
+      const HD_IN = 150, HD_OUT = 175, HD_CAP = 3;   // metre fallback (no lod context)
+      animated.push({ update(t, cam, lodCtx) {
         const tp = (mode === 'tour') ? carDio._tourPos : null;
+        // per-type HD swap distance: a man-of-war (≈42 m) keeps her detail further
+        // than a sloop (≈18 m), since she covers more pixels. Anchored so the
+        // man-of-war reproduces today's 150 m at the reference window; clamped so
+        // odd windows can't run the swap away. hdOut keeps today's 1.17 ratio.
+        const hdInOf = (type) => {
+          if (!lodCtx) return HD_IN;
+          const px = lodCtx.distForPixels(SW.LENGTHS[type] || 18, 400);
+          return Math.max(75, Math.min(300, px));
+        };
         let hdLive = 0;
         for (const s of ships) if (s.hdOn) hdLive++;
         for (const s of ships) {
+          const hdIn = hdInOf(s.type), hdOut = hdIn * 1.17;
           // near the canoe, the symbolic mark yields to the high-definition vessel
           if (tp) {
             const d = Math.hypot(s.px - tp.x, s.pz - tp.z);
-            if (!s.hdOn && d < HD_IN && hdLive < HD_CAP) {
+            if (!s.hdOn && d < hdIn && hdLive < HD_CAP) {
               if (!SWHD && window.cartaShipwrightHD) SWHD = window.cartaShipwrightHD(THREE, SW);
               if (SWHD && !s.hd) {
                 try {
@@ -580,7 +590,7 @@
                 } catch (e) { console.warn('diorama: hd ship failed', e); s.hd = { inst: null }; }
               }
               if (s.hd && s.hd.inst) { s.hdOn = true; hdLive++; }
-            } else if (s.hdOn && d > HD_OUT) { s.hdOn = false; hdLive--; }
+            } else if (s.hdOn && d > hdOut) { s.hdOn = false; hdLive--; }
           } else if (s.hdOn) { s.hdOn = false; }
           if (s.hd && s.hd.inst) s.hd.inst.visible = s.hdOn;
           s.inst.visible = !s.hdOn;

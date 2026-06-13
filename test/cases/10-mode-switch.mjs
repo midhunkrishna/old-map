@@ -50,4 +50,15 @@ export default async function () {
       farEqualsRadiusX16: back.far === radius * 16,
     },
   });
+
+  // Additive (no golden): the SSE band normalization keys off camera fov. The
+  // tree edge factor k = tan(19°)/tan(fovNow/2) must be 1 in overview (38°) and
+  // ~0.49 in tour (70°) — geometry yields to cards sooner at the wider fov.
+  const D2R = Math.PI / 180;
+  const kFor = (fov) => Math.tan(19 * D2R) / Math.tan(fov * D2R / 2);
+  const kOverview = kFor(overview.fov);
+  const kTour = kFor(tour.fov);
+  if (Math.abs(kOverview - 1) > 1e-9) throw new Error(`overview k should be 1, got ${kOverview}`);
+  const expected = Math.tan(19 * D2R) / Math.tan(35 * D2R);
+  if (Math.abs(kTour - expected) > 1e-9) throw new Error(`tour k should be ${expected}, got ${kTour}`);
 }

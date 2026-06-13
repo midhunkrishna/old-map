@@ -21,6 +21,7 @@ const REPO_ROOT = join(__dirname, '..', '..');
 const DIORAMA_SRC = join(REPO_ROOT, 'web', 'js', 'harbordiorama.js');
 const TERRAIN_SRC = join(REPO_ROOT, 'web', 'js', 'harborterrain.js');
 const ENGINE_SRC = join(REPO_ROOT, 'web', 'js', 'render', 'engine.js');
+const LOD_SRC = join(REPO_ROOT, 'web', 'js', 'render', 'lod.js');
 
 /* ---------------- minimal real-enough math ---------------- */
 
@@ -65,7 +66,7 @@ export class Color {
   convertSRGBToLinear() { return this; }
 }
 export class Spherical { constructor(radius = 1, phi = 0, theta = 0) { this.radius = radius; this.phi = phi; this.theta = theta; } }
-export class Quaternion { constructor() {} setFromEuler() { return this; } setFromAxisAngle() { return this; } }
+export class Quaternion { constructor() {} setFromEuler() { return this; } setFromAxisAngle() { return this; } setFromUnitVectors() { return this; } }
 export class Euler { constructor(x = 0, y = 0, z = 0) { this.x = x; this.y = y; this.z = z; } set(x, y, z) { this.x = x; this.y = y; this.z = z; return this; } }
 export class Sphere { constructor(center, radius) { this.center = center; this.radius = radius; } }
 
@@ -343,11 +344,17 @@ export function makeThree(rec) {
     const sx = (segX | 0) || 1, sz = (segZ | 0) || 1;
     const count = (sx + 1) * (sz + 1);
     const attrs = { position: makeAttr(count, 3), normal: makeAttr(count, 3) };
+    // a real-enough index (values irrelevant headless, but .array supports the
+    // winding-flip .reverse() in the tree skirt builder, and .count/.getX feed
+    // mergeGeos). setIndex() may later replace it with a plain merged array.
+    const idxCount = 6 * sx * sz;
+    const indexArr = new Uint16Array(idxCount);
     return {
       _geo: name,
       attributes: attrs,
+      userData: {},
       boundingSphere: null,
-      index: null,
+      index: { array: indexArr, count: idxCount, getX(i) { return indexArr[i]; } },
       setAttribute(k, a) { attrs[k] = a; return this; },
       getAttribute(k) { return attrs[k]; },
       deleteAttribute(k) { delete attrs[k]; return this; },
@@ -356,6 +363,7 @@ export function makeThree(rec) {
       computeBoundingSphere() {},
       computeBoundingBox() {},
       applyMatrix4() { return this; },
+      applyQuaternion() { return this; },
       center() { return this; },
       clone() { return makeGeometry(name, sx, sz); },
       toNonIndexed() { return this; },
@@ -370,6 +378,8 @@ export function makeThree(rec) {
 
   class Matrix4 {
     set() { return this; }
+    multiplyMatrices() { return this; }
+    fromArray() { return this; }
     makeTranslation() { return this; }
     makeScale() { return this; }
     makeRotationX() { return this; }
@@ -403,9 +413,12 @@ export function makeThree(rec) {
     DirectionalLight, HemisphereLight, Fog,
     PMREMGenerator, CanvasTexture,
     Color, Vector2, Vector3, Vector4, Spherical, Matrix4, Quaternion, Euler, Sphere,
+    // Frustum stub: never culls (intersectsSphere → true), so the tree system's
+    // band membership in case 16 depends only on distance/rank/caps — deterministic.
+    Frustum: function () { return { setFromProjectionMatrix() { return this; }, intersectsSphere() { return true; } }; },
     Group: function () { return makeObject3D(); },
     Mesh: function (geometry, material) { return makeObject3D({ isMesh: true, geometry, material, castShadow: false, receiveShadow: false }); },
-    InstancedMesh: function (geometry, material, count) { return makeObject3D({ isInstancedMesh: true, geometry, material, count, setMatrixAt() {}, setColorAt() {}, instanceMatrix: { needsUpdate: false }, instanceColor: { needsUpdate: false } }); },
+    InstancedMesh: function (geometry, material, count) { return makeObject3D({ isInstancedMesh: true, geometry, material, count, setMatrixAt() {}, setColorAt() {}, instanceMatrix: { needsUpdate: false, setUsage() { return this; } }, instanceColor: { needsUpdate: false, setUsage() { return this; } } }); },
     Points: function (geometry, material) { return makeObject3D({ isPoints: true, geometry, material }); },
     BufferGeometry: function () { return makeGeometry('Buffer', 1, 1); },
     CircleGeometry: function (r, seg) { return makeGeometry('Circle', seg, 1); },
@@ -420,11 +433,20 @@ export function makeThree(rec) {
       this.array = array; this.itemSize = itemSize; this.needsUpdate = false;
       this.count = array && itemSize ? array.length / itemSize : 0;
       this.getX = (i) => array[i * itemSize]; this.getY = (i) => array[i * itemSize + 1]; this.getZ = (i) => array[i * itemSize + 2];
+      this.setX = (i, v) => { array[i * itemSize] = v; return this; };
+      this.setY = (i, v) => { array[i * itemSize + 1] = v; return this; };
+      this.setZ = (i, v) => { array[i * itemSize + 2] = v; return this; };
+      this.setXYZ = (i, x, y, z) => { array[i * itemSize] = x; array[i * itemSize + 1] = y; array[i * itemSize + 2] = z; return this; };
       this.setUsage = () => this;
     },
     Float32BufferAttribute: function (array, itemSize) {
       this.array = array; this.itemSize = itemSize; this.needsUpdate = false;
       this.count = array && itemSize ? array.length / itemSize : 0;
+      this.getX = (i) => array[i * itemSize]; this.getY = (i) => array[i * itemSize + 1]; this.getZ = (i) => array[i * itemSize + 2];
+      this.setX = (i, v) => { array[i * itemSize] = v; return this; };
+      this.setY = (i, v) => { array[i * itemSize + 1] = v; return this; };
+      this.setZ = (i, v) => { array[i * itemSize + 2] = v; return this; };
+      this.setXYZ = (i, x, y, z) => { array[i * itemSize] = x; array[i * itemSize + 1] = y; array[i * itemSize + 2] = z; return this; };
       this.setUsage = () => this;
     },
     DataTexture: function () { return { isTexture: true, needsUpdate: false, dispose() {} }; },
@@ -635,6 +657,32 @@ export async function loadRealTerrain(win, rec) {
   const script = new vm.Script(src, { filename: 'harborterrain.js' });
   script.runInContext(context);
   return win.cartaTerrain;
+}
+
+// Evaluate the REAL web/js/render/lod.js (a classic IIFE assigning
+// window.cartaLod, no /vendor imports) in an isolated sandbox and return the
+// published cartaLod policy object. Pure — used by cases 14/15 to test the SSE
+// math headless without GL.
+export function loadLod() {
+  const win = { window: undefined };
+  win.window = win;
+  const context = vm.createContext(win);
+  new vm.Script(readFileSync(LOD_SRC, 'utf8'), { filename: 'lod.js' }).runInContext(context);
+  return win.cartaLod;
+}
+
+// Evaluate the REAL web/js/harbortrees.js (a classic script assigning
+// window.cartaTreeSystem) into a sandbox over a fresh fake THREE and return the
+// factory. Case 16 drives its metric path headless (Frustum stub never culls).
+export function loadTrees(rec) {
+  const win = makeWindow();
+  win.window = win;
+  const THREE = makeThree(rec || {});
+  win.THREE = THREE;
+  const context = vm.createContext(win);
+  const TREES_SRC = join(REPO_ROOT, 'web', 'js', 'harbortrees.js');
+  new vm.Script(readFileSync(TREES_SRC, 'utf8'), { filename: 'harbortrees.js' }).runInContext(context);
+  return { make: win.cartaTreeSystem, THREE };
 }
 
 export function rewriteImports(src) {

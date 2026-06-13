@@ -1,0 +1,20 @@
+{
+  "close": {
+    "far": 19,
+    "mid": 30,
+    "near": 5,
+    "ultra": 6
+  },
+  "mid": {
+    "far": 17,
+    "mid": 28,
+    "near": 5,
+    "ultra": 4
+  },
+  "wide": {
+    "far": 11,
+    "mid": 17,
+    "near": 4,
+    "ultra": 4
+  }
+}
