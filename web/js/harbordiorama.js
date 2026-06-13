@@ -559,6 +559,7 @@
     }
 
     // ----- ships riding at anchor (bobbing on the swell, not hovering above it) -----
+    let prewarmShips = null;   // set below if any ships; the host warms HD on enterTour
     const ships = [];
     for (const s of (SW ? (carta.harborShips || []) : [])) {
       if (s.harbor !== id) continue;
@@ -569,48 +570,77 @@
       scene.add(inst);
       // the proto's origin is the keel line: sink her draft-deep into the swell
       const draft = (SW.LENGTHS[s.type] || 18) * 0.13 * SW.SYMBOLIC_SCALE * 0.22;
-      ships.push({ inst, anim, type: s.type, draft, hd: null, hdOn: false,
+      ships.push({ inst, anim, type: s.type, draft, hd: null, hdOn: false, hdMember: false,
         px: p.x, pz: p.z, ang: 90 - (s.heading || 0), phase: (s.lngLat[0] * 7919) % Math.PI });
     }
     if (ships.length) {
       const mPitch = new THREE.Matrix4(), mRoll = new THREE.Matrix4();
       const waterAt = terrain.waterAt || ((x, z) => ({ y: terrain.seaLevel, nx: 0, nz: 0 }));
       let SWHD = null;   // the detailed shipwright, raised lazily as the canoe nears
-      const HD_IN = 150, HD_OUT = 175, HD_CAP = 3;   // metre fallback (no lod context)
+      const HD_CAP = 3, PX_HD = 400, HYST = 1.17;   // HD when ≈400 px (≈ Phase 1 distances)
+
+      function ensureSWHD() {
+        if (!SWHD && window.cartaShipwrightHD) SWHD = window.cartaShipwrightHD(THREE, SW);
+        return SWHD;
+      }
+      function buildHd(s) {
+        if (s.hd) return s.hd;                       // built already (or {inst:null} on failure)
+        if (!ensureSWHD()) return null;
+        try {
+          s.hd = SWHD.shipInstance(s.type);
+          s.hd.inst.matrixAutoUpdate = false;
+          s.hd.inst.visible = false;
+          s.hd.inst.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+          scene.add(s.hd.inst);
+        } catch (e) { console.warn('diorama: hd ship failed', e); s.hd = { inst: null }; }
+        return s.hd;
+      }
+      // idle prewarm (Phase 3 task 1): build every ship's HD hull hidden and warm
+      // its shaders off the critical path, so the first canoe approach never hitches
+      // on a mid-frame compile/allocation. Generation-guarded by the host.
+      prewarmShips = () => {
+        for (const s of ships) buildHd(s);
+        try { if (eng.renderer && eng.renderer.compile) eng.renderer.compile(scene, eng.camera); } catch (e) { /* ignore */ }
+      };
+
       animated.push({ update(t, cam, lodCtx) {
         const tp = (mode === 'tour') ? carDio._tourPos : null;
-        // per-type HD swap distance: a man-of-war (≈42 m) keeps her detail further
-        // than a sloop (≈18 m), since she covers more pixels. Anchored so the
-        // man-of-war reproduces today's 150 m at the reference window; clamped so
-        // odd windows can't run the swap away. hdOut keeps today's 1.17 ratio.
-        const hdInOf = (type) => {
-          if (!lodCtx) return HD_IN;
-          const px = lodCtx.distForPixels(SW.LENGTHS[type] || 18, 400);
-          return Math.max(75, Math.min(300, px));
-        };
-        let hdLive = 0;
-        for (const s of ships) if (s.hdOn) hdLive++;
-        for (const s of ships) {
-          const hdIn = hdInOf(s.type), hdOut = hdIn * 1.17;
-          // near the canoe, the symbolic mark yields to the high-definition vessel
-          if (tp) {
+        if (tp && lodCtx) {
+          // each ship's on-screen size (raw LENGTHS, so swap distances match Phase 1);
+          // threshold hysteresis: want HD at ≥400 px, hold until <400/1.17 px.
+          const cand = [];
+          for (let i = 0; i < ships.length; i++) {
+            const s = ships[i];
             const d = Math.hypot(s.px - tp.x, s.pz - tp.z);
-            if (!s.hdOn && d < hdIn && hdLive < HD_CAP) {
-              if (!SWHD && window.cartaShipwrightHD) SWHD = window.cartaShipwrightHD(THREE, SW);
-              if (SWHD && !s.hd) {
-                try {
-                  s.hd = SWHD.shipInstance(s.type);
-                  s.hd.inst.matrixAutoUpdate = false;
-                  s.hd.inst.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-                  scene.add(s.hd.inst);
-                } catch (e) { console.warn('diorama: hd ship failed', e); s.hd = { inst: null }; }
-              }
-              if (s.hd && s.hd.inst) { s.hdOn = true; hdLive++; }
-            } else if (s.hdOn && d > hdOut) { s.hdOn = false; hdLive--; }
-          } else if (s.hdOn) { s.hdOn = false; }
-          if (s.hd && s.hd.inst) s.hd.inst.visible = s.hdOn;
-          s.inst.visible = !s.hdOn;
-          // float on the actual water surface and tilt with the swell
+            s._px = lodCtx.pixels(SW.LENGTHS[s.type] || 18, d);
+            const want = s.hdMember ? (s._px >= PX_HD / HYST) : (s._px >= PX_HD);
+            if (want) cand.push(i);
+          }
+          // award the HD_CAP slots to the largest-on-screen; an incumbent carries a
+          // 1.17 bonus, so a ship sitting at the cap boundary can't flicker in and
+          // out of its slot (A3 cap fairness + zero oscillation).
+          const eff = (i) => ships[i]._px * (ships[i].hdMember ? HYST : 1);
+          cand.sort((a, b) => eff(b) - eff(a) || a - b);
+          const award = new Set(cand.slice(0, HD_CAP));
+          for (let i = 0; i < ships.length; i++) {
+            const s = ships[i];
+            const on = award.has(i);
+            s.hdMember = on;
+            if (on && (!s.hd || !s.hd.inst)) buildHd(s);   // lazy fallback if prewarm hasn't run
+            s.hdOn = on && !!(s.hd && s.hd.inst);
+            if (s.hd && s.hd.inst) s.hd.inst.visible = s.hdOn;
+            s.inst.visible = !s.hdOn;
+          }
+        } else {
+          for (const s of ships) {
+            s.hdMember = false; s.hdOn = false;
+            if (s.hd && s.hd.inst) s.hd.inst.visible = false;
+            s.inst.visible = true;
+          }
+        }
+        // swell placement — the W_TRAINS swell math is untouched, just applied to
+        // whichever hull is live this frame
+        for (const s of ships) {
           const w = waterAt(s.px, s.pz, t);
           const m = placeMatrix(s.px, w.y - s.draft, s.pz, s.ang, SW.SYMBOLIC_SCALE);
           const pitch = w.nz * 0.6;
@@ -648,7 +678,7 @@
     carDio._frame = frame;
     carDio._dbg = { id, town: !!town, townKids: town ? town.group.children.length : 0, ships: ships.length, stats: town ? town.stats : null };
     built = {
-      _id: id, frame, terrain, radius, animated, town,
+      _id: id, frame, terrain, radius, animated, town, prewarmShips,
       lands: landFs,                                       // for the tour minimap
       shipDots: ships.map((s) => ({ x: s.px, z: s.pz })),  //   "      "      "
       dispose() {
@@ -874,6 +904,14 @@
     camera.far = built.radius * 10;    // fog hides everything past radius*9; tightens depth precision
     camera.updateProjectionMatrix();
     eng.setMode('tour');
+    // warm the HD hulls off the critical path so the first approach doesn't hitch;
+    // generation-guarded against a close()/open() landing during the idle window.
+    if (built.prewarmShips) {
+      const gen = built;
+      const warm = () => { if (built === gen && carDio.active && mode === 'tour') built.prewarmShips(); };
+      if (window.requestIdleCallback) window.requestIdleCallback(warm, { timeout: 600 });
+      else setTimeout(warm, 120);
+    }
     host.classList.add('touring');
     host.classList.remove('paused');
     if (host._hint) host._hint.classList.remove('show');
