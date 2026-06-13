@@ -580,7 +580,8 @@ export function makeCarta(overrides = {}) {
 // in-memory fakes, evaluate as an ES module in a vm sandbox built on `win`, run
 // the registered initDiorama with `carta`, and return window.cartaDiorama plus the
 // recording handle and helpers.
-export async function loadDiorama({ carta, rec, win } = {}) {
+export async function loadDiorama({ carta, rec, win, lodfade } = {}) {
+  const opts = { lodfade };
   rec = rec || {};
   win = win || makeWindow();
   carta = carta || makeCarta();
@@ -613,6 +614,14 @@ export async function loadDiorama({ carta, rec, win } = {}) {
   // real production engine the host now delegates to — no stub, no rewrite.
   const engineScript = new vm.Script(readFileSync(ENGINE_SRC, 'utf8'), { filename: 'engine.js' });
   engineScript.runInContext(context);
+
+  // Optionally publish the real transition layer (window.cartaLodFade) into the same
+  // sandbox before the host runs, exactly as the <script> include does in the page,
+  // so the ships updater takes its dither cross-fade path (clod.md §5.3).
+  if (opts.lodfade) {
+    new vm.Script(readFileSync(LOD_SRC, 'utf8'), { filename: 'lod.js' }).runInContext(context);
+    new vm.Script(readFileSync(join(REPO_ROOT, 'web', 'js', 'lodfade.js'), 'utf8'), { filename: 'lodfade.js' }).runInContext(context);
+  }
 
   const mod = new vm.SourceTextModule(src, { identifier: 'harbordiorama.js', context });
   await mod.link(() => { throw new Error('no static imports expected in harbordiorama.js'); });
@@ -687,6 +696,18 @@ export function loadTrees(rec, opts = {}) {
   const TREES_SRC = join(REPO_ROOT, 'web', 'js', 'harbortrees.js');
   new vm.Script(readFileSync(TREES_SRC, 'utf8'), { filename: 'harbortrees.js' }).runInContext(context);
   return { make: win.cartaTreeSystem, THREE, win };
+}
+
+// Evaluate the REAL web/js/lodfade.js (classic IIFE → window.cartaLodFade) in a
+// bare sandbox and return the published transition-layer module. Pure — used by
+// the fade-maths cases.
+export function loadLodFade() {
+  const win = { window: undefined };
+  win.window = win;
+  win.Uint8Array = Uint8Array;
+  const context = vm.createContext(win);
+  new vm.Script(readFileSync(join(REPO_ROOT, 'web', 'js', 'lodfade.js'), 'utf8'), { filename: 'lodfade.js' }).runInContext(context);
+  return win.cartaLodFade;
 }
 
 export function rewriteImports(src) {

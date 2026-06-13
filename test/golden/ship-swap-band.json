@@ -1,0 +1,82 @@
+{
+  "rows": [
+    {
+      "baseVisible": true,
+      "d": 400,
+      "fade": null,
+      "hdVisible": false
+    },
+    {
+      "baseVisible": true,
+      "d": 200,
+      "fade": null,
+      "hdVisible": false
+    },
+    {
+      "baseVisible": true,
+      "d": 110,
+      "fade": null,
+      "hdVisible": false
+    },
+    {
+      "baseVisible": true,
+      "d": 97,
+      "fade": 0,
+      "hdVisible": true
+    },
+    {
+      "baseVisible": true,
+      "d": 90,
+      "fade": 0.174,
+      "hdVisible": true
+    },
+    {
+      "baseVisible": true,
+      "d": 82,
+      "fade": 0.672,
+      "hdVisible": true
+    },
+    {
+      "baseVisible": true,
+      "d": 76,
+      "fade": 0.985,
+      "hdVisible": true
+    },
+    {
+      "baseVisible": false,
+      "d": 70,
+      "fade": 1,
+      "hdVisible": true
+    },
+    {
+      "baseVisible": true,
+      "d": 76,
+      "fade": 0.985,
+      "hdVisible": true
+    },
+    {
+      "baseVisible": true,
+      "d": 90,
+      "fade": 0.174,
+      "hdVisible": true
+    },
+    {
+      "baseVisible": true,
+      "d": 110,
+      "fade": 0,
+      "hdVisible": false
+    },
+    {
+      "baseVisible": true,
+      "d": 200,
+      "fade": 0,
+      "hdVisible": false
+    },
+    {
+      "baseVisible": true,
+      "d": 400,
+      "fade": 0,
+      "hdVisible": false
+    }
+  ]
+}

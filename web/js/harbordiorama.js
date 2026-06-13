@@ -578,6 +578,7 @@
       const waterAt = terrain.waterAt || ((x, z) => ({ y: terrain.seaLevel, nx: 0, nz: 0 }));
       let SWHD = null;   // the detailed shipwright, raised lazily as the canoe nears
       const HD_CAP = 3, PX_HD = 400, HYST = 1.17;   // HD when ≈400 px (≈ Phase 1 distances)
+      const FADE_PX = PX_HD * 0.3;                  // HD dithers in over the 120 px above the swap
 
       function ensureSWHD() {
         if (!SWHD && window.cartaShipwrightHD) SWHD = window.cartaShipwrightHD(THREE, SW);
@@ -592,6 +593,25 @@
           s.hd.inst.visible = false;
           s.hd.inst.traverse((o) => { if (o.isMesh) o.castShadow = true; });
           scene.add(s.hd.inst);
+          // clod.md §5.3: clone this ship's HD materials and patch a per-ship
+          // uLodFade dither uniform, so the HD model can cross-fade in (the base
+          // hull stays visible underneath until HD is fully opaque). Cloning is
+          // required because HD instances share prototype materials.
+          const LF = window.cartaLodFade;
+          if (LF) {
+            s.hd.fadeU = []; s.hd.lineMats = [];
+            s.hd.inst.traverse((o) => {
+              if (o.isMesh && o.material) {
+                o.material = o.material.clone();
+                LF.patchMaterial(o.material, { perInstance: false });
+                s.hd.fadeU.push(o.material.userData.uLodFade);
+              } else if (o.isLine && o.material) {
+                o.material = o.material.clone();   // already transparent; fade via opacity
+                o.material.transparent = true;
+                s.hd.lineMats.push({ m: o.material, base: o.material.opacity == null ? 1 : o.material.opacity });
+              }
+            });
+          }
         } catch (e) { console.warn('diorama: hd ship failed', e); s.hd = { inst: null }; }
         return s.hd;
       }
@@ -622,20 +642,36 @@
           const eff = (i) => ships[i]._px * (ships[i].hdMember ? HYST : 1);
           cand.sort((a, b) => eff(b) - eff(a) || a - b);
           const award = new Set(cand.slice(0, HD_CAP));
+          const LF = window.cartaLodFade;
           for (let i = 0; i < ships.length; i++) {
             const s = ships[i];
             const on = award.has(i);
             s.hdMember = on;
             if (on && (!s.hd || !s.hd.inst)) buildHd(s);   // lazy fallback if prewarm hasn't run
             s.hdOn = on && !!(s.hd && s.hd.inst);
-            if (s.hd && s.hd.inst) s.hd.inst.visible = s.hdOn;
-            s.inst.visible = !s.hdOn;
+            // cross-fade the HD model in over the 120 px above the swap; the base
+            // hull stays visible until HD is fully opaque (clod.md §5.3 v1). No
+            // lodfade module → today's hard toggle.
+            if (LF && s.hd && s.hd.fadeU) {
+              const f = s.hdOn ? LF.fadeFor((PX_HD + FADE_PX) - s._px, 0, FADE_PX) : 0;
+              s.hd.inst.visible = s.hdOn && f > 0;
+              s.inst.visible = !s.hdOn || f < 1;
+              for (const u of s.hd.fadeU) u.value = f;
+              for (const lm of s.hd.lineMats) lm.m.opacity = lm.base * f;
+              s.hd.inst.userData.lodFade = f; s.inst.userData.lodFade = 1;
+              s._fade = f;
+            } else {
+              if (s.hd && s.hd.inst) s.hd.inst.visible = s.hdOn;
+              s.inst.visible = !s.hdOn;
+              s._fade = s.hdOn ? 1 : 0;
+            }
           }
         } else {
           for (const s of ships) {
-            s.hdMember = false; s.hdOn = false;
-            if (s.hd && s.hd.inst) s.hd.inst.visible = false;
+            s.hdMember = false; s.hdOn = false; s._fade = 0;
+            if (s.hd && s.hd.inst) { s.hd.inst.visible = false; if (s.hd.fadeU) for (const u of s.hd.fadeU) u.value = 0; }
             s.inst.visible = true;
+            if (s.inst.userData) s.inst.userData.lodFade = 1;
           }
         }
         // swell placement — the W_TRAINS swell math is untouched, just applied to
@@ -646,10 +682,18 @@
           const pitch = w.nz * 0.6;
           const roll = w.nx * 0.6 + Math.sin(t * 0.9 + s.phase) * 0.02;
           m.multiply(mPitch.makeRotationX(pitch)).multiply(mRoll.makeRotationZ(roll));
-          const live = s.hdOn ? s.hd : s;
-          (s.hdOn ? s.hd.inst : s.inst).matrix.copy(m);
-          for (const sail of live.anim.billow) sail.scale.z = 1 + 0.14 * Math.sin(t * 1.2 + s.phase);
-          for (const pen of live.anim.flutter) pen.rotation.y = Math.sin(t * 2.6 + s.phase) * 0.45;
+          // drive whichever hull(s) are visible — during a fade both are, so both
+          // ride the same swell matrix and animate together
+          const billow = 1 + 0.14 * Math.sin(t * 1.2 + s.phase);
+          const flutter = Math.sin(t * 2.6 + s.phase) * 0.45;
+          const drive = (inst, anim) => {
+            if (!inst || !inst.visible) return;
+            inst.matrix.copy(m);
+            for (const sail of anim.billow) sail.scale.z = billow;
+            for (const pen of anim.flutter) pen.rotation.y = flutter;
+          };
+          drive(s.inst, s.anim);
+          if (s.hd && s.hd.inst) drive(s.hd.inst, s.hd.anim);
         }
       } });
     }
