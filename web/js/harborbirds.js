@@ -423,6 +423,58 @@ window.cartaHarborBirds = function cartaHarborBirds(THREE) {
     const group = new THREE.Group();
     const proto = buildProto(false);
     const protoJuv = buildProto(true);   // same skeleton/indices, brown plumage
+
+    // ---- far tier: one merged, single-draw mesh per proto, frozen in a mid-glide
+    // pose. At range a gull covers a handful of pixels yet still costs ~20 draws of
+    // articulated parts; the far tier collapses each bird to ONE draw with its
+    // silhouette and flecked vertex colours intact (built once, no per-frame work).
+    // Bake the glide pose (glide = 1, flap fc = 0, no bank), then flatten the posed
+    // hierarchy into a single BufferGeometry, baking each part's world transform.
+    function bakeStatic(juv) {
+      const src = rewire((juv ? protoJuv : proto).clone(true), proto);
+      const G = 1, dihedral = 0.10 + 0.45 * G;          // wings raised into a glide V
+      src.userData.wingR.rotation.z = -dihedral;
+      src.userData.wingL.rotation.z = dihedral;
+      src.userData.wingR.userData.outer.rotation.z = 0.31 * G;   // wrist trimmed down
+      src.userData.wingL.userData.outer.rotation.z = -0.31 * G;
+      if (src.userData.tail) src.userData.tail.rotation.x = 0.10 + 0.22 * G; // tail spread
+      src.updateMatrixWorld(true);
+      const parts = [];
+      let total = 0;
+      src.traverse((o) => {
+        if (o.isMesh && o.geometry && o.geometry.attributes.position) {
+          parts.push(o); total += o.geometry.attributes.position.count;
+        }
+      });
+      const pos = new Float32Array(total * 3), nor = new Float32Array(total * 3), col = new Float32Array(total * 3);
+      const _v = new THREE.Vector3(), _n = new THREE.Vector3(), _nm = new THREE.Matrix3();
+      let off = 0;
+      for (const o of parts) {
+        const gp = o.geometry.attributes.position, gn = o.geometry.attributes.normal, gc = o.geometry.attributes.color;
+        _nm.getNormalMatrix(o.matrixWorld);
+        for (let i = 0; i < gp.count; i++) {
+          _v.set(gp.getX(i), gp.getY(i), gp.getZ(i)).applyMatrix4(o.matrixWorld);
+          pos[(off + i) * 3] = _v.x; pos[(off + i) * 3 + 1] = _v.y; pos[(off + i) * 3 + 2] = _v.z;
+          if (gn) {
+            _n.set(gn.getX(i), gn.getY(i), gn.getZ(i)).applyMatrix3(_nm).normalize();
+            nor[(off + i) * 3] = _n.x; nor[(off + i) * 3 + 1] = _n.y; nor[(off + i) * 3 + 2] = _n.z;
+          }
+          if (gc) { col[(off + i) * 3] = gc.getX(i); col[(off + i) * 3 + 1] = gc.getY(i); col[(off + i) * 3 + 2] = gc.getZ(i); }
+        }
+        off += gp.count;
+      }
+      // NOTE: src shares geometry with proto (Object3D.clone keeps geometry refs) —
+      // we only READ attributes here; never dispose them.
+      const mg = new THREE.BufferGeometry();
+      mg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      mg.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+      mg.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      mg.computeBoundingSphere();
+      return mg;
+    }
+    const mergedGeo = [bakeStatic(false), bakeStatic(true)];   // [adult, juv]
+    const farMat = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
+
     const N = 26;
     const alt0 = radius * 0.07;
     // gulls drawn a touch out of scale (as the ships are) so they read at range
@@ -448,8 +500,15 @@ window.cartaHarborBirds = function cartaHarborBirds(THREE) {
         scale: sizeMul * (0.8 + r01 * 0.5) * (juv ? 0.93 : 1),
         soar: 0,                                    // eased 0..1 updraft-soaring state
         lift: 0,                                    // metres gained riding the slope lift
+        full: true,                                 // far-LOD state (articulated ↔ merged)
       });
       b.scale.setScalar(birds[i].scale);
+      // the matching single-draw far mesh (shares the merged geometry + material)
+      const far = new THREE.Mesh(mergedGeo[juv ? 1 : 0], farMat);
+      far.scale.setScalar(birds[i].scale);
+      far.visible = false;
+      group.add(far);
+      birds[i].far = far;
     }
 
     const _t = new THREE.Vector3();
@@ -468,7 +527,7 @@ window.cartaHarborBirds = function cartaHarborBirds(THREE) {
     }
 
     let lastT = -1;
-    function update(t, focus) {
+    function update(t, focus, lodCtx, camPos) {
       const dt = lastT < 0 ? 0.016 : Math.min(0.1, Math.max(0.0001, t - lastT));
       lastT = t;
       for (const bd of birds) {
@@ -495,6 +554,25 @@ window.cartaHarborBirds = function cartaHarborBirds(THREE) {
         // MIRROR of the next point — the beak leads, the tail trails
         _t.set(2 * x - nx, 2 * y - ny + bd.lift, 2 * z - nz);
         bd.mesh.lookAt(_t);
+
+        // far-LOD: below ~12 px of wingspan the articulated gull (≈20 draws) is
+        // wasted — swap to the single-draw merged glide mesh. 12 % hysteresis in
+        // pixel space (promote ≥ 13.4 px, demote < 12 px) stops edge flicker. No
+        // lod context / camera (legacy or no tour camera) → always full, as before.
+        if (bd.far && lodCtx && camPos) {
+          const dx = x - camPos.x, dy = (y + bd.lift) - camPos.y, dz = z - camPos.z;
+          const px = lodCtx.pixels(9 * bd.scale, Math.sqrt(dx * dx + dy * dy + dz * dz));
+          bd.full = bd.full ? (px >= 12) : (px >= 12 * 1.12);
+          if (!bd.full) {
+            bd.mesh.visible = false;
+            bd.far.visible = true;
+            bd.far.position.set(x, y + bd.lift, z);
+            bd.far.lookAt(_t);
+            continue;                          // skip the whole articulation block
+          }
+          bd.mesh.visible = true;
+          bd.far.visible = false;
+        }
 
         // flap↔glide gate: glide while descending (slow-y term falling), flap while
         // climbing. tanh on the derivative of the slow climb term gives a smooth 0..1.

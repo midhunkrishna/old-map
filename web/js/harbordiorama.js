@@ -542,6 +542,22 @@
       } catch (e) { console.warn('diorama: trees failed', e); }
     }
 
+    // ----- town clutter gate (bollards, barrels, wells, dormers…): the legacy
+    // map hid these past zoom ~14.7; the diorama left them on at every distance.
+    // Bring the gate back on a screen-space rule — a 1 m prop drops out below ~3 px
+    // — so the wide establishing shot stops paying ~40 sub-pixel draw calls. The
+    // loop runs only on a state change, so steady-state cost is one comparison. -----
+    if (town && town.lod && town.lod.length) {
+      const townLod = town.lod;
+      let on = true;
+      animated.push({ update(t, cam, lod) {
+        const gate = lod ? Math.min(lod.distForPixels(1, 3), radius * 0.6)
+                         : radius * 0.5;                  // stub/legacy fallback
+        const want = carDio._camDist < (on ? gate * 1.12 : gate);   // 12 % hysteresis
+        if (want !== on) { on = want; for (const m of townLod) m.visible = on; }
+      } });
+    }
+
     // ----- ships riding at anchor (bobbing on the swell, not hovering above it) -----
     const ships = [];
     for (const s of (SW ? (carta.harborShips || []) : [])) {
@@ -625,7 +641,7 @@
         scene.add(birds.group);
         carDio._birds = birds.group;
         // any gull within ~50 m of the seated viewer swaps to the hero model
-        animated.push({ update(t, cam) { birds.update(t, carDio._tourPos ? cam.position : null); } });
+        animated.push({ update(t, cam, lodCtx) { birds.update(t, carDio._tourPos ? cam.position : null, lodCtx, cam.position); } });
       } catch (e) { console.warn('diorama: birds failed', e); }
     }
 
