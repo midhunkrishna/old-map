@@ -111,6 +111,41 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
     return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
   }
 
+  // Relief stroke colour for POM (parallax_occulusion.md §5.2): R = height 0..1
+  // (1 = proud), G = painted ambient occlusion (recesses darker by default).
+  const HV = (h, ao) => 'rgb(' + Math.round(h * 255) + ',' + Math.round((ao == null ? 0.55 + 0.45 * h : ao) * 255) + ',0)';
+
+  // Paired albedo + relief painter (same texCache as canvasTex). paint(x, rx, w, h, rand):
+  // x = albedo ctx, rx = relief ctx (or a swallowing Proxy when the relief is already
+  // cached — per-trade albedo variants share one relief), rand = lcg(key). Returns the
+  // albedo texture; the relief lands in texCache[reliefKey], 1-px blurred so the march
+  // never hits hard steps. Inert until a painter is converted + a material patched.
+  function canvasTexR(key, reliefKey, w, h, paint, repeat) {
+    if (texCache[key]) return texCache[key];
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const haveRelief = !!texCache[reliefKey];
+    const rc = haveRelief ? null : Object.assign(document.createElement('canvas'), { width: w, height: h });
+    const rx = haveRelief
+      ? new Proxy({}, { get: () => () => ({}), set: () => true })   // swallow relief strokes
+      : rc.getContext('2d');
+    if (!haveRelief) { rx.fillStyle = HV(0.5); rx.fillRect(0, 0, w, h); }   // neutral mid-plane
+    paint(c.getContext('2d'), rx, w, h, lcg(key));
+    const tex = new THREE.CanvasTexture(c);
+    if (repeat) tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.anisotropy = 4;
+    texCache[key] = tex;
+    if (!haveRelief) {
+      const b = document.createElement('canvas'); b.width = w; b.height = h;
+      const bx = b.getContext('2d');
+      bx.filter = 'blur(1px)'; bx.drawImage(rc, 0, 0);
+      const rt = new THREE.CanvasTexture(b);
+      if (repeat) rt.wrapS = rt.wrapT = THREE.RepeatWrapping;
+      rt.anisotropy = 4;
+      texCache[reliefKey] = rt;
+    }
+    return tex;
+  }
+
   // Facade with windows, doors, framing — painted neutral parchment; the
   // instanceColor lays on the wall tint. 192px so the casements survive
   // the close zoom the chart now allows.
