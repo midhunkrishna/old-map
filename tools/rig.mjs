@@ -58,6 +58,8 @@ async function ensureServer() {
     if (has('coast')) q.set('coast', '1');
     if (has('nopom')) q.set('nopom', '1');
     const ps = arg('pomscale', null); if (ps != null && ps !== true) q.set('pomscale', String(ps));
+    const hm = arg('hmres', null); if (hm != null && hm !== true) q.set('hmres', String(hm));
+    const tb = arg('treebake', null); if (tb != null) q.set('treebake', tb === true ? '1' : String(tb));
     const az = arg('az', null); if (az != null && az !== true) q.set('az', String(az));
     const z = arg('zoom', null); if (z != null && z !== true) q.set('zoom', String(z));
 
@@ -79,6 +81,12 @@ async function ensureServer() {
     const perf = await page.evaluate(() => window.__perf || null);
     const dbg = await page.evaluate(() => (window.cartaDiorama && window.cartaDiorama._dbg) || null);
     if (dbg) console.log(`  scene: town=${dbg.town} townKids=${dbg.townKids} ships=${dbg.ships}`);
+    const timings = await page.evaluate(() => (window.cartaDiorama && window.cartaDiorama._timings) || window.__dioTimings || null);
+    if (timings && Object.keys(timings).length) {
+      const order = ['engine', 'terrain_coastbin', 'terrain_bake', 'terrain_hmn', 'terrain', 'town', 'trees', 'ships', 'buildScene', 'openTotal'];
+      const ks = Object.keys(timings).sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99));
+      console.log('  build phases (ms): ' + ks.map((k) => `${k}=${timings[k]}`).join('  '));
+    }
     const pom = await page.evaluate(() => (window.cartaPOM && window.cartaPOM._patched.length) || 0);
     console.log(`  POM materials patched: ${pom}`);
     const fac = await page.evaluate(() => {

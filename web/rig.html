@@ -243,6 +243,8 @@ function meter() {
     window.carta = carta;   // several modules (harborpoi, harborterrain) read the global
     if (params.has('nopom')) window.cartaPOM = null;   // A/B: disable the parallax patch
     if (params.has('pomscale')) window.__POM_SCALE = parseFloat(params.get('pomscale'));   // exaggerate to prove it
+    if (params.has('hmres')) window.__cartaHmRes = parseInt(params.get('hmres'), 10);   // A/B the heightmap bake resolution
+    if (params.has('treebake')) window.__treeBake = parseInt(params.get('treebake'), 10) ? 1 : 0;   // A/B trees sampling the baked grid
     for (const init of (window.cartaInits || [])) { try { init(carta); } catch (e) { console.error('init', e); } }
     await window.cartaDiorama.open(port);
     buildControls();

@@ -33,6 +33,7 @@
   let PostFX = null;                           // post-fx classes, handed to the engine
   let built = null;        // { dispose } for the current scene's teardown
   let tween = null;        // active camera tween, if any
+  let TIMINGS = {};        // build-phase timings (ms), surfaced to the rig via carDio._timings
 
   // first-person canoe tour (a second mode inside the diorama)
   let mode = 'overview';   // 'overview' | 'tour'
@@ -506,11 +507,14 @@
     // terrain (real once Phase 2 lands; placeholder until then)
     const landFs = ((carta.harborStructures && carta.harborStructures.lands) || [])
       .filter((f) => f.properties.harbor === id);
+    const _tTerr = performance.now();
     const terrain = (window.cartaTerrain && carta.harborStructures)
       ? window.cartaTerrain(THREE).build(landFs,
           (window.cartaTerrain.HILLS && window.cartaTerrain.HILLS[id]) || [], project)
       : placeholderTerrain(frame, radius);
+    TIMINGS.terrain = +(performance.now() - _tTerr).toFixed(1);
     frame.heightAt = terrain.heightAt;
+    frame.bake = terrain.bake;   // baked heightmap grid (Option 2: trees sample it instead of heightAt)
     scene.add(terrain.group || terrain.mesh);
     if (terrain.water && !terrain.group) scene.add(terrain.water);
     // point the water's sun glitter at the real (low, golden) sun
@@ -523,6 +527,7 @@
 
     // ----- the town ashore (harbortown.js in metric mode) -----
     let town = null;
+    const _tTown = performance.now();
     if (window.cartaTownBuilder && SW) {
       try {
         town = window.cartaTownBuilder(THREE, carta, SW.materials())
@@ -534,8 +539,10 @@
         if (flutter.length) animated.push({ update(t) { for (let i = 0; i < flutter.length; i++) flutter[i].rotation.y = Math.sin(t * 2.2 + i * 1.7) * 0.35; } });
       } catch (e) { console.warn('diorama: town failed', e); }
     }
+    TIMINGS.town = +(performance.now() - _tTown).toFixed(1);
 
     // ----- the LOD foliage (harbortrees.js, metric + camera-faced) -----
+    const _tTrees = performance.now();
     if (window.cartaTreeSystem && town && town.treeField && town.treeField.length) {
       try {
         const trees = window.cartaTreeSystem(THREE, frame);
@@ -545,6 +552,7 @@
         animated.push({ update(t, cam, lodCtx) { trees.update(cam, carDio._camDist, lodCtx); } });
       } catch (e) { console.warn('diorama: trees failed', e); }
     }
+    TIMINGS.trees = +(performance.now() - _tTrees).toFixed(1);
 
     // ----- town clutter gate (bollards, barrels, wells, dormers…): the legacy
     // map hid these past zoom ~14.7; the diorama left them on at every distance.
@@ -564,6 +572,7 @@
 
     // ----- ships riding at anchor (bobbing on the swell, not hovering above it) -----
     let prewarmShips = null;   // set below if any ships; the host warms HD on enterTour
+    const _tShips = performance.now();
     const ships = [];
     for (const s of (SW ? (carta.harborShips || []) : [])) {
       if (s.harbor !== id) continue;
@@ -577,6 +586,7 @@
       ships.push({ inst, anim, type: s.type, draft, hd: null, hdOn: false, hdMember: false,
         px: p.x, pz: p.z, ang: 90 - (s.heading || 0), phase: (s.lngLat[0] * 7919) % Math.PI });
     }
+    TIMINGS.ships = +(performance.now() - _tShips).toFixed(1);
     if (ships.length) {
       const mPitch = new THREE.Matrix4(), mRoll = new THREE.Matrix4();
       const waterAt = terrain.waterAt || ((x, z) => ({ y: terrain.seaLevel, nx: 0, nz: 0 }));
@@ -997,15 +1007,22 @@
   /* ---------- open / close ---------- */
 
   async function open(id) {
+    const _tOpen = performance.now();
+    // fresh timing sink each open; cartaTerrain writes into the same window.__dioTimings.
+    TIMINGS = carDio._timings = (window.__dioTimings = {});
     ensureDom();
     if (carDio.active && built && built._id === id) return;
+    const _tEng = performance.now();
     if (!(await ensureEngine())) { sleeps(); return; }
+    TIMINGS.engine = +(performance.now() - _tEng).toFixed(1);   // Three.js import (first open only) + engine create
 
     if (mode === 'tour') exitTour();
     if (canoe) { try { canoe.dispose(); } catch (e) { /* ignore */ } canoe = null; }
     if (built) { built.dispose(); built = null; }
     mode = 'overview'; eng.setMode('overview'); host.classList.remove('touring', 'paused');
+    const _tBuild = performance.now();
     const frame = buildScene(id);
+    TIMINGS.buildScene = +(performance.now() - _tBuild).toFixed(1);
     built._id = id;
 
     const b = (carta.harborBoxes || []).find((x) => x.id === id);
@@ -1055,6 +1072,7 @@
         } catch (e) { /* ignore */ }
       }, 1000);
     }
+    TIMINGS.openTotal = +(performance.now() - _tOpen).toFixed(1);
   }
 
   function close() {

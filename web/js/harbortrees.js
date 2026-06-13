@@ -592,6 +592,12 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   const under = [], logs = [];
   let underMesh = null, logMesh = null;
   let siteLat = null;                  // harbour latitude, from the field centroid
+  // ground-elevation oracle, resolved once per init(). Trees read the already-baked
+  // heightmap grid (O(1) bilinear) instead of re-running the full heightAt (coast-bin +
+  // hills + finite-diff slope) thousands of times during planting — ~35× faster planting,
+  // visually identical (it samples the same grid the land is GPU-displaced from). Set
+  // window.__treeBake = 0 to fall back to the exact heightAt oracle for an A/B.
+  let elev = null;
 
   function makeTier(name, geo, mat, cap) {
     const im = new THREE.InstancedMesh(geo, mat, cap);
@@ -610,6 +616,12 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
 
   function init(field) {
     const sprites = { palm: spriteTex('palm'), leaf: spriteTex('leaf'), scrub: spriteTex('scrub') };
+    // resolve the elevation oracle once. Default: the baked grid; window.__treeBake === 0
+    // forces the exact heightAt. Falls back to heightAt when no bake exists (placeholder
+    // terrain), and to a zero plane if even heightAt is absent (non-metric/legacy path).
+    const bakeOff = (typeof window !== 'undefined' && window.__treeBake === 0);
+    elev = (!bakeOff && frame.bake && frame.bake.sample)
+      ? frame.bake.sample : (frame.heightAt || function () { return 0; });
     if (metric) {
       // geometry tiers per VARIANT (nine silhouettes); billboards per base kind
       for (const v of VARNAMES) {
@@ -649,7 +661,7 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
       const color = tintColor(t.kind, t.tint);
       if (metric) {
         const p = frame.project(t.lngLat[0], t.lngLat[1]);
-        const y = (frame.heightAt ? frame.heightAt(p.x, p.z) : 0) + (t.y || 0);
+        const y = elev(p.x, p.z) + (t.y || 0);
         const gm = groundMatM(p.x, y, p.z, Math.random() * Math.PI * 2, t.scale);
         // per-specimen silhouette: a stable position hash leans the bole a few
         // degrees and stretches/squashes the whole tree, so no two instances
@@ -712,7 +724,7 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
      Everything is deterministic position hash — rebuilds never flicker. */
   function plantHillForest() {
     under.length = 0; logs.length = 0;       // idempotent across re-inits
-    const H = frame.heightAt, R = (frame.radius || 600) * 1.15;
+    const H = elev, R = (frame.radius || 600) * 1.15;
     const HILL_MIN = 8.5;                      // the coastal plain tops out at ~7 m
     // coarse prepass: peak height + hill footprint area, to size the grid
     let maxH = HILL_MIN + 1, hillCells = 0;

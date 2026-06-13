@@ -19,6 +19,14 @@ window.cartaTerrain = function cartaTerrain(THREE) {
   const D2RAD = Math.PI / 180;
   const M_PER_DEG_LAT = 110540;
 
+  // Build-phase timing sink (browser only). The diorama resets window.__dioTimings
+  // at the top of each open(); the rig (tools/rig.mjs) reads it back. Guarded so the
+  // node characterization harness (which imports this module) writes nothing.
+  function tmark(name, t0) {
+    if (typeof window === 'undefined' || typeof performance === 'undefined') return;
+    (window.__dioTimings = window.__dioTimings || {})[name] = +(performance.now() - t0).toFixed(1);
+  }
+
   // Compact footprints read as hills; height spread over kilometres reads as
   // nothing. (Authoritative relief table — harbortown.js reads it for slope
   // tree-planting; was previously inlined there.)
@@ -177,7 +185,9 @@ window.cartaTerrain = function cartaTerrain(THREE) {
     function nearestCoast(px, pz) { return coastBin ? nearestBinned(px, pz) : nearestBrute(px, pz); }
     // opts.bruteForceCoast (test-only escape hatch) forces the O(segments) path so
     // test 24(d) can prove the bin returns bit-identical distances.
+    const _tBin = (typeof performance !== 'undefined') ? performance.now() : 0;
     coastBin = (opts && opts.bruteForceCoast) ? null : buildCoastBin();
+    tmark('terrain_coastbin', _tBin);
     function inside(px, pz) {
       let win = false;
       for (const r of rings) {
@@ -238,12 +248,20 @@ window.cartaTerrain = function cartaTerrain(THREE) {
     // heightAt oracle so the land can be GPU-displaced (and Phase 4 clipmap-refined).
     // heightAt stays the single source of truth; bakeSample is its exact bilinear twin
     // (test 24c asserts the drift stays within tolerance). The coast bin keeps this cheap.
-    const HMN = (opts && opts.hmRes) || (typeof window !== 'undefined' && window.__cartaHmRes) || 2048;
+    // Resolution knob: bake cost scales with HMN² and dominates load. Default 1024 is
+    // visually indistinguishable from 2048 here — the land mesh is only ~460² (line ~311),
+    // so the heightmap is already ≥2× the geometry it displaces; 512 is the practical floor
+    // (≈ mesh density). Override per-call (opts.hmRes, tests) or live (window.__cartaHmRes,
+    // set in the console BEFORE opening a harbour) to A/B.
+    const HMN = (opts && opts.hmRes) || (typeof window !== 'undefined' && window.__cartaHmRes) || 1024;
+    const _bake0 = (typeof performance !== 'undefined') ? performance.now() : 0;
     const hm = new Float32Array(HMN * HMN);
     for (let j = 0; j < HMN; j++) {
       const z = z0 + (j / (HMN - 1)) * D;
       for (let i = 0; i < HMN; i++) hm[j * HMN + i] = heightAt(x0 + (i / (HMN - 1)) * W, z);
     }
+    tmark('terrain_bake', _bake0);
+    if (typeof window !== 'undefined') (window.__dioTimings = window.__dioTimings || {}).terrain_hmn = HMN;
     let hmTex = null;
     if (THREE.DataTexture) {
       hmTex = new THREE.DataTexture(hm, HMN, HMN, THREE.RedFormat, THREE.FloatType);
