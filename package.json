@@ -6,7 +6,8 @@
     "test": "node test/run.mjs"
   },
   "devDependencies": {
-    "gl": "^8.1.6"
+    "gl": "^8.1.6",
+    "playwright": "^1.60.0"
   },
   "optionalDependencies": {
     "gl": "^8.1.6"

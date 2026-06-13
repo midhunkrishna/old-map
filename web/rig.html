@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carta Temporum — diorama rig</title>
+<script type="importmap">{ "imports": { "three": "/vendor/three.module.min.js" } }</script>
+<style>
+  html, body { margin: 0; height: 100%; background: #0c0a07; overflow: hidden; font-family: ui-monospace, Menlo, monospace; }
+  #rig-hud {
+    position: fixed; left: 10px; top: 10px; z-index: 99; color: #d8ffe0;
+    background: rgba(10,14,10,0.66); padding: 8px 11px; border-radius: 5px;
+    font-size: 12px; line-height: 1.5; white-space: pre; pointer-events: none;
+  }
+  #rig-ctl {
+    position: fixed; left: 10px; bottom: 10px; z-index: 99; display: flex; gap: 6px; flex-wrap: wrap;
+    max-width: 60vw;
+  }
+  #rig-ctl button {
+    font: 11px ui-monospace, Menlo, monospace; color: #efe3c6; background: #2a1d0e;
+    border: 1px solid #5c4527; border-radius: 4px; padding: 4px 8px; cursor: pointer;
+  }
+  #rig-ctl button:hover { background: #3a2a14; }
+</style>
+</head>
+<body>
+<div id="rig-hud">booting…</div>
+<div id="rig-ctl"></div>
+
+<!-- diorama dependency graph only (no maplibre / app engine / wasm) -->
+<script src="/js/models/waterfront.js"></script>
+<script src="/js/models/vice.js"></script>
+<script src="/js/models/civic.js"></script>
+<script src="/js/models/religious.js"></script>
+<script src="/js/harbortown.js"></script>
+<script src="/js/lodfade.js"></script>
+<script src="/js/harbortrees.js"></script>
+<script src="/js/harbor3d.js"></script>
+<script src="/js/harborshiphd.js"></script>
+<script src="/js/harborterrain.js"></script>
+<script src="/js/harborbirds.js"></script>
+<script src="/js/harborpoi.js"></script>
+<script src="/js/harborcanoe.js"></script>
+<script src="/js/harboraudio.js"></script>
+<script src="/js/render/lod.js"></script>
+<script src="/js/render/engine.js"></script>
+<script src="/js/harbordiorama.js"></script>
+
+<script>
+'use strict';
+// The eight surveyed ports; the rig builds carta straight from /data/harbors/<id>.json,
+// reusing the same feature-bucketing harbors.js does (sans the maplibre layers).
+const PORTS = ['nassau', 'port-royal', 'tortuga', 'batavia', 'bridgetown', 'cartagena', 'charleston', 'havana'];
+const POINT3D = ['church', 'chapel', 'convent', 'meeting', 'building', 'battery', 'gallows', 'tavern',
+  'shipwright', 'smithy', 'provisioner', 'counting', 'boarding', 'tent', 'brothel', 'gambling', 'governor', 'prison'];
+
+async function loadCarta(id) {
+  const plan = await fetch('/data/harbors/' + id + '.json').then((r) => { if (!r.ok) throw new Error(id); return r.json(); });
+  const harborPlans = {}, harborShips = [];
+  const structures = { blocks: [], forts: [], points: [], streets: [], greens: [], canals: [], wharves: [], lands: [] };
+  harborPlans[id] = plan;
+  // land bbox → harborBoxes (POI titles, minimap extent read window.carta.harborBoxes)
+  let bw = Infinity, bs = Infinity, be = -Infinity, bn = -Infinity;
+  for (const f of plan.features) {
+    if (f.properties.kind !== 'land') continue;
+    for (const ring of f.geometry.coordinates) for (const pt of ring) {
+      if (pt[0] < bw) bw = pt[0]; if (pt[0] > be) be = pt[0];
+      if (pt[1] < bs) bs = pt[1]; if (pt[1] > bn) bn = pt[1];
+    }
+  }
+  const title = (plan.properties && plan.properties.title) || id;
+  const harborBoxes = bw <= be ? [{ id, title, w: bw, e: be, s: bs, n: bn }] : [];
+  for (const f of plan.features) {
+    const k = f.properties.kind; f.properties.harbor = id;
+    if (k === 'ship') harborShips.push({ lngLat: f.geometry.coordinates, heading: f.properties.heading || 0, type: f.properties.type || 'sloop', harbor: id });
+    if (POINT3D.includes(k)) structures.points.push({ kind: k, lngLat: f.geometry.coordinates, harbor: id,
+      name: f.properties.name || '', note: f.properties.note || '', year_built: f.properties.year_built || 0,
+      year_destroyed: f.properties.year_destroyed || Infinity, guns: f.properties.guns || 0 });
+    if (k === 'block') structures.blocks.push(f);
+    if (k === 'fort') structures.forts.push(f);
+    if (k === 'street') structures.streets.push(f);
+    if (k === 'green') structures.greens.push(f);
+    if (k === 'canal') structures.canals.push(f);
+    if (k === 'wharf') structures.wharves.push(f);
+    if (k === 'land') structures.lands.push(f);
+  }
+  return { harborPlans, harborShips, harborStructures: structures, harborBoxes };
+}
+
+const stubMap = { getCenter: () => ({ lng: 0, lat: 0 }), getBearing: () => 0, getZoom: () => 14, on() {}, off() {}, getCanvas: () => ({ width: 800, height: 600 }) };
+const bus = { _h: {}, on(e, f) { (this._h[e] = this._h[e] || []).push(f); }, emit(e) { const a = [].slice.call(arguments, 1); (this._h[e] || []).forEach((f) => f.apply(null, a)); } };
+
+const hud = document.getElementById('rig-hud');
+const params = new URLSearchParams(location.search);
+
+// camera dolly that works WITH OrbitControls (set position along the current view ray)
+function setZoom(frac) {
+  const c = window.cartaDiorama && window.cartaDiorama._controls;
+  const cam = window.cartaDiorama && window.cartaDiorama._cam;
+  if (!c || !cam) return false;
+  const d = c.minDistance + (c.maxDistance - c.minDistance) * Math.max(0, Math.min(1, frac));
+  const t = c.target, p = cam.position;
+  let dx = p.x - t.x, dy = p.y - t.y, dz = p.z - t.z;
+  const L = Math.hypot(dx, dy, dz) || 1;
+  p.x = t.x + dx / L * d; p.y = t.y + dy / L * d; p.z = t.z + dz / L * d;
+  window.__zoom = frac;
+  return true;
+}
+window.__setZoom = setZoom;
+
+function go(port, extra) {
+  const q = new URLSearchParams(location.search);
+  q.set('port', port); if (extra) for (const k in extra) q.set(k, extra[k]);
+  location.search = q.toString();
+}
+
+function buildControls() {
+  const ctl = document.getElementById('rig-ctl');
+  const mk = (label, fn) => { const b = document.createElement('button'); b.textContent = label; b.onclick = fn; ctl.appendChild(b); };
+  mk('zoom in', () => setZoom((window.__zoom || 0.5) - 0.12));
+  mk('zoom out', () => setZoom((window.__zoom || 0.5) + 0.12));
+  mk('close-up', () => setZoom(0.03));
+  mk('wide', () => setZoom(0.9));
+  mk('tour ⛵', () => { const t = document.querySelector('.dio-tour'); if (t) t.click(); });
+  mk('perf', () => go(params.get('port') || 'nassau', { perf: '1' }));
+  for (const p of PORTS) mk(p, () => go(p));
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '=' || e.key === '+') setZoom((window.__zoom || 0.5) - 0.08);
+    if (e.key === '-') setZoom((window.__zoom || 0.5) + 0.08);
+  });
+}
+
+// rAF frame-rate meter (the real on-screen rate; drops under load)
+let frames = 0, last = performance.now(), fps = 0;
+function meter() {
+  frames++;
+  const now = performance.now();
+  if (now - last >= 500) {
+    fps = Math.round(frames * 1000 / (now - last)); frames = 0; last = now;
+    window.__fps = fps;
+    let line = 'port ' + (params.get('port') || 'nassau') + '   ' + fps + ' fps   zoom ' + ((window.__zoom ?? 0.5).toFixed(2));
+    try {
+      const perf = window.cartaDiorama && window.cartaDiorama._perf && window.cartaDiorama._perf();
+      if (perf) { line += '\n' + perf.calls + ' calls  ' + (perf.triangles / 1000 | 0) + 'k tris  cpu ' + perf.cpuMs.toFixed(2) + 'ms';
+        window.__perf = perf; }
+    } catch (e) { /* ignore */ }
+    hud.textContent = line;
+  }
+  requestAnimationFrame(meter);
+}
+
+(async () => {
+  const port = params.get('port') || 'nassau';
+  try {
+    const data = await loadCarta(port);
+    const carta = Object.assign({
+      gfx: { tier: 3 }, reducedMotion: { matches: params.has('still') },
+      map: stubMap, bus, showCard() {}, hideCard() {},
+    }, data);
+    window.carta = carta;   // several modules (harborpoi, harborterrain) read the global
+    for (const init of (window.cartaInits || [])) { try { init(carta); } catch (e) { console.error('init', e); } }
+    await window.cartaDiorama.open(port);
+    buildControls();
+    requestAnimationFrame(meter);
+    // URL-driven pose for screenshots: settle, then dolly to the requested zoom
+    if (params.has('zoom')) setTimeout(() => setZoom(parseFloat(params.get('zoom'))), 400);
+    if (params.has('tour')) setTimeout(() => { const t = document.querySelector('.dio-tour'); if (t) t.click(); }, 600);
+    window.__ready = true;
+  } catch (e) {
+    hud.textContent = 'rig error: ' + (e && e.message || e);
+    console.error(e);
+    window.__error = String(e && e.stack || e);
+  }
+})();
+</script>
+</body>
+</html>

@@ -16,3 +16,7 @@
 # Local server binary
 /server
 /oldmap
+
+# dev tooling (rig screenshots, npm deps)
+node_modules/
+tmp/

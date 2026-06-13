@@ -22,6 +22,7 @@ echo "==> assembling dist/"
 rm -rf dist
 mkdir -p dist/data
 cp -R web/. dist/
+rm -f dist/rig.html        # dev-only diorama rig (driven by tools/rig.mjs), never shipped
 # Ship only the data the frontend fetches at runtime; skip the server cache.
 rsync -a --exclude 'cache/' data/ dist/data/
 
