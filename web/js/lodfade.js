@@ -29,10 +29,13 @@ window.cartaLodFade = (function () {
     return 1 - t * t * (3 - 2 * t);
   }
 
-  // Fragment snippet (GLSL3 — r160 compiles WebGL2 as #version 300 es, so a const
-  // float[16] initializer and integer ops are legal). Injected by replacing the
-  // first include inside main() so it discards early, before lighting.
-  const ditherChunkGLSL = [
+  // GLSL3 (r160 compiles WebGL2 as #version 300 es, so a const float[16] and integer
+  // ops are legal). The DECL (the Bayer table + threshold function) is GLOBAL scope —
+  // it is injected at #include <common>, NOT inside main(), or the function definition
+  // would be illegal. The TEST (the discard block) replaces the first include inside
+  // main() so it discards early, before lighting.
+  const ditherDeclGLSL = [
+    'varying float vLodFade;',
     'const float LODF_BAYER[16] = float[16](',
     '   0.0,  8.0,  2.0, 10.0,',
     '  12.0,  4.0, 14.0,  6.0,',
@@ -43,10 +46,12 @@ window.cartaLodFade = (function () {
     '  int iy = int(gl_FragCoord.y) & 3;',
     '  return LODF_BAYER[iy * 4 + ix] / 16.0 + 1.0 / 32.0;',   // (b+0.5)/16 → thresholds in (0,1)
     '}',
-    // vLodFade: signed coverage. |v| = coverage c in [0,1].
-    //   v >= 0: KEEP the covered set (incoming) → discard when NOT covered
-    //   v <  0: KEEP the complement  (outgoing) → discard when covered
-    // c=1 keeps every fragment (max threshold 15/16 + 1/32 = 0.96875 < 1.0).
+  ].join('\n');
+  // vLodFade: signed coverage. |v| = coverage c in [0,1].
+  //   v >= 0: KEEP the covered set (incoming) → discard when NOT covered
+  //   v <  0: KEEP the complement  (outgoing) → discard when covered
+  // c=1 keeps every fragment (max threshold 15/16 + 1/32 = 0.96875 < 1.0).
+  const ditherTestGLSL = [
     '{',
     '  float lodfC = abs(vLodFade);',
     '  bool lodfCovered = lodfC >= lodfThreshold();',
@@ -54,6 +59,8 @@ window.cartaLodFade = (function () {
     '}',
     '#include <clipping_planes_fragment>',
   ].join('\n');
+  // combined form (kept for the determinism test: declares + discards + all 16 values)
+  const ditherChunkGLSL = ditherDeclGLSL + '\n' + ditherTestGLSL;
 
   // Composition-safe injection. perInstance → a per-instance `aFade` attribute
   // (trees, thousands of instances); else a per-material `uLodFade` uniform (ships).
@@ -73,8 +80,10 @@ window.cartaLodFade = (function () {
           + sh.vertexShader.replace('#include <begin_vertex>',
             '#include <begin_vertex>\n  vLodFade = uLodFade;');
       }
-      sh.fragmentShader = 'varying float vLodFade;\n'
-        + sh.fragmentShader.replace('#include <clipping_planes_fragment>', ditherChunkGLSL);
+      // decl (varying + table + function) at global scope; discard test in main()
+      sh.fragmentShader = sh.fragmentShader
+        .replace('#include <common>', ditherDeclGLSL + '\n#include <common>')
+        .replace('#include <clipping_planes_fragment>', ditherTestGLSL);
     };
     const prevKey = mat.customProgramCacheKey ? mat.customProgramCacheKey.bind(mat) : null;
     mat.customProgramCacheKey = function () { return (prevKey ? prevKey() : '') + '|lodfade' + (perInstance ? 'I' : 'U'); };
