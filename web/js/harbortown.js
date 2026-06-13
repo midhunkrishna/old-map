@@ -403,32 +403,35 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   }
 
   function roofTexture(style) {
-    const rand = lcg('roof-' + style);
-    return canvasTex('roof-' + style, 128, 128, (x) => {
+    return canvasTexR('roof-' + style, 'roof-' + style + '-h', 128, 128, (x, rx, w, h, rand) => {
+      rx.fillStyle = HV(0.55); rx.fillRect(0, 0, 128, 128);    // field
       x.fillStyle = '#d8cdb0';
       x.fillRect(0, 0, 128, 128);
       if (style === 'spanish' || style === 'dutch') {          // barrel tiles / pantiles
         for (let i = 0; i < 128; i += 9) {
-          x.strokeStyle = 'rgba(60,30,18,0.45)';
-          x.lineWidth = 2.2;
+          x.strokeStyle = 'rgba(60,30,18,0.45)'; x.lineWidth = 2.2;
           x.beginPath(); x.moveTo(i, 0); x.lineTo(i, 128); x.stroke();
-          x.strokeStyle = 'rgba(255,240,210,0.25)';
-          x.lineWidth = 2;
+          x.strokeStyle = 'rgba(255,240,210,0.25)'; x.lineWidth = 2;
           x.beginPath(); x.moveTo(i + 4.5, 0); x.lineTo(i + 4.5, 128); x.stroke();
+          // relief: dark groove is the valley (0.3), the highlight is the tile crown (0.75)
+          rx.strokeStyle = HV(0.3); rx.lineWidth = 2.2;
+          rx.beginPath(); rx.moveTo(i, 0); rx.lineTo(i, 128); rx.stroke();
+          rx.strokeStyle = HV(0.75); rx.lineWidth = 3.5;
+          rx.beginPath(); rx.moveTo(i + 4.5, 0); rx.lineTo(i + 4.5, 128); rx.stroke();
         }
-        x.strokeStyle = 'rgba(60,30,18,0.22)';
-        x.lineWidth = 1;
+        x.strokeStyle = 'rgba(60,30,18,0.22)'; x.lineWidth = 1;
         for (let j = 8; j < 128; j += 13) { x.beginPath(); x.moveTo(0, j); x.lineTo(128, j); x.stroke(); }
       } else {                                                 // wood shingles
-        x.strokeStyle = 'rgba(40,32,22,0.4)';
-        x.lineWidth = 1.4;
+        x.strokeStyle = 'rgba(40,32,22,0.4)'; x.lineWidth = 1.4;
+        rx.strokeStyle = HV(0.35); rx.lineWidth = 2;           // each course's step edge recessed
         for (let j = 6; j < 128; j += 11) {
           x.beginPath(); x.moveTo(0, j); x.lineTo(128, j); x.stroke();
+          rx.beginPath(); rx.moveTo(0, j); rx.lineTo(128, j); rx.stroke();
           for (let i = (j % 22 ? 6 : 14); i < 128; i += 17) {
             x.beginPath(); x.moveTo(i, j); x.lineTo(i, j - 9); x.stroke();
           }
         }
-        for (let i = 0; i < 30; i++) {                         // weathered shingles
+        for (let i = 0; i < 30; i++) {                         // weathered shingles (colour only)
           x.fillStyle = 'rgba(60,48,32,' + (0.06 + rand() * 0.1) + ')';
           x.fillRect(rand() * 120, rand() * 120, 10, 8);
         }
@@ -1952,6 +1955,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         const style = baseKey.split('|')[0];
         const roofKind = (style === 'spanish' || style === 'french') ? 'hip' : 'gable';
         const roofMat = new THREE.MeshLambertMaterial({ color: 0xffffff, map: roofTexture(style), side: THREE.DoubleSide });
+        pomPatch(roofMat, 'roof-' + style + '-h', true);   // tile ridges / shingle courses
         addInst(roofGeos[roofKind], roofMat, list);
       }
       stats.houses = total;
@@ -2635,8 +2639,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
 
       const churchWallMat = new THREE.MeshLambertMaterial({ color: 0xf0e9d6, map: facadeTexture('spanish', 1) });
       const leadMat = new THREE.MeshLambertMaterial({ color: 0x7d8388 });
-      const tileMat = new THREE.MeshLambertMaterial({ color: 0xb35a36, map: roofTexture('spanish'), side: THREE.DoubleSide });
-      const shingleMat = new THREE.MeshLambertMaterial({ color: 0x6e5a45, map: roofTexture('english'), side: THREE.DoubleSide });
+      const tileMat = pomPatch(new THREE.MeshLambertMaterial({ color: 0xb35a36, map: roofTexture('spanish'), side: THREE.DoubleSide }), 'roof-spanish-h', true);
+      const shingleMat = pomPatch(new THREE.MeshLambertMaterial({ color: 0x6e5a45, map: roofTexture('english'), side: THREE.DoubleSide }), 'roof-english-h', true);
 
       const box = (g, mat, sx, sy, sz, x, y, z) => {
         const mesh = new THREE.Mesh(wallGeo, mat);
