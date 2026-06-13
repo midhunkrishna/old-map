@@ -55,9 +55,15 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   // camera-facing billboard: position from the instance translation, orient to
   // the view's right/up so the card always faces the orbiting camera.
   function billboardMat(tex) {
-    const m = new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.42, side: THREE.DoubleSide });
+    // Lambert (not Basic) so the card takes the golden-hour sun + hemisphere like the
+    // near-tier geometry — removing the luminance pop where a lit tree swaps to a flat
+    // full-bright cutout (d_lod Phase 4 task 4). The card always faces the camera, so
+    // its normal is the view-facing vector (0,0,1 in view space).
+    const m = new THREE.MeshLambertMaterial({ map: tex, transparent: true, alphaTest: 0.42, side: THREE.DoubleSide });
     m.onBeforeCompile = (sh) => {
-      sh.vertexShader = sh.vertexShader.replace('#include <project_vertex>', `
+      sh.vertexShader = sh.vertexShader
+        .replace('#include <normal_vertex>', 'vNormal = vec3( 0.0, 0.0, 1.0 );')
+        .replace('#include <project_vertex>', `
         vec3 ip = (modelMatrix * instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
         float scl = length(instanceMatrix[0].xyz);
         vec3 vRight = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
