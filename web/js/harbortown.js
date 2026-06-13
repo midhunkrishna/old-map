@@ -1431,6 +1431,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const perHarbor = {};
       const classTot = {}, classPromo = {};   // promotion bookkeeping per harbor|class
       const humbleS = {};                      // wealth pass: per-kit instance specs {harbor,m,color}
+      const fineS = {};                        // tier-5 fine townhouse specs, per nation kit
       let total = 0;
 
       /* ---- the wealth gradient (building-variety plan) ----
@@ -1439,13 +1440,11 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
          governor and plaza. wealthTier maps a dwelling's position → 1..5
          (1 tent · 2 shack · 3 cottage · 4 house · 5 fine), deterministic via
          dhash. Tiers 1–3 render as instanced humble KITS (web/js/models/
-         shanties.js); 4–5 stay the existing box house. WEALTH_MIX biases each
-         port's humble fraction — Nassau a shanty town, Havana a masonry core. */
-      const WEALTH_MIX = {
-        'nassau': 0.70, 'tortuga': 0.75, 'port-royal': 0.55, 'charleston': 0.40,
-        'bridgetown': 0.40, 'batavia': 0.35, 'havana': 0.30, 'cartagena': 0.30,
-      };
+         shanties.js); 4–5 stay the existing box house. The gradient math itself
+         (WEALTH_MIX + tierFor) lives at module scope as a cartaTownBuilder static,
+         exposed so a test can assert its determinism + per-port mix without a build. */
       const HUMBLE = (window.cartaBuildingModels && window.cartaBuildingModels.humbleKits) || [];
+      const FINE = (window.cartaBuildingModels && window.cartaBuildingModels.fineKits) || [];
 
       // metres to the nearest surviving 1730 landmark (church/fort/governor/…),
       // the civic core a dwelling's prosperity rises toward. ∞ if the port has none.
@@ -1461,22 +1460,9 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         return Math.sqrt(best);
       }
 
-      function wealthTier(harbor, lon, lat, cls) {
-        const mix = WEALTH_MIX[harbor] != null ? WEALTH_MIX[harbor] : 0.5;
-        let pHumble = mix;
-        if (cls === 'waterfront') pHumble += 0.15;        // the working shore is poorest
-        else if (cls === 'plaza') pHumble -= 0.30;        // the square is the port's face
-        else pHumble += 0.04;                             // back lanes a touch poorer
-        const aD = landmarkDist(harbor, lon, lat);        // nearer the civic core → richer
-        if (aD < 130) pHumble -= 0.38 * (1 - aD / 130);
-        pHumble = pHumble < 0.03 ? 0.03 : pHumble > 0.95 ? 0.95 : pHumble;
-        if (dhash(lon, lat, 211) < pHumble) {
-          const r = dhash(lon, lat, 212);                 // humble: tent / shack / cottage
-          return r < 0.16 ? 1 : r < 0.82 ? 2 : 3;
-        }
-        const fineP = (aD < 150 || cls === 'plaza') ? 0.42 : 0.14;
-        return dhash(lon, lat, 213) < fineP ? 5 : 4;      // respectable house / fine townhouse
-      }
+      // feed the pure module-scope tier math this dwelling's distance to the civic core.
+      const wealthTier = (harbor, lon, lat, cls) =>
+        cartaTownBuilder.tierFor(harbor, lon, lat, cls, landmarkDist(harbor, lon, lat));
 
       // choose a humble kit silhouette for a tier+class, deterministic by position.
       // Waterfront leans to stilt shacks; otherwise prefer kits of exactly this tier,
@@ -1515,6 +1501,23 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             (humbleS[name] = humbleS[name] || []).push({ harbor, m, color });
             total++;
             stats.humble = (stats.humble || 0) + 1;
+            return;
+          }
+        }
+
+        // tier 5: the fine townhouse — a grander masonry front than the plain box,
+        // one per nation (web/js/models/townhouses.js). Near-upright (little jitter),
+        // a mild brightness wash keeping the nation's stucco/brick hue.
+        if (tier === 5 && FINE.length) {
+          const fk = FINE.find((k) => k.style === style);
+          if (fk) {
+            anchorAt(harbor, [lon, lat]);
+            const sx = 0.96 + dhash(lon, lat, 223) * 0.1, sy = 0.96 + dhash(lon, lat, 224) * 0.12, sz = 0.96 + dhash(lon, lat, 225) * 0.1;
+            const m = groundMatrix([lon, lat], ang).multiply(new THREE.Matrix4().makeScale(sx, sy, sz));
+            const bv = 0.9 + dhash(lon, lat, 226) * 0.16;
+            (fineS[fk.name] = fineS[fk.name] || []).push({ harbor, m, color: new THREE.Color(bv, bv, bv) });
+            total++;
+            stats.fine = (stats.fine || 0) + 1;
             return;
           }
         }
@@ -2810,6 +2813,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       // (per-instance jitter rode in on each spec's matrix + colour). Same close-zoom
       // LOD gate as the props, so distant shanty rows drop out cheaply.
       for (const k of HUMBLE) flushKit(k.name, humbleS[k.name] || []);
+      for (const k of FINE) flushKit(k.name, fineS[k.name] || []);
       stats.humbleKits = HUMBLE.length;
       for (const p of S.points) {
         // the 1730 snapshot: not yet built, or already lost, stays off the chart
@@ -3124,3 +3128,39 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
     },
   };
 };
+
+/* The wealth-gradient math, at module scope and exposed as statics on
+   cartaTownBuilder so a characterization test can assert its determinism and
+   per-port mix without standing up a whole town. The in-build wealthTier feeds
+   tierFor each dwelling's distance to the nearest civic landmark; the rest is pure
+   (dhash — the same sine hash the build uses — plus the per-port WEALTH_MIX bias). */
+(function () {
+  const TB = window.cartaTownBuilder;
+  const dhash = (a, b, n) => {
+    const s = Math.sin(a * 7919.33 + b * 6101.71 + n * 83.17) * 43758.5453;
+    return s - Math.floor(s);
+  };
+  TB.WEALTH_MIX = {
+    'nassau': 0.70, 'tortuga': 0.75, 'port-royal': 0.55, 'charleston': 0.40,
+    'bridgetown': 0.40, 'batavia': 0.35, 'havana': 0.30, 'cartagena': 0.30,
+  };
+  // a dwelling's social tier 1..5 (1 tent · 2 shack · 3 cottage · 4 house · 5 fine),
+  // from the port's humble bias, the location class (waterfront/plaza/back), the
+  // distance to the civic core (metres; ∞ if none), and three dhash rolls.
+  TB.tierFor = function tierFor(harbor, lon, lat, cls, landmarkDistM) {
+    const mix = TB.WEALTH_MIX[harbor] != null ? TB.WEALTH_MIX[harbor] : 0.5;
+    let pHumble = mix;
+    if (cls === 'waterfront') pHumble += 0.15;        // the working shore is poorest
+    else if (cls === 'plaza') pHumble -= 0.30;        // the square is the port's face
+    else pHumble += 0.04;                             // back lanes a touch poorer
+    const aD = landmarkDistM == null ? Infinity : landmarkDistM;   // nearer the core → richer
+    if (aD < 130) pHumble -= 0.38 * (1 - aD / 130);
+    pHumble = pHumble < 0.03 ? 0.03 : pHumble > 0.95 ? 0.95 : pHumble;
+    if (dhash(lon, lat, 211) < pHumble) {
+      const r = dhash(lon, lat, 212);                 // humble: tent / shack / cottage
+      return r < 0.16 ? 1 : r < 0.82 ? 2 : 3;
+    }
+    const fineP = (aD < 150 || cls === 'plaza') ? 0.42 : 0.14;
+    return dhash(lon, lat, 213) < fineP ? 5 : 4;      // respectable house / fine townhouse
+  };
+})();

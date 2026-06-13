@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset="utf-8"><title>kit viewer</title>
+<style>html,body{margin:0;height:100%;background:#caa46e;overflow:hidden}</style>
+<script type="importmap">{"imports":{"three":"/vendor/three.module.min.js"}}</script>
+</head><body>
+<!-- the model files self-register kits/factories onto window.cartaBuildingModels -->
+<script src="/js/models/shanties.js"></script>
+<script src="/js/models/townhouses.js"></script>
+<script type="module">
+import * as THREE from 'three';
+
+// minimal ctx twins of harbortown's geometry helpers (kits only need these)
+function mergeColored(parts){
+  let vn=0; for(const [pg] of parts) vn+=pg.attributes.position.count;
+  const pos=new Float32Array(vn*3), nor=new Float32Array(vn*3), col=new Float32Array(vn*3);
+  const idx=[]; let vo=0; const c=new THREE.Color();
+  for(const [pg,hex] of parts){
+    const p=pg.attributes.position, nm=pg.attributes.normal; c.set(hex);
+    for(let i=0;i<p.count;i++){
+      pos[(vo+i)*3]=p.getX(i);pos[(vo+i)*3+1]=p.getY(i);pos[(vo+i)*3+2]=p.getZ(i);
+      if(nm){nor[(vo+i)*3]=nm.getX(i);nor[(vo+i)*3+1]=nm.getY(i);nor[(vo+i)*3+2]=nm.getZ(i);}
+      col[(vo+i)*3]=c.r;col[(vo+i)*3+1]=c.g;col[(vo+i)*3+2]=c.b;
+    }
+    if(pg.index) for(let i=0;i<pg.index.count;i++) idx.push(vo+pg.index.getX(i));
+    else for(let i=0;i<p.count;i++) idx.push(vo+i);
+    vo+=p.count;
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('normal',new THREE.BufferAttribute(nor,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  g.setIndex(idx); return g;
+}
+const ctx={THREE,mergeColored,lump:r=>new THREE.IcosahedronGeometry(r,0)};
+
+const reg=window.cartaBuildingModels;
+const names=Object.keys(reg.kits);     // every registered kit, humble + fine
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0xcaa46e);
+scene.add(new THREE.HemisphereLight(0xfff0d8,0x8a6a40,0.9));
+const sun=new THREE.DirectionalLight(0xffe8c0,1.1); sun.position.set(-6,10,6); scene.add(sun);
+const mat=new THREE.MeshLambertMaterial({vertexColors:true});
+
+const COLS=4, GAP=8;
+names.forEach((n,i)=>{
+  let geo; try{geo=reg.kits[n](ctx);}catch(e){console.log('kit fail',n,e.message);return;}
+  const m=new THREE.Mesh(geo,mat);
+  const col=i%COLS, row=(i/COLS)|0;
+  m.position.set((col-(COLS-1)/2)*GAP,0,row*GAP);
+  scene.add(m);
+  // a little plinth so each sits on a pad
+  const pad=new THREE.Mesh(new THREE.CylinderGeometry(3.2,3.2,0.1,20),
+    new THREE.MeshLambertMaterial({color:0xb89668}));
+  pad.position.copy(m.position); pad.position.y=-0.05; scene.add(pad);
+});
+
+const rows=Math.ceil(names.length/COLS);
+const cam=new THREE.PerspectiveCamera(38,16/9,0.1,2000);
+const cz=rows*GAP/2;
+cam.position.set(0, 26, cz+30);
+cam.lookAt(0,1.5,cz);
+const r=new THREE.WebGLRenderer({antialias:true}); r.setSize(1280,720); r.setPixelRatio(2);
+document.body.appendChild(r.domElement);
+r.render(scene,cam);
+window.__kits=names; window.__ready=true;
+</script>
+</body></html>

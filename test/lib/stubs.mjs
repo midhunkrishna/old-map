@@ -733,6 +733,15 @@ export function loadTown(win, rec) {
   return { make: win.cartaTownBuilder, THREE };
 }
 
+// Evaluate any classic web/ script (an IIFE that registers onto window) over a
+// provided window — e.g. the building-model files, which register their kits onto
+// window.cartaBuildingModels. relPath is relative to web/. Pure side-effect on win.
+export function loadClassic(win, relPath) {
+  win.window = win;
+  const context = vm.createContext(win);
+  new vm.Script(readFileSync(join(REPO_ROOT, 'web', relPath), 'utf8'), { filename: relPath }).runInContext(context);
+}
+
 export function rewriteImports(src) {
   const out = src
     .replace("await import('/vendor/three.module.min.js')", "await globalThis.__imp('three')")
