@@ -718,6 +718,18 @@ export function loadLodFade() {
   return win.cartaLodFade;
 }
 
+// Evaluate the REAL web/js/harbortown.js (classic IIFE → window.cartaTownBuilder)
+// over a provided window + fresh fake THREE; return the factory. Case 25 uses the
+// builder's _paint hook to characterize the deterministic painters.
+export function loadTown(win, rec) {
+  win.window = win;
+  const THREE = makeThree(rec || {});
+  win.THREE = THREE;
+  const context = vm.createContext(win);
+  new vm.Script(readFileSync(join(REPO_ROOT, 'web', 'js', 'harbortown.js'), 'utf8'), { filename: 'harbortown.js' }).runInContext(context);
+  return { make: win.cartaTownBuilder, THREE };
+}
+
 export function rewriteImports(src) {
   const out = src
     .replace("await import('/vendor/three.module.min.js')", "await globalThis.__imp('three')")

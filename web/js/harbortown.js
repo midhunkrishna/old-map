@@ -100,18 +100,31 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
     return tex;
   }
 
+  // Deterministic per-painter RNG (Lehmer LCG seeded from the cache key) so the
+  // weathering strokes are stable across builds — a prerequisite for POM, where the
+  // relief canvas must mirror the albedo stroke-for-stroke (parallax_occulusion.md
+  // Phase 1a). Geometry-side Math.random (house placement etc.) is untouched.
+  function lcg(key) {
+    let s = 0;
+    for (let i = 0; i < key.length; i++) s = (s * 31 + key.charCodeAt(i)) % 2147483647;
+    s = (s % 2147483646) + 1;   // 1..2147483646 (avoid the 0 fixed point)
+    return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+  }
+
   // Facade with windows, doors, framing — painted neutral parchment; the
   // instanceColor lays on the wall tint. 192px so the casements survive
   // the close zoom the chart now allows.
   function facadeTexture(style, stories, type) {
-    return canvasTex('facade-' + style + stories + (type || ''), 192, 192, (x) => {
+    const key = 'facade-' + style + stories + (type || '');
+    const rand = lcg(key);
+    return canvasTex(key, 192, 192, (x) => {
       x.fillStyle = '#ddd2b4';
       x.fillRect(0, 0, 192, 192);
       // weathering streaks
       for (let i = 0; i < 26; i++) {
-        x.fillStyle = 'rgba(120,100,70,' + (0.03 + Math.random() * 0.05) + ')';
-        const sx = Math.random() * 192;
-        x.fillRect(sx, Math.random() * 60, 2 + Math.random() * 5, 60 + Math.random() * 130);
+        x.fillStyle = 'rgba(120,100,70,' + (0.03 + rand() * 0.05) + ')';
+        const sx = rand() * 192;
+        x.fillRect(sx, rand() * 60, 2 + rand() * 5, 60 + rand() * 130);
       }
       const rowH = 192 / stories;
       const wins = [];          // every painted casement, for the trade deltas below
@@ -343,6 +356,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   }
 
   function roofTexture(style) {
+    const rand = lcg('roof-' + style);
     return canvasTex('roof-' + style, 128, 128, (x) => {
       x.fillStyle = '#d8cdb0';
       x.fillRect(0, 0, 128, 128);
@@ -368,14 +382,15 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
           }
         }
         for (let i = 0; i < 30; i++) {                         // weathered shingles
-          x.fillStyle = 'rgba(60,48,32,' + (0.06 + Math.random() * 0.1) + ')';
-          x.fillRect(Math.random() * 120, Math.random() * 120, 10, 8);
+          x.fillStyle = 'rgba(60,48,32,' + (0.06 + rand() * 0.1) + ')';
+          x.fillRect(rand() * 120, rand() * 120, 10, 8);
         }
       }
     });
   }
 
   function masonryTexture() {
+    const rand = lcg('masonry');
     return canvasTex('masonry', 128, 128, (x) => {
       x.fillStyle = '#a8997d';
       x.fillRect(0, 0, 128, 128);
@@ -388,8 +403,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         }
       }
       for (let i = 0; i < 24; i++) {                           // uneven stones
-        x.fillStyle = 'rgba(60,50,34,' + (0.05 + Math.random() * 0.08) + ')';
-        x.fillRect((Math.random() * 9 | 0) * 14, (Math.random() * 8 | 0) * 16, 28, 16);
+        x.fillStyle = 'rgba(60,50,34,' + (0.05 + rand() * 0.08) + ')';
+        x.fillRect((rand() * 9 | 0) * 14, (rand() * 8 | 0) * 16, 28, 16);
       }
     }, true);
   }
@@ -397,6 +412,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   // Street cloth: u runs along the street. Packed earth, twin cart ruts,
   // gutter lines; the Spanish and Dutch get cobbles.
   function streetTexture(style) {
+    const rand = lcg('street-' + style);
     return canvasTex('street-' + style, 96, 96, (x) => {
       x.fillStyle = style === 'spanish' || style === 'dutch' ? '#a99875' : '#b5a47c';
       x.fillRect(0, 0, 96, 96);
@@ -412,8 +428,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
         }
       } else {                                                 // sand & gravel
         for (let i = 0; i < 240; i++) {
-          x.fillStyle = 'rgba(90,74,50,' + (0.08 + Math.random() * 0.12) + ')';
-          x.fillRect(Math.random() * 96, Math.random() * 96, 1.6, 1.6);
+          x.fillStyle = 'rgba(90,74,50,' + (0.08 + rand() * 0.12) + ')';
+          x.fillRect(rand() * 96, rand() * 96, 1.6, 1.6);
         }
       }
       // cart ruts run the length of the way
@@ -689,6 +705,8 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   /* ---------- the builder ---------- */
 
   return {
+    // dev/test-only painter hook (parallax_occulusion.md Phase 1a); nothing in web/js reads it
+    _paint: { lcg, facadeTexture, roofTexture, masonryTexture, streetTexture, texCache },
     build(S, fr) {
       frame = fr || null;       // metric (diorama) when provided, else legacy mercator
       const m = shipMats;
