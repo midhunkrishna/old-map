@@ -78,6 +78,8 @@ async function ensureServer() {
     const perf = await page.evaluate(() => window.__perf || null);
     const dbg = await page.evaluate(() => (window.cartaDiorama && window.cartaDiorama._dbg) || null);
     if (dbg) console.log(`  scene: town=${dbg.town} townKids=${dbg.townKids} ships=${dbg.ships}`);
+    const pom = await page.evaluate(() => (window.cartaPOM && window.cartaPOM._patched.length) || 0);
+    console.log(`  POM materials patched: ${pom}`);
     const fac = await page.evaluate(() => {
       if (!window.__facade) return null;
       const d = window.cartaDiorama, c = d._cam, t = d._controls.target;

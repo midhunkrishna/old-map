@@ -126,7 +126,11 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
     const haveRelief = !!texCache[reliefKey];
     const rc = haveRelief ? null : Object.assign(document.createElement('canvas'), { width: w, height: h });
     const rx = haveRelief
-      ? new Proxy({}, { get: () => () => ({}), set: () => true })   // swallow relief strokes
+      ? new Proxy({}, {   // swallow relief strokes (gradients return a no-op stop sink)
+        get: (t, p) => (p === 'createRadialGradient' || p === 'createLinearGradient')
+          ? (() => ({ addColorStop() {} })) : (() => ({})),
+        set: () => true,
+      })
       : rc.getContext('2d');
     if (!haveRelief) { rx.fillStyle = HV(0.5); rx.fillRect(0, 0, w, h); }   // neutral mid-plane
     paint(c.getContext('2d'), rx, w, h, lcg(key));
@@ -433,21 +437,25 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   }
 
   function masonryTexture() {
-    const rand = lcg('masonry');
-    return canvasTex('masonry', 128, 128, (x) => {
+    return canvasTexR('masonry', 'masonry-h', 128, 128, (x, rx, w, h, rand) => {
+      rx.fillStyle = HV(0.6); rx.fillRect(0, 0, 128, 128);     // stone field proud
       x.fillStyle = '#a8997d';
       x.fillRect(0, 0, 128, 128);
-      x.strokeStyle = 'rgba(70,58,40,0.5)';
-      x.lineWidth = 1.6;
+      x.strokeStyle = 'rgba(70,58,40,0.5)'; x.lineWidth = 1.6;
+      rx.strokeStyle = HV(0.2); rx.lineWidth = 1.6;            // mortar recessed
       for (let j = 0; j < 128; j += 16) {
         x.beginPath(); x.moveTo(0, j); x.lineTo(128, j); x.stroke();
+        rx.beginPath(); rx.moveTo(0, j); rx.lineTo(128, j); rx.stroke();
         for (let i = (j % 32 ? 0 : 14); i < 128; i += 28) {
           x.beginPath(); x.moveTo(i, j); x.lineTo(i, j + 16); x.stroke();
+          rx.beginPath(); rx.moveTo(i, j); rx.lineTo(i, j + 16); rx.stroke();
         }
       }
-      for (let i = 0; i < 24; i++) {                           // uneven stones
-        x.fillStyle = 'rgba(60,50,34,' + (0.05 + rand() * 0.08) + ')';
-        x.fillRect((rand() * 9 | 0) * 14, (rand() * 8 | 0) * 16, 28, 16);
+      for (let i = 0; i < 24; i++) {                           // uneven stones: bulge ±0.1
+        const op = 0.05 + rand() * 0.08;
+        const sx = (rand() * 9 | 0) * 14, sy = (rand() * 8 | 0) * 16;
+        x.fillStyle = 'rgba(60,50,34,' + op + ')'; x.fillRect(sx, sy, 28, 16);
+        rx.fillStyle = HV(0.55 + (op - 0.05) * 1.2); rx.fillRect(sx, sy, 28, 16);
       }
     }, true);
   }
@@ -455,11 +463,10 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
   // Street cloth: u runs along the street. Packed earth, twin cart ruts,
   // gutter lines; the Spanish and Dutch get cobbles.
   function streetTexture(style) {
-    const rand = lcg('street-' + style);
-    return canvasTex('street-' + style, 96, 96, (x) => {
+    return canvasTexR('street-' + style, 'street-' + style + '-h', 96, 96, (x, rx, w, h, rand) => {
       x.fillStyle = style === 'spanish' || style === 'dutch' ? '#a99875' : '#b5a47c';
       x.fillRect(0, 0, 96, 96);
-      if (style === 'spanish' || style === 'dutch') {          // cobbles
+      if (style === 'spanish' || style === 'dutch') {          // cobbles: domes in relief
         for (let j = 0; j < 96; j += 8) {
           for (let i = (j % 16 ? 0 : 5); i < 96; i += 10) {
             x.strokeStyle = 'rgba(80,66,46,0.5)';
@@ -467,24 +474,30 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
             x.beginPath();
             x.ellipse(i + 5, j + 4, 4.6, 3.4, 0, 0, Math.PI * 2);
             x.stroke();
+            const g = rx.createRadialGradient(i + 5, j + 4, 0, i + 5, j + 4, 5);
+            g.addColorStop(0, HV(0.75)); g.addColorStop(1, HV(0.35));
+            rx.fillStyle = g;
+            rx.beginPath(); rx.ellipse(i + 5, j + 4, 4.6, 3.4, 0, 0, Math.PI * 2); rx.fill();
           }
         }
-      } else {                                                 // sand & gravel
+      } else {                                                 // sand & gravel (colour only)
         for (let i = 0; i < 240; i++) {
           x.fillStyle = 'rgba(90,74,50,' + (0.08 + rand() * 0.12) + ')';
           x.fillRect(rand() * 96, rand() * 96, 1.6, 1.6);
         }
       }
-      // cart ruts run the length of the way
-      x.strokeStyle = 'rgba(80,64,44,0.55)';
-      x.lineWidth = 4;
+      // cart ruts run the length of the way — recessed
+      x.strokeStyle = 'rgba(80,64,44,0.55)'; x.lineWidth = 4;
+      rx.strokeStyle = HV(0.25); rx.lineWidth = 4;
       for (const ry of [34, 62]) {
         x.beginPath(); x.moveTo(0, ry); x.lineTo(96, ry); x.stroke();
+        rx.beginPath(); rx.moveTo(0, ry); rx.lineTo(96, ry); rx.stroke();
       }
-      x.strokeStyle = 'rgba(70,56,38,0.5)';                    // edge gutters
-      x.lineWidth = 2;
+      x.strokeStyle = 'rgba(70,56,38,0.5)'; x.lineWidth = 2;   // edge gutters — deeper
+      rx.strokeStyle = HV(0.2); rx.lineWidth = 2;
       for (const gy of [3, 93]) {
         x.beginPath(); x.moveTo(0, gy); x.lineTo(96, gy); x.stroke();
+        rx.beginPath(); rx.moveTo(0, gy); rx.lineTo(96, gy); rx.stroke();
       }
     }, true);
   }
@@ -768,6 +781,16 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
       const roofGeos = { gable: gableGeo(), hip: hipGeo() };
       const stoneMat = new THREE.MeshLambertMaterial({ color: 0xaa9c80 });
       const masonMat = new THREE.MeshLambertMaterial({ color: 0xfff6e6, map: masonryTexture() });
+      // POM helper (parallax_occulusion.md §5.4): patch a town material with its relief,
+      // guarded by tier ≥ 3 + cartaPOM. Repeat-wrapped surfaces pass clampUv:false.
+      const pomPatch = (mat, reliefKey, clampUv) => {
+        if (window.cartaPOM && carta && carta.gfx && carta.gfx.tier >= 3 && texCache[reliefKey]) {
+          window.cartaPOM.patch(mat, { THREE, heightMap: texCache[reliefKey], scale: 0.012,
+            minLayers: 8, maxLayers: 16, fadeStart: 18, fadeEnd: 50, clampUv: !!clampUv });
+        }
+        return mat;
+      };
+      pomPatch(masonMat, 'masonry-h', false);
       const woodMat = new THREE.MeshLambertMaterial({ color: 0x6b4a2e });
       const brickMat = new THREE.MeshLambertMaterial({ color: 0x7a4434 });
 
@@ -867,6 +890,7 @@ window.cartaTownBuilder = function cartaTownBuilder(THREE, carta, shipMats) {
           streetMats[style] = frame
             ? new THREE.MeshLambertMaterial({ map: streetTexture(style), vertexColors: true, transparent: true, depthWrite: false })
             : new THREE.MeshLambertMaterial({ map: streetTexture(style) });
+          pomPatch(streetMats[style], 'street-' + style + '-h', false);   // cobble depth at grazing
         }
         const mesh = new THREE.Mesh(geo, streetMats[style]);
         mesh.matrixAutoUpdate = false;
