@@ -1,0 +1,49 @@
+{
+  "atRest": {
+    "reb1": 1,
+    "reb2": 1,
+    "skipped": true
+  },
+  "cellsTotal": 200,
+  "deterministic": true,
+  "edgeBob": {
+    "midSeen": false,
+    "nearSeen": true,
+    "seq": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  "farDrawn": 0,
+  "farTested": 0
+}

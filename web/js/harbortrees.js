@@ -666,6 +666,7 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
       return { gm, bm, x: mc.x, y: mc.y, kind, color };
     });
     if (metric && frame.heightAt) plantHillForest();
+    if (metric && trees.length) buildCells();
   }
 
   // a stable position hash in [0,1) — seeded per use so streams don't correlate
@@ -868,6 +869,40 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   const _sphere = new THREE.Sphere(new THREE.Vector3(), 0);
   let counts = { ultra: 0, near: 0, mid: 0, far: 0 };
 
+  // Phase 4 state: spatial cells (frustum/range cull), at-rest skip tracking, and
+  // a small perf stat the tests read. The bands map to BANDS indices 0..3.
+  let cells = null;
+  const _last = { cx: 1e9, cy: 1e9, cz: 1e9, reveal: -1, k: -1 };
+  const _stat = { rebuilds: 0, cellsTotal: 0, cellsTested: 0, skipped: 0 };
+
+  // Bucket the field into a fixed grid so whole off-screen / far regions skip the
+  // per-tree tests. Each cell carries a bounding sphere over its trees + a height
+  // margin. Built once at init() (metric path only); trees never move.
+  const CELL_N = 24;
+  function buildCells() {
+    const R = (frame && frame.radius) || 1500;
+    const cs = (2 * R) / CELL_N || 1;
+    const map = new Map();
+    for (const t of trees) {
+      const gx = Math.max(0, Math.min(CELL_N - 1, Math.floor((t.px + R) / cs)));
+      const gz = Math.max(0, Math.min(CELL_N - 1, Math.floor((t.pz + R) / cs)));
+      const key = gx * CELL_N + gz;
+      let c = map.get(key);
+      if (!c) { c = { trees: [] }; map.set(key, c); }
+      c.trees.push(t);
+    }
+    cells = [];
+    for (const c of map.values()) {
+      let cx = 0, cy = 0, cz = 0;
+      for (const t of c.trees) { cx += t.px; cy += t.py; cz += t.pz; }
+      const n = c.trees.length; cx /= n; cy /= n; cz /= n;
+      let rad = 0;
+      for (const t of c.trees) { const d = Math.hypot(t.px - cx, t.pz - cz); if (d > rad) rad = d; }
+      c.cx = cx; c.cy = cy + 8; c.cz = cz; c.r = rad + 16;   // +tree-height margin
+      cells.push(c);
+    }
+  }
+
   function update(arg, camDist, lodCtx) {
     if (!trees.length) return;
     windT.value = performance.now() * 0.001;   // drives the foliage shimmer
@@ -924,8 +959,6 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
   // Diorama path: bucket by 3-D distance from the orbiting camera, frustum-cull,
   // and write small origin-relative matrices (no centre ride needed).
   function updateMetric(camera, camDist, lodCtx) {
-    _m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-    _frustum.setFromProjectionMatrix(_m);
     const cx = camera.position.x, cy = camera.position.y, cz = camera.position.z;
     // Screen-space-error normalization of the metre bands, anchored at the
     // overview reference (38° fov): k = tan(19°)/tan(fovNow/2), clamped to
@@ -946,28 +979,57 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
     const R = frame.radius || 1500;
     const dCam = camDist || Math.hypot(cx, cy, cz);
     const reveal = Math.max(0.45, Math.min(1, 1 - (dCam - R * 0.4) / (R * 2.2) * 0.55));
+    // at-rest skip (task 3): trees never move, so if the camera barely shifted and
+    // the reveal/fov are unchanged the visible set is identical to last frame —
+    // leave the instance buffers untouched (no setMatrixAt, no re-upload). The
+    // foliage shimmer rides a separate uniform (update(), above), so it keeps going.
+    const moved2 = (cx - _last.cx) ** 2 + (cy - _last.cy) ** 2 + (cz - _last.cz) ** 2;
+    if (moved2 < 0.25 && reveal === _last.reveal && k === _last.k) { _stat.skipped++; return; }
+    _last.cx = cx; _last.cy = cy; _last.cz = cz; _last.reveal = reveal; _last.k = k;
+    _stat.rebuilds++;
+    _m.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+    _frustum.setFromProjectionMatrix(_m);
+    const EDGES = [uE, nE, mE, fE];
+    const LOD = (typeof window !== 'undefined' && window.cartaLod) || null;
     const idx = { ultra: {}, near: {}, mid: {}, far: {} };
     for (const v of VARNAMES) { idx.ultra[v] = 0; idx.near[v] = 0; }
-    for (const k of KINDS) { idx.mid[k] = 0; idx.far[k] = 0; }
-    for (const t of trees) {
-      if (t.rank > reveal) continue;
-      const dx = t.px - cx, dy = t.py - cy, dz = t.pz - cz;
-      const d2 = dx * dx + dy * dy + dz * dz;
-      if (d2 > far2) continue;
-      _sphere.center.set(t.px, t.py + 6, t.pz);
-      _sphere.radius = 9;
-      if (!_frustum.intersectsSphere(_sphere)) continue;
-      // right next to the camera (the canoe gliding past the shore) the tree
-      // takes the hero geometry — max polygon count
-      const band = d2 < ultra2 ? 'ultra' : d2 < near2 ? 'near' : d2 < mid2 ? 'mid' : 'far';
-      const geomBand = band === 'ultra' || band === 'near';
-      const key = geomBand ? t.variant : t.kind;     // geometry per variant, cards per kind
-      const i = idx[band][key];
-      if (i >= CAP[band]) continue;
-      const tier = tiers[band][key];
-      tier.setMatrixAt(i, geomBand ? t.gm : t.bm);
-      tier.setColorAt(i, t.color);
-      idx[band][key] = i + 1;
+    for (const kk of KINDS) { idx.mid[kk] = 0; idx.far[kk] = 0; }
+    // iterate cell-by-cell, rejecting whole cells that fall beyond FAR or outside
+    // the frustum (task 1); the per-tree tests below are the inner filter.
+    const groups = cells || [{ trees }];
+    _stat.cellsTotal = groups.length; _stat.cellsTested = 0;
+    for (const cell of groups) {
+      if (cell.r != null) {
+        if (Math.hypot(cell.cx - cx, cell.cy - cy, cell.cz - cz) - cell.r > fE) continue;
+        _sphere.center.set(cell.cx, cell.cy, cell.cz); _sphere.radius = cell.r;
+        if (!_frustum.intersectsSphere(_sphere)) continue;
+      }
+      _stat.cellsTested++;
+      for (const t of cell.trees) {
+        if (t.rank > reveal) continue;
+        const dx = t.px - cx, dy = t.py - cy, dz = t.pz - cz;
+        const d2 = dx * dx + dy * dy + dz * dz;
+        if (d2 > far2) continue;
+        _sphere.center.set(t.px, t.py + 6, t.pz);
+        _sphere.radius = 9;
+        if (!_frustum.intersectsSphere(_sphere)) continue;
+        // right next to the camera (the canoe gliding past the shore) the tree
+        // takes the hero geometry. The band carries hysteresis (task 2): t.band is
+        // sticky across the [edge, edge·1.12] dead zone, so a tree loitering on a
+        // boundary can't flip tiers frame to frame.
+        let bi;
+        if (LOD) { bi = LOD.band(Math.sqrt(d2), EDGES, t.band == null ? 0 : t.band, 0.12); t.band = bi; }
+        else { bi = d2 < ultra2 ? 0 : d2 < near2 ? 1 : d2 < mid2 ? 2 : 3; }
+        const band = BANDS[bi] || 'far';
+        const geomBand = band === 'ultra' || band === 'near';
+        const key = geomBand ? t.variant : t.kind;     // geometry per variant, cards per kind
+        const i = idx[band][key];
+        if (i >= CAP[band]) continue;
+        const tier = tiers[band][key];
+        tier.setMatrixAt(i, geomBand ? t.gm : t.bm);
+        tier.setColorAt(i, t.color);
+        idx[band][key] = i + 1;
+      }
     }
     counts = { ultra: 0, near: 0, mid: 0, far: 0 };
     for (const band of BANDS) {
@@ -1019,6 +1081,6 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
     group,
     init,
     update,
-    get stats() { return { total: trees.length, drawn: counts }; },
+    get stats() { return { total: trees.length, drawn: counts, perf: _stat, cells: cells ? cells.length : 0 }; },
   };
 };

@@ -674,15 +674,19 @@ export function loadLod() {
 // Evaluate the REAL web/js/harbortrees.js (a classic script assigning
 // window.cartaTreeSystem) into a sandbox over a fresh fake THREE and return the
 // factory. Case 16 drives its metric path headless (Frustum stub never culls).
-export function loadTrees(rec) {
+export function loadTrees(rec, opts = {}) {
   const win = makeWindow();
   win.window = win;
   const THREE = makeThree(rec || {});
   win.THREE = THREE;
   const context = vm.createContext(win);
+  // optionally publish the real cartaLod first, so the tree system takes its
+  // production hysteresis path (window.cartaLod.band) instead of the ternary
+  // fallback. Off by default so case 16 keeps the nominal-edge membership.
+  if (opts.lod) new vm.Script(readFileSync(LOD_SRC, 'utf8'), { filename: 'lod.js' }).runInContext(context);
   const TREES_SRC = join(REPO_ROOT, 'web', 'js', 'harbortrees.js');
   new vm.Script(readFileSync(TREES_SRC, 'utf8'), { filename: 'harbortrees.js' }).runInContext(context);
-  return { make: win.cartaTreeSystem, THREE };
+  return { make: win.cartaTreeSystem, THREE, win };
 }
 
 export function rewriteImports(src) {
