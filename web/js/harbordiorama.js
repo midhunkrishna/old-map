@@ -46,6 +46,17 @@
   const carDio = { active: false, open, close };
   window.cartaDiorama = carDio;
 
+  // dev instrumentation gate: ?perf=1 turns on the engine's frame counters + a
+  // small on-screen HUD. Read once, guarded so headless harnesses (no location /
+  // URLSearchParams) and odd embeds degrade silently to off.
+  const PERF = (function () {
+    try {
+      return typeof location !== 'undefined' && typeof URLSearchParams !== 'undefined' &&
+        new URLSearchParams(location.search).has('perf');
+    } catch (e) { return false; }
+  })();
+  let perfAccum = 0;   // throttles the HUD text to ~4 Hz
+
   /* ---------- DOM scaffold ---------- */
 
   function ensureDom() {
@@ -166,6 +177,19 @@
   opacity: 0; transition: opacity 0.8s ease;
 }
 #carta-diorama .dio-hint.show { opacity: 0.85; }
+#carta-diorama .dio-sysreq {
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+  z-index: 3; pointer-events: none; white-space: nowrap;
+  font-family: 'IM Fell English', serif; font-style: italic; font-size: 10.5px;
+  color: #efe3c6; opacity: 0.55; text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+#carta-diorama.touring .dio-sysreq { display: none; }
+#carta-diorama .dio-perf {
+  position: absolute; right: 10px; top: 10px; z-index: 6; pointer-events: none;
+  font: 11px/1.45 ui-monospace, Menlo, monospace; white-space: pre;
+  color: #d8ffe0; background: rgba(10,14,10,0.62); padding: 6px 9px; border-radius: 4px;
+  text-shadow: none;
+}
 #carta-diorama .dio-title {
   position: absolute; left: 50%; top: 22px; transform: translateX(-50%);
   z-index: 3; pointer-events: none; text-align: center; color: #f2e6c8;
@@ -232,12 +256,25 @@
     const hint = document.createElement('div');
     hint.className = 'dio-hint';
     hint.innerHTML = 'Drag to turn the harbour · Right-drag to pan · Scroll to zoom in';
+    // a quiet system-requirements note, centred at the very bottom in overview
+    // (hidden in tour via the .touring rule — see the CSS above)
+    const sysreq = document.createElement('div');
+    sysreq.className = 'dio-sysreq';
+    sysreq.textContent = 'For best experience: an M1 / GTX 1660-class GPU or better';
     // the tour minimap: an engraved thumbnail of the harbour with the canoe on it
     const mini = document.createElement('canvas');
     mini.className = 'dio-minimap';
     mini.width = 380; mini.height = 380;        // 2× backing for a crisp engraving
     host._mini = mini;
-    host.append(canvas, vig, overlay, title, closeBtn, envBtn, labelsBtn, tourBtn, returnBtn, tourHint, pauseHint, speedBox, mini, hint);
+    host.append(canvas, vig, overlay, title, closeBtn, envBtn, labelsBtn, tourBtn, returnBtn, tourHint, pauseHint, speedBox, mini, hint, sysreq);
+    // dev-only frame HUD (?perf=1): created here so it sits above the canvas
+    if (PERF) {
+      const pf = document.createElement('div');
+      pf.className = 'dio-perf';
+      pf.textContent = 'perf…';
+      host.append(pf);
+      host._perf = pf;
+    }
     document.body.appendChild(host);
     host._title = title;
     host._envBtn = envBtn;
@@ -325,6 +362,7 @@
       eng.setPreUpdateHook((dt, t, now) => { if (tween) tween(now); }); // tween runs at the TOP of the loop, before controls.update()
       eng.setModeHook(modeHook);     // tour/overview camera book-keeping
       carDio._controls = eng.controls;     // exposed for verification harnesses
+      carDio._perf = function () { return eng ? eng.perf : null; };  // console: cartaDiorama._perf()
       loaded = true;
       return true;
     } catch (e) {
@@ -959,6 +997,20 @@
 
   function frameHook(dt) {
     try { if (window.cartaHarborAudio) window.cartaHarborAudio.frame(dt); } catch (e) { /* ignore */ }
+    // dev HUD: refresh at ~4 Hz from the engine's perf snapshot (off unless ?perf=1)
+    if (PERF && host && host._perf && eng) {
+      perfAccum += dt;
+      if (perfAccum >= 0.25) {
+        perfAccum = 0;
+        const p = eng.perf;
+        if (p) {
+          host._perf.textContent =
+            p.calls + ' calls  ' + (p.triangles / 1000).toFixed(0) + 'k tris\n' +
+            p.geometries + ' geo  cpu ' + p.cpuMs.toFixed(2) + 'ms\n' +
+            'frame med ' + p.median.toFixed(1) + '  p95 ' + p.p95.toFixed(1) + '  max ' + p.max.toFixed(1) + 'ms';
+        }
+      }
+    }
   }
 
   function onResize() {

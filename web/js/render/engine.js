@@ -47,6 +47,21 @@ window.cartaRenderEngine = function cartaRenderEngine(THREE, canvas, OrbitContro
   let raf = 0, t0 = 0, lastT = 0;
   let running = false;
 
+  /* ---------- perf instrumentation (behind ?perf=1) ---------- */
+  // Read once, guarded so headless harnesses (no location/URLSearchParams) and odd
+  // embeds degrade silently to off. When off, the loop does at most one boolean
+  // test per frame and touches none of this.
+  const perfOn = (function () {
+    try {
+      return typeof location !== 'undefined' && typeof URLSearchParams !== 'undefined' &&
+        new URLSearchParams(location.search).has('perf');
+    } catch (e) { return false; }
+  })();
+  const dtRing = perfOn ? new Float64Array(600) : null;  // frame times in ms
+  let dtIdx = 0, dtCount = 0;
+  let updMs = 0, infoCalls = 0, infoTris = 0, infoGeo = 0;
+  const gpuExt = null;   // reserved: EXT_disjoint_timer_query_webgl2 (feature-checked in start())
+
   /* ---------- renderer + camera + controls ---------- */
 
   function createRenderer() {
@@ -187,11 +202,18 @@ window.cartaRenderEngine = function cartaRenderEngine(THREE, canvas, OrbitContro
     }
     if (modeHook) modeHook(dt, t, now);
     if (frameHook) frameHook(dt);
+    const u0 = perfOn ? performance.now() : 0;
     for (const a of updaters) { try { a.update(t, camera); } catch (e) { /* ignore */ } }
+    if (perfOn) updMs = performance.now() - u0;
     // Studio light routes through the bloom composer (the sun glitter & bright
     // sails glow); matte mode renders straight, with no post cost.
     if (envOn && composer) composer.render();
     else renderer.render(scene, camera);
+    if (perfOn) {
+      dtRing[dtIdx] = dt * 1000; dtIdx = (dtIdx + 1) % 600; if (dtCount < 600) dtCount++;
+      const info = renderer.info;   // three.js render/memory counters (reset each frame by three)
+      if (info) { infoCalls = info.render.calls; infoTris = info.render.triangles; infoGeo = info.memory.geometries; }
+    }
   }
 
   function start() {
@@ -232,5 +254,18 @@ window.cartaRenderEngine = function cartaRenderEngine(THREE, canvas, OrbitContro
     get renderer() { return renderer; },
     get composer() { return composer; },
     get envOn() { return envOn; },
+    get perfOn() { return perfOn; },
+    // Frame-budget snapshot (null unless ?perf=1). Percentiles computed on read
+    // (nearest-rank over the dt ring), not per frame.
+    get perf() {
+      if (!perfOn) return null;
+      const base = { calls: infoCalls, triangles: infoTris, geometries: infoGeo, cpuMs: round2(updMs) };
+      if (!dtCount) return Object.assign(base, { median: 0, p95: 0, max: 0 });
+      const arr = Array.prototype.slice.call(dtRing, 0, dtCount).sort(function (a, b) { return a - b; });
+      const at = function (q) { return arr[Math.min(dtCount - 1, Math.round(q * (dtCount - 1)))]; };
+      return Object.assign(base, { median: round2(at(0.5)), p95: round2(at(0.95)), max: round2(arr[dtCount - 1]) });
+    },
   };
+
+  function round2(n) { return Math.round(n * 100) / 100; }
 };
