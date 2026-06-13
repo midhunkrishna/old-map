@@ -106,7 +106,7 @@ window.cartaTerrain = function cartaTerrain(THREE) {
       const cx = ax + t * dx, cz = az + t * dz;
       return Math.hypot(px - cx, pz - cz);
     }
-    function nearestCoast(px, pz) {
+    function nearestBrute(px, pz) {
       let d = Infinity;
       for (const r of rings) {
         for (let i = 0; i < r.length - 1; i++) {
@@ -116,6 +116,67 @@ window.cartaTerrain = function cartaTerrain(THREE) {
       }
       return d === Infinity ? 0 : d;
     }
+    // Exact uniform-grid spatial bin over the coast segments (vertex_d_psp.md §3.2):
+    // a ring-expanding search with a conservative lower-bound early-exit. It examines
+    // a SUBSET of segments but is guaranteed to find the true minimum, so the returned
+    // distance is bit-identical to the brute force — heightAt is unchanged, no prop
+    // moves (§0.4 corollary). Test 24(d) proves the equality. The 4× density bake in
+    // Phase 1 makes nearestCoast hot, hence the index.
+    let coastBin = null;
+    function buildCoastBin() {
+      const segs = [];
+      let minx = Infinity, minz = Infinity, maxx = -Infinity, maxz = -Infinity;
+      for (const r of rings) {
+        for (let i = 0; i < r.length - 1; i++) {
+          const ax = r[i][0], az = r[i][1], bx = r[i + 1][0], bz = r[i + 1][1];
+          segs.push([ax, az, bx, bz]);
+          minx = Math.min(minx, ax, bx); maxx = Math.max(maxx, ax, bx);
+          minz = Math.min(minz, az, bz); maxz = Math.max(maxz, az, bz);
+        }
+      }
+      if (!segs.length) return null;
+      const n = Math.max(1, Math.round(Math.sqrt(segs.length)));
+      const cw = (maxx - minx) / n || 1, ch = (maxz - minz) / n || 1;
+      const gi = (x) => Math.max(0, Math.min(n - 1, Math.floor((x - minx) / cw)));
+      const gj = (z) => Math.max(0, Math.min(n - 1, Math.floor((z - minz) / ch)));
+      const cells = new Map();
+      for (let s = 0; s < segs.length; s++) {
+        const [ax, az, bx, bz] = segs[s];
+        const i0 = gi(Math.min(ax, bx)), i1 = gi(Math.max(ax, bx));
+        const j0 = gj(Math.min(az, bz)), j1 = gj(Math.max(az, bz));
+        for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) {
+          const k = i * n + j; let a = cells.get(k); if (!a) { a = []; cells.set(k, a); } a.push(s);
+        }
+      }
+      return { segs, n, cw, ch, gi, gj, cells, cell: Math.min(cw, ch) };
+    }
+    function nearestBinned(px, pz) {
+      const B = coastBin;
+      const ci = B.gi(px), cj = B.gj(pz);
+      let best = Infinity;
+      const seen = new Set();
+      for (let rad = 0; rad <= B.n; rad++) {
+        if (rad > 0 && (rad - 1) * B.cell > best) break;   // no closer segment possible
+        for (let i = ci - rad; i <= ci + rad; i++) {
+          for (let j = cj - rad; j <= cj + rad; j++) {
+            if (Math.max(Math.abs(i - ci), Math.abs(j - cj)) !== rad) continue;   // ring only
+            if (i < 0 || j < 0 || i >= B.n || j >= B.n) continue;
+            const arr = B.cells.get(i * B.n + j); if (!arr) continue;
+            for (const s of arr) {
+              if (seen.has(s)) continue; seen.add(s);
+              const g = B.segs[s];
+              const dd = segDist(g[0], g[1], g[2], g[3], px, pz);
+              if (dd < best) best = dd;
+            }
+          }
+        }
+      }
+      return best === Infinity ? 0 : best;
+    }
+    function nearestCoast(px, pz) { return coastBin ? nearestBinned(px, pz) : nearestBrute(px, pz); }
+    // opts.bruteForceCoast (test-only escape hatch) forces the O(segments) path so
+    // test 24(d) can prove the bin returns bit-identical distances.
+    coastBin = (opts && opts.bruteForceCoast) ? null : buildCoastBin();
     function inside(px, pz) {
       let win = false;
       for (const r of rings) {
@@ -171,7 +232,10 @@ window.cartaTerrain = function cartaTerrain(THREE) {
     const margin = Math.max(320, Math.max(width, depth) * 0.28);
     const x0 = minX - margin, x1 = maxX + margin, z0 = minZ - margin, z1 = maxZ + margin;
     const W = x1 - x0, D = z1 - z0;
-    const step = Math.min(30, Math.max(9, Math.max(W, D) / 230));
+    // Phase 1 density win (vertex_d_psp.md): a ~460² grid (~423k tris, one static
+    // draw) so the berm reads in geometry and shoreline facets halve at canoe level.
+    // The coast bin pays for the 4× heightAt bake.
+    const step = Math.min(16, Math.max(4.5, Math.max(W, D) / 460));
     const nx = Math.max(2, Math.ceil(W / step)), nz = Math.max(2, Math.ceil(D / step));
 
     const geo = new THREE.PlaneGeometry(W, D, nx, nz);
@@ -909,7 +973,7 @@ window.cartaTerrain = function cartaTerrain(THREE) {
   /* ---------- water sheet ---------- */
   function makeWater(span, shore) {
     const size = span * 5.5;                 // run the sheet out to the horizon line
-    const seg = Math.min(200, Math.max(40, Math.round(size / 22)));
+    const seg = Math.min(256, Math.max(40, Math.round(size / 22)));   // density only; W_TRAINS shader byte-identical (§0.3)
     const geo = new THREE.PlaneGeometry(size, size, seg, seg);
     geo.rotateX(-Math.PI / 2);
 

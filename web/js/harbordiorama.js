@@ -56,6 +56,10 @@
     } catch (e) { return false; }
   })();
   let perfAccum = 0;   // throttles the HUD text to ~4 Hz
+  const STATS = (function () {
+    try { return typeof location !== 'undefined' && typeof URLSearchParams !== 'undefined' && new URLSearchParams(location.search).has('stats'); }
+    catch (e) { return false; }
+  })();
 
   /* ---------- DOM scaffold ---------- */
 
@@ -1039,6 +1043,18 @@
       tweenCamera(top, rest, 1100);
     }
     eng.start();
+    // vertex_d_psp.md Phase 0: a 1 Hz scene-cost log behind ?stats (no UI, no
+    // behaviour change without the flag) for the terrain density/draw measurements.
+    if (STATS && eng.renderer && !carDio._statsTimer) {
+      carDio._statsTimer = setInterval(() => {
+        if (!carDio.active) return;
+        const info = eng.renderer.info;
+        try {
+          console.log('[stats]', 'tris', info.render.triangles, 'calls', info.render.calls,
+            'geo', info.memory.geometries, 'tex', info.memory.textures);
+        } catch (e) { /* ignore */ }
+      }, 1000);
+    }
   }
 
   function close() {
@@ -1050,6 +1066,7 @@
       carDio.active = false;
       host.classList.remove('on');
       host.style.display = 'none';
+      if (carDio._statsTimer) { clearInterval(carDio._statsTimer); carDio._statsTimer = null; }
       eng.stop();
       if (canoe) { try { canoe.dispose(); } catch (e) { /* ignore */ } canoe = null; }
       if (built) { built.dispose(); built = null; }
