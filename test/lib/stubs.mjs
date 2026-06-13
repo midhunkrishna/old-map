@@ -439,6 +439,13 @@ export function makeThree(rec) {
       this.setXYZ = (i, x, y, z) => { array[i * itemSize] = x; array[i * itemSize + 1] = y; array[i * itemSize + 2] = z; return this; };
       this.setUsage = () => this;
     },
+    InstancedBufferAttribute: function (array, itemSize) {
+      this.array = array; this.itemSize = itemSize; this.needsUpdate = false;
+      this.count = array && itemSize ? array.length / itemSize : 0;
+      this.getX = (i) => array[i * itemSize];
+      this.setX = (i, v) => { array[i * itemSize] = v; return this; };
+      this.setUsage = () => this;
+    },
     Float32BufferAttribute: function (array, itemSize) {
       this.array = array; this.itemSize = itemSize; this.needsUpdate = false;
       this.count = array && itemSize ? array.length / itemSize : 0;
@@ -693,6 +700,7 @@ export function loadTrees(rec, opts = {}) {
   // production hysteresis path (window.cartaLod.band) instead of the ternary
   // fallback. Off by default so case 16 keeps the nominal-edge membership.
   if (opts.lod) new vm.Script(readFileSync(LOD_SRC, 'utf8'), { filename: 'lod.js' }).runInContext(context);
+  if (opts.lodfade) new vm.Script(readFileSync(join(REPO_ROOT, 'web', 'js', 'lodfade.js'), 'utf8'), { filename: 'lodfade.js' }).runInContext(context);
   const TREES_SRC = join(REPO_ROOT, 'web', 'js', 'harbortrees.js');
   new vm.Script(readFileSync(TREES_SRC, 'utf8'), { filename: 'harbortrees.js' }).runInContext(context);
   return { make: win.cartaTreeSystem, THREE, win };

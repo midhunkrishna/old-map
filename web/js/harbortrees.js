@@ -593,6 +593,11 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
     im.count = 0;
     im.frustumCulled = false;        // we cull per instance ourselves
     im.renderOrder = name === 'far' ? 1 : 0;
+    // per-instance dither coverage for the tier cross-fade (clod.md §5.4). Prefilled
+    // 1.0 (full) so untouched slots and the unpatched/legacy path render as today.
+    const aFade = new THREE.InstancedBufferAttribute(new Float32Array(cap).fill(1), 1);
+    aFade.setUsage(THREE.DynamicDrawUsage);
+    geo.setAttribute('aFade', aFade);
     group.add(im);
     return im;
   }
@@ -608,6 +613,17 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
       for (const k of KINDS) {
         tiers.mid[k] = makeTier('mid', billboardQuad(), billboardMat(sprites[k]), CAP.mid);
         tiers.far[k] = makeTier('far', billboardQuad(), billboardMat(sprites[k]), CAP.far);
+      }
+      // clod.md §5.4: patch the metric tier materials with the per-instance dither
+      // so trees can cross-fade across a tier boundary. Each unique material once
+      // (patchMaterial composes/wraps, so double-patching would redeclare the
+      // varying). underMesh/logMesh are out of scope (near-band dressing).
+      const LFp = window.cartaLodFade;
+      if (LFp) {
+        const seen = new Set();
+        const patch = (im) => { const m = im && im.material; if (m && !seen.has(m)) { seen.add(m); LFp.patchMaterial(m, { perInstance: true }); } };
+        for (const v of VARNAMES) { patch(tiers.near[v]); patch(tiers.ultra[v]); }
+        for (const k of KINDS) { patch(tiers.mid[k]); patch(tiers.far[k]); }
       }
       underMesh = makeTier('near', undergrowthGeo(), foliageMat(null), UNDER_CAP);
       underMesh.material.side = THREE.DoubleSide;      // thin splats read both ways
@@ -994,6 +1010,29 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
     const idx = { ultra: {}, near: {}, mid: {}, far: {} };
     for (const v of VARNAMES) { idx.ultra[v] = 0; idx.near[v] = 0; }
     for (const kk of KINDS) { idx.mid[kk] = 0; idx.far[kk] = 0; }
+    // tier cross-fade (clod.md §5.4): when the transition layer is present, a tree
+    // sitting within a boundary's fade half-width is written into BOTH adjacent
+    // tiers with complementary coverage (inner +c / outer −c), so the swap dithers
+    // instead of popping. FAR keeps its hard cut (sprites at FAR are sub-pixel).
+    const FADE = !!(typeof window !== 'undefined' && window.cartaLodFade);
+    const FW = FADE ? [Math.min(12.5, uE * 0.04), Math.min(12.5, nE * 0.04), Math.min(12.5, mE * 0.04)] : null;
+    const placeFade = (t, bandIdx, cov) => {
+      const bandName = BANDS[bandIdx];
+      if (!bandName) return;
+      const geom = bandName === 'ultra' || bandName === 'near';
+      const key = geom ? t.variant : t.kind;
+      const cap = CAP[bandName];
+      const i = idx[bandName][key];
+      if (i >= cap) return;
+      let c = cov;
+      if (i >= 0.95 * cap) c *= Math.max(0, (cap - i) / (0.05 * cap));   // cap softening (sign kept)
+      const tier = tiers[bandName][key];
+      tier.setMatrixAt(i, geom ? t.gm : t.bm);
+      tier.setColorAt(i, t.color);
+      const af = tier.geometry && tier.geometry.attributes && tier.geometry.attributes.aFade;
+      if (af) af.array[i] = c;
+      idx[bandName][key] = i + 1;
+    };
     // iterate cell-by-cell, rejecting whole cells that fall beyond FAR or outside
     // the frustum (task 1); the per-tree tests below are the inner filter.
     const groups = cells || [{ trees }];
@@ -1006,7 +1045,10 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
       }
       _stat.cellsTested++;
       for (const t of cell.trees) {
-        if (t.rank > reveal) continue;
+        // reveal fade: trees just inside the rank gate dither in over a 0.03 window
+        // (a hard cut without the fade layer — same drawn set, just no soft edge).
+        const rf = FADE ? Math.max(0, Math.min(1, (reveal - t.rank) / 0.03)) : (t.rank > reveal ? 0 : 1);
+        if (rf <= 0) continue;
         const dx = t.px - cx, dy = t.py - cy, dz = t.pz - cz;
         const d2 = dx * dx + dy * dy + dz * dz;
         if (d2 > far2) continue;
@@ -1020,15 +1062,25 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
         let bi;
         if (LOD) { bi = LOD.band(Math.sqrt(d2), EDGES, t.band == null ? 0 : t.band, 0.12); t.band = bi; }
         else { bi = d2 < ultra2 ? 0 : d2 < near2 ? 1 : d2 < mid2 ? 2 : 3; }
-        const band = BANDS[bi] || 'far';
-        const geomBand = band === 'ultra' || band === 'near';
-        const key = geomBand ? t.variant : t.kind;     // geometry per variant, cards per kind
-        const i = idx[band][key];
-        if (i >= CAP[band]) continue;
-        const tier = tiers[band][key];
-        tier.setMatrixAt(i, geomBand ? t.gm : t.bm);
-        tier.setColorAt(i, t.color);
-        idx[band][key] = i + 1;
+        // dual-write across a boundary margin, else a single write
+        let wrote = false;
+        if (FADE) {
+          const d = Math.sqrt(d2);
+          const candidates = bi <= 0 ? [0] : bi >= 3 ? [2] : [bi - 1, bi];
+          for (const e of candidates) {
+            if (e < 0 || e > 2) continue;
+            const B = EDGES[e], fw = FW[e];
+            if (d > B - fw && d < B + fw) {
+              const tn = (d - (B - fw)) / (2 * fw);
+              const c = Math.max(1 / 32, Math.min(1, (1 - tn * tn * (3 - 2 * tn)) * rf));
+              placeFade(t, e, c);          // inner tier, +c
+              placeFade(t, e + 1, -c);     // outer tier, −c (exact complement)
+              wrote = true;
+              break;
+            }
+          }
+        }
+        if (!wrote) placeFade(t, bi, FADE ? Math.max(1 / 32, rf) : 1);
       }
     }
     counts = { ultra: 0, near: 0, mid: 0, far: 0 };
@@ -1039,6 +1091,8 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
         tier.count = idx[band][k];
         tier.instanceMatrix.needsUpdate = true;
         if (tier.instanceColor) tier.instanceColor.needsUpdate = true;
+        const af = tier.geometry && tier.geometry.attributes && tier.geometry.attributes.aFade;
+        if (af) af.needsUpdate = true;
         counts[band] += idx[band][k];
       }
     }
@@ -1082,5 +1136,6 @@ window.cartaTreeSystem = function cartaTreeSystem(THREE, arg) {
     init,
     update,
     get stats() { return { total: trees.length, drawn: counts, perf: _stat, cells: cells ? cells.length : 0 }; },
+    get tiers() { return tiers; },   // characterization-only accessor (clod.md §8.5)
   };
 };
