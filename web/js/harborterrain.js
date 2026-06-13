@@ -300,92 +300,65 @@ window.cartaTerrain = function cartaTerrain(THREE) {
     for (let i = 0; i < pos.count; i++) {
       pos.setY(i, heightAt(pos.getX(i), pos.getZ(i)));
     }
-    geo.computeVertexNormals();
+    geo.computeVertexNormals();      // baked from the real heights → world normals (the grid is axis-aligned)
 
-    // colour by height + slope, with a bright surf band at the waterline
-    const nrm = geo.attributes.normal;
-    const cols = new Float32Array(pos.count * 3);
-    const C_SAND = new THREE.Color(0.85, 0.79, 0.62);
-    const C_GRASS = new THREE.Color(0.42, 0.54, 0.28);
-    const C_SCRUB = new THREE.Color(0.53, 0.51, 0.28);        // dry dusty scrub
-    const C_ROCK = new THREE.Color(0.54, 0.49, 0.40);
-    const C_CRAG = new THREE.Color(0.63, 0.59, 0.51);         // pale broken stone
-    const C_SEABED = new THREE.Color(0.30, 0.40, 0.40);
-    const C_SURF = new THREE.Color(0.93, 0.90, 0.80);
-    const C_PEBBLE = new THREE.Color(0.66, 0.60, 0.50);      // coarse berm shingle
-    const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-    const tmp = new THREE.Color();
-    const gw = nx + 1, gh = nz + 1;                          // grid dims, for the gully Laplacian
-    for (let i = 0; i < pos.count; i++) {
-      const y = pos.getY(i), slope = 1 - nrm.getY(i);
-      const vx = pos.getX(i), vz = pos.getZ(i);
-      if (y < -0.1) {
-        tmp.copy(C_SEABED);
-      } else {
-        const g = smooth(0.8, 4.5, y);                            // inland greens quickly past the beach
-        tmp.copy(C_SAND).lerp(C_GRASS, g);
-        // scrub mottling: hashed dapples so the green band is never one flat hue
-        const mot = hash01(Math.round(vx * 0.07), Math.round(vz * 0.07));
-        tmp.lerp(C_SCRUB, g * mot * 0.5);
-        // subtle elevation banding climbing the slopes — the engraver's contours
-        tmp.multiplyScalar(1 - 0.05 * (0.5 + 0.5 * Math.sin(y * 0.5 + mot * 2.0)) * smooth(6, 40, y));
-        // rock exposures: high ground, and especially the steep convex faces
-        const rock = Math.min(1, smooth(70, 260, y) + slope * 0.7 + smooth(0.32, 0.55, slope) * 0.8);
-        tmp.lerp(C_ROCK, rock);
-        // the very steepest upper faces read as pale broken crag
-        tmp.lerp(C_CRAG, smooth(0.45, 0.72, slope) * smooth(30, 110, y) * 0.65);
-        // pebbly shingle along the berm crest — a coarser hashed tint band
-        // riding the high-tide step the profile raises at ~0.5-1.1 m
-        const peb = hash01(Math.round(vx * 0.45), Math.round(vz * 0.45));
-        tmp.lerp(C_PEBBLE, smooth(0.45, 0.7, y) * smooth(1.35, 1.05, y) * (0.2 + peb * 0.4));
-        // drainage shading: concave gullies (positive grid Laplacian) run a
-        // shade darker, so the spur-and-gully relief reads at a distance
-        const ix = i % gw, iz = (i / gw) | 0;
-        if (ix > 0 && ix < gw - 1 && iz > 0 && iz < gh - 1 && y > 8) {
-          const lap = pos.getY(i - 1) + pos.getY(i + 1) + pos.getY(i - gw) + pos.getY(i + gw) - 4 * y;
-          tmp.multiplyScalar(1 - Math.min(1, Math.max(0, lap * 0.5)) * smooth(8, 30, y) * 0.12);
-        }
-        const surf = smooth(1.1, -0.1, y) * smooth(-1.0, 0.15, y);   // wet-sand surf, tight to the waterline
-        tmp.lerp(C_SURF, surf * 0.8);
-        // rippled tidal sand: hashed micro-troughs (a few cm of implied
-        // relief, colour only — no geometry) darken thin bands in the wet
-        // band, the look of sand the falling tide has combed
-        const rphase = hash01(Math.round(vx * 0.22), Math.round(vz * 0.22));
-        const rip = Math.sin(vx * 1.7 + vz * 1.2 + rphase * 6.28);
-        tmp.multiplyScalar(1 - surf * Math.max(0, rip) * 0.09 * (0.6 + 0.4 * rphase));
-      }
-      cols[i * 3] = tmp.r; cols[i * 3 + 1] = tmp.g; cols[i * 3 + 2] = tmp.b;
-    }
-    geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
-
-    // Phase 2: normals + colours are baked from the real heights above; now flatten the
-    // geometry to Y = 0 and let the vertex shader re-displace from the heightmap. The
-    // surface is identical to Phase 1 within the §3.3 texel tolerance.
+    // Phase 3: the height/slope colour bands now live in the fragment shader (below);
+    // the geometry keeps only its baked world normals (passed as vNrmW for the colour
+    // slope + used for lighting). Flatten to Y = 0 and let the vertex shader displace.
     if (hmTex) { for (let i = 0; i < pos.count; i++) pos.setY(i, 0); pos.needsUpdate = true; }
 
     // Standard material so the diorama's image-based lighting (PMREM) reads on
     // the land — rough, non-metal; the engraved hill cloth is the detail map.
     const landMat = new THREE.MeshStandardMaterial({
-      vertexColors: true, map: hillTexture(), roughness: 0.96, metalness: 0.0,
+      map: hillTexture(), roughness: 0.96, metalness: 0.0,    // colour now per-pixel (Phase 3)
     });
-    // Wet sand: a darkened, faintly reflective band just above the waterline
-    // whose upper edge breathes with the SAME three swell trains the water
-    // rides (constants baked from W_TRAINS, so the damp line follows the foam).
-    // Fragment-side only — land vertices and colours stay put.
     const wetT = { value: 0 };
     const wetSwell = W_TRAINS.map((k) =>
       `sin(vWetW.x * ${k.kx.toFixed(8)} + vWetW.z * ${k.kz.toFixed(8)} + uWetT * ${k.om.toFixed(4)}) * ${k.w.toFixed(4)}`
     ).join(' + ');
+    // height/slope colour bands ported VERBATIM from the old CPU vertex loop (same
+    // constants + sin-hash), now per-pixel: keyed on the displaced world position
+    // (vWetW) and the baked world normal (vNrmW). tsm matches the CPU smooth() incl.
+    // descending edges; the gully Laplacian uses heightmap taps instead of grid ones.
+    const LAND_DECL = HM_GLSL + '\n'
+      + 'float tsm(float a, float b, float x){ float t = clamp((x-a)/(b-a), 0.0, 1.0); return t*t*(3.0-2.0*t); }\n'
+      + 'float thash(float a, float b){ float h = sin(a*127.1 + b*311.7)*43758.5453; return h - floor(h); }';
     landMat.onBeforeCompile = (sh) => {
       injectDisplacement(sh);    // FIRST: displaces transformed.y so vWetW reads the real surface
       sh.uniforms.uWetT = wetT;
       sh.vertexShader = sh.vertexShader
-        .replace('#include <common>', 'varying vec3 vWetW;\n#include <common>')
+        .replace('#include <common>', 'varying vec3 vWetW;\nvarying vec3 vNrmW;\n#include <common>')
         .replace('#include <begin_vertex>',
-          '#include <begin_vertex>\n  vWetW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+          '#include <begin_vertex>\n  vWetW = (modelMatrix * vec4(transformed, 1.0)).xyz;\n  vNrmW = normal;');
       sh.fragmentShader = sh.fragmentShader
-        .replace('#include <common>', 'varying vec3 vWetW;\nuniform float uWetT;\n#include <common>')
-        .replace('#include <color_fragment>', `#include <color_fragment>
+        .replace('#include <common>', 'varying vec3 vWetW;\nvarying vec3 vNrmW;\nuniform float uWetT;\n' + LAND_DECL + '\n#include <common>')
+        .replace('#include <color_fragment>', `
+  float ty = vWetW.y; vec2 twxz = vWetW.xz; float tslope = clamp(1.0 - vNrmW.y, 0.0, 1.0);
+  vec3 tcol;
+  if (ty < -0.1) { tcol = vec3(0.30,0.40,0.40); }
+  else {
+    float g = tsm(0.8, 4.5, ty);
+    tcol = mix(vec3(0.85,0.79,0.62), vec3(0.42,0.54,0.28), g);
+    float mot = thash(floor(twxz.x*0.07+0.5), floor(twxz.y*0.07+0.5));
+    tcol = mix(tcol, vec3(0.53,0.51,0.28), g*mot*0.5);
+    tcol *= 1.0 - 0.05*(0.5+0.5*sin(ty*0.5+mot*2.0))*tsm(6.0,40.0,ty);
+    float rock = min(1.0, tsm(70.0,260.0,ty) + tslope*0.7 + tsm(0.32,0.55,tslope)*0.8);
+    tcol = mix(tcol, vec3(0.54,0.49,0.40), rock);
+    tcol = mix(tcol, vec3(0.63,0.59,0.51), tsm(0.45,0.72,tslope)*tsm(30.0,110.0,ty)*0.65);
+    float peb = thash(floor(twxz.x*0.45+0.5), floor(twxz.y*0.45+0.5));
+    tcol = mix(tcol, vec3(0.66,0.60,0.50), tsm(0.45,0.7,ty)*tsm(1.35,1.05,ty)*(0.2+peb*0.4));
+    if (ty > 8.0) {
+      float dl = 2.0*(uHmSize.x/(uHmN-1.0));
+      float lap = hmHeight(twxz+vec2(dl,0.0))+hmHeight(twxz-vec2(dl,0.0))+hmHeight(twxz+vec2(0.0,dl))+hmHeight(twxz-vec2(0.0,dl))-4.0*ty;
+      tcol *= 1.0 - clamp(lap*0.5,0.0,1.0)*tsm(8.0,30.0,ty)*0.12;
+    }
+    float surf = tsm(1.1,-0.1,ty)*tsm(-1.0,0.15,ty);
+    tcol = mix(tcol, vec3(0.93,0.90,0.80), surf*0.8);
+    float rphase = thash(floor(twxz.x*0.22+0.5), floor(twxz.y*0.22+0.5));
+    float rip = sin(twxz.x*1.7 + twxz.y*1.2 + rphase*6.28);
+    tcol *= 1.0 - surf*max(0.0,rip)*0.09*(0.6+0.4*rphase);
+  }
+  diffuseColor.rgb *= tcol;
   float wetSwell = ${wetSwell};
   float wetReach = 0.28 + 0.26 * (0.5 + 0.5 * wetSwell);
   float wet = smoothstep(wetReach, 0.02, vWetW.y) * step(0.0, vWetW.y);
